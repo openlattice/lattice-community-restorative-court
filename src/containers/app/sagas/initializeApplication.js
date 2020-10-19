@@ -3,22 +3,30 @@
  */
 
 import {
-  all,
   call,
   put,
   takeEvery,
 } from '@redux-saga/core/effects';
-import { Logger } from 'lattice-utils';
+import {
+  AppApiActions,
+  AppApiSagas,
+} from 'lattice-sagas';
+import { LangUtils, Logger, ValidationUtils } from 'lattice-utils';
 import type { Saga } from '@redux-saga/core';
 import type { SequenceAction } from 'redux-reqseq';
 
-import { EDMActions, EDMSagas } from '../../../core/edm';
+import { ERR_ACTION_VALUE_TYPE } from '../../../utils/error/constants';
 import { INITIALIZE_APPLICATION, initializeApplication } from '../actions';
 
-const LOG = new Logger('AppSagas');
+const { isValidUUID } = ValidationUtils;
+const { isDefined } = LangUtils;
 
-const { getEntityDataModelTypes } = EDMActions;
-const { getEntityDataModelTypesWorker } = EDMSagas;
+const { getApp, getAppConfigs } = AppApiActions;
+const { getAppWorker, getAppConfigsWorker } = AppApiSagas;
+
+const APP_NAME = 'Community Restorative Court';
+
+const LOG = new Logger('AppSagas');
 
 /*
  *
@@ -27,23 +35,55 @@ const { getEntityDataModelTypesWorker } = EDMSagas;
  */
 
 function* initializeApplicationWorker(action :SequenceAction) :Saga<*> {
+  const workerResponse :Object = {};
 
   try {
     yield put(initializeApplication.request(action.id));
-    const responses :Object[] = yield all([
-      call(getEntityDataModelTypesWorker, getEntityDataModelTypes()),
-      // ...any other required requests
-    ]);
-    if (responses[0].error) throw responses[0].error;
-    yield put(initializeApplication.success(action.id));
+
+    const { value: { match, organizationId, root } } = action;
+    if (!isValidUUID(organizationId)) throw ERR_ACTION_VALUE_TYPE;
+    if (typeof root !== 'string') throw ERR_ACTION_VALUE_TYPE;
+    if (!isDefined(match)) throw ERR_ACTION_VALUE_TYPE;
+    yield put(initializeApplication.request(action.id));
+
+    /*
+     * 1. load App
+     */
+    const response :any = yield call(getAppWorker, getApp(APP_NAME));
+    if (response.error) throw response.error;
+
+    /*
+     * 2. load AppConfig, AppTypes
+     */
+
+    const app = response.data;
+    const appConfigsResponse = yield call(getAppConfigsWorker, getAppConfigs(app.id));
+    if (appConfigsResponse.error) throw appConfigsResponse.error;
+    const appConfig = appConfigsResponse.data.reduce((acc, config) => {
+      let selectedConfig = acc;
+      if (config.organization.id === organizationId) {
+        selectedConfig = config;
+      }
+      return selectedConfig;
+    }, {});
+
+    workerResponse.data = {
+      appConfig,
+      root,
+      match,
+    };
+
+    yield put(initializeApplication.success(action.id, workerResponse.data));
   }
   catch (error) {
+    workerResponse.error = error;
     LOG.error(action.type, error);
     yield put(initializeApplication.failure(action.id, error));
   }
   finally {
     yield put(initializeApplication.finally(action.id));
   }
+  return workerResponse;
 }
 
 function* initializeApplicationWatcher() :Saga<*> {
