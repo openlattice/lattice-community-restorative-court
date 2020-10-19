@@ -3,6 +3,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import ProfileCard from './ProfileCard';
+import { PERSON, PROFILE } from './reducers/constants';
 
 import { useSelector } from '../../app/AppProvider';
 
@@ -11,7 +12,7 @@ const Centered = styled.div`
 `;
 
 const ProfileAside = () => {
-  const person = useSelector((store) => store.getIn(['profile', 'person']));
+  const person = useSelector((store) => store.getIn([PROFILE, PERSON]));
 
   return (
     <Centered>
