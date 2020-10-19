@@ -16,7 +16,6 @@ const getPropertyValues = (
   defaultValue ? :string = ''
 ) :any[] => fqns.map((fqn :FQN | string) => getPropertyValue(entity, fqn, defaultValue));
 
-/* eslint-disable import/prefer-default-export */
 export {
   getPropertyValue,
   getPropertyValues,
