@@ -12,8 +12,8 @@ import { INITIALIZE_APPLICATION, initializeApplication } from '../actions';
 const INITIAL_STATE :Map = fromJS({
   [INITIALIZE_APPLICATION]: { [REQUEST_STATE]: RequestStates.STANDBY },
   appConfig: {},
-  root: '',
   match: {},
+  root: '',
 });
 
 export default function reducer(state :Map = INITIAL_STATE, action :SequenceAction) {
