@@ -17,14 +17,13 @@ import type { SequenceAction } from 'redux-reqseq';
 
 import { ERR_ACTION_VALUE_TYPE } from '../../../utils/error/constants';
 import { INITIALIZE_APPLICATION, initializeApplication } from '../actions';
+import { APP_NAME } from '../constants';
 
 const { isValidUUID } = ValidationUtils;
 const { isDefined } = LangUtils;
 
 const { getApp, getAppConfigs } = AppApiActions;
 const { getAppWorker, getAppConfigsWorker } = AppApiSagas;
-
-const APP_NAME = 'Community Restorative Court';
 
 const LOG = new Logger('AppSagas');
 
