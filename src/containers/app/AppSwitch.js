@@ -2,7 +2,7 @@
 import React, { useEffect } from 'react';
 
 import { Spinner } from 'lattice-ui-kit';
-import { useRequestState } from 'lattice-utils';
+import { ReduxUtils, useRequestState } from 'lattice-utils';
 import { Route, Switch } from 'react-router-dom';
 import type { Match } from 'react-router';
 import type { RequestState } from 'redux-reqseq';
@@ -12,8 +12,9 @@ import { INITIALIZE_APPLICATION, initializeApplication } from './actions';
 
 import ProfileContainer from '../profile/src/ProfileContainer';
 import { APP } from '../../core/redux/constants';
-import { requestIsPending } from '../../utils/redux';
 import { CenterWrapper } from '../profile/src/styled';
+
+const { isPending } = ReduxUtils;
 
 type Props = {
   match :Match;
@@ -36,7 +37,7 @@ const HelplineSwitch = ({
   }, [dispatch, organizationId, root]);
 
   const initializeRequestState :?RequestState = useRequestState([APP, INITIALIZE_APPLICATION]);
-  if (requestIsPending(initializeRequestState)) {
+  if (isPending(initializeRequestState)) {
     return <CenterWrapper><Spinner size="3x" /></CenterWrapper>;
   }
 
