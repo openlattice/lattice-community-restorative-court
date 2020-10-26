@@ -5,10 +5,10 @@ import { List } from 'immutable';
 import { CardStack } from 'lattice-ui-kit';
 
 import CaseParticipationListItem from './CaseParticipationListItem';
-import { PERSON_CASES, PROFILE } from './reducers/constants';
 
-import { useSelector } from '../../app/AppProvider';
-import { Header } from '../typography';
+import { useSelector } from '../../../app/AppProvider';
+import { Header } from '../../typography';
+import { PERSON_CASES, PROFILE } from '../reducers/constants';
 
 const CaseParticipation = () => {
   const personCases :List = useSelector((store) => store.getIn([PROFILE, PERSON_CASES]));
