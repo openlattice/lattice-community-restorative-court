@@ -3,8 +3,11 @@
  */
 
 import { Map, fromJS } from 'immutable';
+import { Models } from 'lattice';
 import { ReduxConstants } from 'lattice-utils';
 import { RequestStates } from 'redux-reqseq';
+
+const { FQN } = Models;
 
 export const {
   APP,
@@ -36,3 +39,13 @@ export const RS_INITIAL_STATE = {
   [ERROR]: false,
   [REQUEST_STATE]: RequestStates.STANDBY,
 };
+
+/*
+ * Entity FQNs
+ */
+
+export const CASE = FQN.of('app.case');
+export const HAS = FQN.of('app.has');
+export const PEOPLE = FQN.of('app.people');
+export const STATUS = FQN.of('app.enrollmentstatus');
+export const ROLE = FQN.of('app.role');
