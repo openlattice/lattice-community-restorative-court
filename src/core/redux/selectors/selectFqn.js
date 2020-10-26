@@ -1,0 +1,12 @@
+// @flow
+import { Map } from 'immutable';
+import { Models } from 'lattice';
+
+import { APP_PATHS } from '../../../containers/app/constants';
+
+const { FQN } = Models;
+
+export default function selectFqn(entitySetId :UUID) {
+
+  return (state :Map) :?FQN => state.getIn(APP_PATHS.FQN.concat(['entitySetId', entitySetId]));
+}
