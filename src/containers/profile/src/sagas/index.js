@@ -1,3 +1,4 @@
 // @flow
 
-export * from './getPersonCases';
+export * from './getPersonNeighbors';
+export * from './loadProfile';
