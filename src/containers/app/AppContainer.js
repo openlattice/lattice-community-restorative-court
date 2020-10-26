@@ -18,9 +18,9 @@ type Props = {
 
 const AppContainer = (props :Props) => {
   const {
+    match,
     organizationId,
     personId,
-    match,
     root,
   } = props;
 

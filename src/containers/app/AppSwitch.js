@@ -2,16 +2,19 @@
 import React, { useEffect } from 'react';
 
 import { Spinner } from 'lattice-ui-kit';
+import { ReduxUtils, useRequestState } from 'lattice-utils';
 import { Route, Switch } from 'react-router-dom';
 import type { Match } from 'react-router';
+import type { RequestState } from 'redux-reqseq';
 
-import { useDispatch, useSelector } from './AppProvider';
-import { INITIALIZE_APPLICATION, initializeApplication } from './actions'
+import { useDispatch } from './AppProvider';
+import { INITIALIZE_APPLICATION, initializeApplication } from './actions';
 
 import ProfileContainer from '../profile/src/ProfileContainer';
-import { APP, REQUEST_STATE } from '../../core/redux/constants';
-import { requestIsPending } from '../../utils/redux';
+import { APP } from '../../core/redux/constants';
 import { CenterWrapper } from '../profile/src/styled';
+
+const { isPending } = ReduxUtils;
 
 type Props = {
   match :Match;
@@ -33,8 +36,8 @@ const HelplineSwitch = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, organizationId, root]);
 
-  const initializeRequestState = useSelector((state) => state.getIn([APP, INITIALIZE_APPLICATION, REQUEST_STATE]));
-  if (requestIsPending(initializeRequestState)) {
+  const initializeRequestState :?RequestState = useRequestState([APP, INITIALIZE_APPLICATION]);
+  if (isPending(initializeRequestState)) {
     return <CenterWrapper><Spinner size="3x" /></CenterWrapper>;
   }
 

@@ -1,5 +1,7 @@
 // @flow
 
+const APP_NAME = 'Community Restorative Court';
+
 const APP_PATHS = {
   APP_CONFIG: ['app', 'appConfig', 'config'],
   FQN: ['app', 'fqns'],
@@ -13,6 +15,7 @@ const NEIGHBOR_DIRECTIONS = {
 };
 
 export {
+  APP_NAME,
   APP_PATHS,
   NEIGHBOR_DIRECTIONS,
 };
