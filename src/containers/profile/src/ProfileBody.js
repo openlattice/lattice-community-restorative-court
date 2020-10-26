@@ -4,7 +4,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { Spinner, StyleUtils } from 'lattice-ui-kit';
 
-import CaseParticipation from './CaseParticipation';
+import CaseParticipation from './caseparticipation/CaseParticipation';
 import { CenterWrapper } from './styled';
 
 import { APP, REQUEST_STATE } from '../../../core/redux/constants';
