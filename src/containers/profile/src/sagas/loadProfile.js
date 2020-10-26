@@ -11,13 +11,19 @@ import { LangUtils, Logger } from 'lattice-utils';
 import type { Saga } from '@redux-saga/core';
 import type { SequenceAction } from 'redux-reqseq';
 
+import { getPersonWorker } from './getPerson';
 import { getPersonNeighborsWorker } from './getPersonNeighbors';
 
 import { CASE, ROLE } from '../../../../core/redux/constants';
 import { selectEntitySetId } from '../../../../core/redux/selectors';
 import { ERR_ACTION_VALUE_NOT_DEFINED } from '../../../../utils/error/constants';
 import { NEIGHBOR_DIRECTIONS } from '../../../app/constants';
-import { LOAD_PROFILE, getPersonNeighbors, loadProfile } from '../actions';
+import {
+  LOAD_PROFILE,
+  getPerson,
+  getPersonNeighbors,
+  loadProfile
+} from '../actions';
 
 const { isDefined } = LangUtils;
 const { DST } = NEIGHBOR_DIRECTIONS;
@@ -50,6 +56,7 @@ function* loadProfileWorker(action :SequenceAction) :Saga<*> {
 
     const workerResponses :Object[] = yield all([
       call(getPersonNeighborsWorker, getPersonNeighbors({ neighbors, personEKID })),
+      call(getPersonWorker, getPerson(personEKID)),
     ]);
     const responseError = workerResponses.reduce(
       (error, workerResponse) => error || workerResponse.error,
