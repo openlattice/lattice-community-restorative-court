@@ -12,7 +12,7 @@ import { LangUtils, Logger } from 'lattice-utils';
 import type { Saga } from '@redux-saga/core';
 import type { SequenceAction } from 'redux-reqseq';
 
-import { PEOPLE } from '../../../../core/redux/constants';
+import { AppTypes } from '../../../../core/edm/constants';
 import { selectEntitySetId } from '../../../../core/redux/selectors';
 import { ERR_ACTION_VALUE_NOT_DEFINED } from '../../../../utils/error/constants';
 import { GET_PERSON, getPerson } from '../actions';
@@ -20,6 +20,7 @@ import { GET_PERSON, getPerson } from '../actions';
 const { isDefined } = LangUtils;
 const { getEntityData } = DataApiActions;
 const { getEntityDataWorker } = DataApiSagas;
+const { PEOPLE } = AppTypes;
 
 const LOG = new Logger('ProfileSagas');
 /*

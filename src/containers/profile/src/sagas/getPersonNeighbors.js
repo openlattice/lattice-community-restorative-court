@@ -13,9 +13,9 @@ import { DataUtils, LangUtils, Logger } from 'lattice-utils';
 import type { Saga } from '@redux-saga/core';
 import type { SequenceAction } from 'redux-reqseq';
 
-import { PEOPLE } from '../../../../core/redux/constants';
 import { getPersonCaseNeighborsWorker } from './getPersonCaseNeighbors';
 
+import { AppTypes } from '../../../../core/edm/constants';
 import { selectEntitySetId } from '../../../../core/redux/selectors';
 import { getNeighborDetails, getNeighborESID } from '../../../../utils/data';
 import { ERR_ACTION_VALUE_NOT_DEFINED } from '../../../../utils/error/constants';
@@ -27,6 +27,7 @@ const { getEntityKeyId } = DataUtils;
 const { searchEntityNeighborsWithFilter } = SearchApiActions;
 const { searchEntityNeighborsWithFilterWorker } = SearchApiSagas;
 const { FQN } = Models;
+const { CASE, PEOPLE } = AppTypes;
 const { DST, SRC } = NEIGHBOR_DIRECTIONS;
 
 const LOG = new Logger('ProfileSagas');

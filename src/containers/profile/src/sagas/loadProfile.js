@@ -14,7 +14,7 @@ import type { SequenceAction } from 'redux-reqseq';
 import { getPersonWorker } from './getPerson';
 import { getPersonNeighborsWorker } from './getPersonNeighbors';
 
-import { CASE, ROLE } from '../../../../core/redux/constants';
+import { AppTypes } from '../../../../core/edm/constants';
 import { selectEntitySetId } from '../../../../core/redux/selectors';
 import { ERR_ACTION_VALUE_NOT_DEFINED } from '../../../../utils/error/constants';
 import { NEIGHBOR_DIRECTIONS } from '../../../app/constants';
@@ -26,6 +26,7 @@ import {
 } from '../actions';
 
 const { isDefined } = LangUtils;
+const { CASE, ROLE } = AppTypes;
 const { DST } = NEIGHBOR_DIRECTIONS;
 
 const LOG = new Logger('ProfileSagas');
