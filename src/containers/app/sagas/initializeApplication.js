@@ -7,6 +7,8 @@ import {
   put,
   takeEvery,
 } from '@redux-saga/core/effects';
+import { Map, fromJS, getIn } from 'immutable';
+import { Models } from 'lattice';
 import {
   AppApiActions,
   AppApiSagas,
@@ -15,13 +17,14 @@ import { LangUtils, Logger, ValidationUtils } from 'lattice-utils';
 import type { Saga } from '@redux-saga/core';
 import type { SequenceAction } from 'redux-reqseq';
 
+import { AppTypes } from '../../../core/edm/constants';
 import { ERR_ACTION_VALUE_TYPE } from '../../../utils/error/constants';
 import { INITIALIZE_APPLICATION, initializeApplication } from '../actions';
-import { APP_NAME } from '../constants';
+import { APP_NAME, ENTITY_SET_ID } from '../constants';
 
 const { isValidUUID } = ValidationUtils;
 const { isDefined } = LangUtils;
-
+const { FQN } = Models;
 const { getApp, getAppConfigs } = AppApiActions;
 const { getAppWorker, getAppConfigsWorker } = AppApiSagas;
 
@@ -66,8 +69,15 @@ function* initializeApplicationWorker(action :SequenceAction) :Saga<*> {
       return selectedConfig;
     }, {});
 
+    const fqnsByESID = Map().withMutations((mutator :Map) => {
+      fromJS(AppTypes).forEach((fqn :FQN) => {
+        mutator.set(getIn(appConfig, [fqn, ENTITY_SET_ID]), fqn);
+      });
+    });
+
     workerResponse.data = {
       appConfig,
+      fqnsByESID,
       root,
       match,
     };

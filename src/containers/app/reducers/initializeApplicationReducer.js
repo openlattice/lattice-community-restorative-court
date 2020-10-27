@@ -2,25 +2,31 @@
  * @flow
  */
 
-import { Map, fromJS } from 'immutable';
+import { Map } from 'immutable';
 import { RequestStates } from 'redux-reqseq';
 import type { SequenceAction } from 'redux-reqseq';
 
-import { REQUEST_STATE } from '../../../core/redux/constants';
+import {
+  REQUEST_STATE,
+} from '../../../core/redux/constants';
 import { INITIALIZE_APPLICATION, initializeApplication } from '../actions';
+import {
+  APP_CONFIG,
+  FQNS_BY_ESID,
+  MATCH,
+  ROOT,
+} from '../constants';
 
-const INITIAL_STATE :Map = fromJS({
-  [INITIALIZE_APPLICATION]: { [REQUEST_STATE]: RequestStates.STANDBY },
-  appConfig: {},
-  match: {},
-  root: '',
-});
-
-export default function reducer(state :Map = INITIAL_STATE, action :SequenceAction) {
+export default function reducer(state :Map, action :SequenceAction) {
 
   return initializeApplication.reducer(state, action, {
     REQUEST: () => state.setIn([INITIALIZE_APPLICATION, REQUEST_STATE], RequestStates.PENDING),
-    SUCCESS: () => state.setIn([INITIALIZE_APPLICATION, REQUEST_STATE], RequestStates.SUCCESS),
+    SUCCESS: () => state
+      .set(APP_CONFIG, action.value.appConfig)
+      .set(FQNS_BY_ESID, action.value.fqnsByESID)
+      .set(MATCH, action.value.match)
+      .set(ROOT, action.value.root)
+      .setIn([INITIALIZE_APPLICATION, REQUEST_STATE], RequestStates.SUCCESS),
     FAILURE: () => state.setIn([INITIALIZE_APPLICATION, REQUEST_STATE], RequestStates.FAILURE),
   });
 }

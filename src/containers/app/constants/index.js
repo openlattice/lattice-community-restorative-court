@@ -2,11 +2,18 @@
 
 const APP_NAME = 'Community Restorative Court';
 
+const APP :string = 'app';
+const APP_CONFIG :string = 'appConfig';
+const ENTITY_SET_ID :string = 'entitySetId';
+const FQNS_BY_ESID :string = 'fqnsByESID';
+const MATCH :string = 'match';
+const ROOT :string = 'root';
+
 const APP_PATHS = {
-  APP_CONFIG: ['app', 'appConfig', 'config'],
-  FQN: ['app', 'fqns'],
-  MATCH: ['app', 'match'],
-  ROOT: ['app', 'root'],
+  APP_CONFIG: [APP, APP_CONFIG, 'config'],
+  FQNS_BY_ESID: [APP, FQNS_BY_ESID],
+  MATCH: [APP, MATCH],
+  ROOT: [APP, ROOT],
 };
 
 const NEIGHBOR_DIRECTIONS = {
@@ -15,7 +22,12 @@ const NEIGHBOR_DIRECTIONS = {
 };
 
 export {
+  APP_CONFIG,
   APP_NAME,
   APP_PATHS,
+  ENTITY_SET_ID,
+  FQNS_BY_ESID,
+  MATCH,
   NEIGHBOR_DIRECTIONS,
+  ROOT,
 };
