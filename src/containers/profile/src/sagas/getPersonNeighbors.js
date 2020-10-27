@@ -65,7 +65,7 @@ function* getPersonNeighborsWorker(action :SequenceAction) :Saga<*> {
     );
     if (response.error) throw response.error;
 
-    const fqnsByESID :Map = yield select((store) => store.getIn(APP_PATHS.FQN));
+    const fqnsByESID :Map = yield select((store) => store.getIn(APP_PATHS.FQNS_BY_ESID));
 
     const personNeighborMap = Map().withMutations((mutator :Map) => {
       fromJS(response.data).forEach((neighborList :List) => {

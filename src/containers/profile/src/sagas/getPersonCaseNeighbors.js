@@ -70,7 +70,7 @@ function* getPersonCaseNeighborsWorker(action :SequenceAction) :Saga<*> {
 
     const roleEKIDs = [];
 
-    const fqnsByESID :Map = yield select((store) => store.getIn(APP_PATHS.FQN));
+    const fqnsByESID :Map = yield select((store) => store.getIn(APP_PATHS.FQNS_BY_ESID));
 
     const personCaseNeighborMap = Map().withMutations((mutator :Map) => {
       fromJS(response.data).forEach((neighborList :List) => {
