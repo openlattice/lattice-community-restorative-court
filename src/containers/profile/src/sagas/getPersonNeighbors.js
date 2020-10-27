@@ -9,18 +9,21 @@ import {
 import { List, Map, fromJS } from 'immutable';
 import { Models } from 'lattice';
 import { SearchApiActions, SearchApiSagas } from 'lattice-sagas';
-import { LangUtils, Logger } from 'lattice-utils';
+import { DataUtils, LangUtils, Logger } from 'lattice-utils';
 import type { Saga } from '@redux-saga/core';
 import type { SequenceAction } from 'redux-reqseq';
 
 import { PEOPLE } from '../../../../core/redux/constants';
+import { getPersonCaseNeighborsWorker } from './getPersonCaseNeighbors';
+
 import { selectEntitySetId } from '../../../../core/redux/selectors';
 import { getNeighborDetails, getNeighborESID } from '../../../../utils/data';
 import { ERR_ACTION_VALUE_NOT_DEFINED } from '../../../../utils/error/constants';
 import { APP_PATHS, NEIGHBOR_DIRECTIONS } from '../../../app/constants';
-import { GET_PERSON_NEIGHBORS, getPersonNeighbors } from '../actions';
+import { GET_PERSON_NEIGHBORS, getPersonCaseNeighbors, getPersonNeighbors } from '../actions';
 
 const { isDefined } = LangUtils;
+const { getEntityKeyId } = DataUtils;
 const { searchEntityNeighborsWithFilter } = SearchApiActions;
 const { searchEntityNeighborsWithFilterWorker } = SearchApiSagas;
 const { FQN } = Models;
@@ -74,6 +77,13 @@ function* getPersonNeighborsWorker(action :SequenceAction) :Saga<*> {
         });
       });
     });
+
+    if (isDefined(personNeighborMap.get(CASE))) {
+      const personCaseEKIDs :UUID[] = personNeighborMap.get(CASE)
+        .map((personCase :Map) => getEntityKeyId(personCase))
+        .toJS();
+      yield call(getPersonCaseNeighborsWorker, getPersonCaseNeighbors(personCaseEKIDs));
+    }
 
     workerResponse.data = personNeighborMap;
     yield put(getPersonNeighbors.success(action.id, personNeighborMap));
