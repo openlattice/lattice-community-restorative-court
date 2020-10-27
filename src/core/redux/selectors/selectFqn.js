@@ -8,5 +8,5 @@ const { FQN } = Models;
 
 export default function selectFqn(entitySetId :UUID) {
 
-  return (state :Map) :?FQN => state.getIn(APP_PATHS.FQN.concat(['entitySetId', entitySetId]));
+  return (state :Map) :?FQN => state.getIn(APP_PATHS.FQNS_BY_ESID.concat([entitySetId]));
 }
