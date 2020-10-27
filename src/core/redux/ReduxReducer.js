@@ -12,7 +12,9 @@ import {
   EDM,
 } from './constants';
 
+import profileReducer from '../../containers/profile/src/reducers';
 import { AppReducer } from '../../containers/app';
+import { PROFILE } from '../../containers/profile/src/reducers/constants';
 import { EDMReducer } from '../edm';
 
 export default function reducer(routerHistory :any) {
@@ -21,6 +23,7 @@ export default function reducer(routerHistory :any) {
     [APP]: AppReducer,
     [EDM]: EDMReducer,
     [AUTH]: AuthReducer,
+    [PROFILE]: profileReducer,
     router: connectRouter(routerHistory),
   });
 }
