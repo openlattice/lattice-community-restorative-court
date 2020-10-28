@@ -3,17 +3,23 @@ import React, { useEffect } from 'react';
 
 import styled from 'styled-components';
 import { Map } from 'immutable';
-import { StyleUtils } from 'lattice-ui-kit';
+import { Spinner, StyleUtils } from 'lattice-ui-kit';
+import { ReduxUtils } from 'lattice-utils';
+import type { RequestState } from 'redux-reqseq';
 
 import ProfileAside from './ProfileAside';
 import ProfileBody from './ProfileBody';
-import { loadProfile } from './actions';
+import { LOAD_PROFILE, loadProfile } from './actions';
 import { PERSON, PROFILE } from './reducers/constants';
+import { CenterWrapper } from './styled';
 
 import { CrumbItem, Crumbs } from '../../../components/crumbs';
+import { REQUEST_STATE } from '../../../core/redux/constants';
+import { getPersonName } from '../../../utils/people';
 import { useDispatch, useSelector } from '../../app/AppProvider';
 
 const { media } = StyleUtils;
+const { isPending } = ReduxUtils;
 
 const ProfileGrid = styled.div`
   display: grid;
@@ -25,34 +31,35 @@ const ProfileGrid = styled.div`
 `;
 
 type Props = {
-  name ?:string;
   personId :UUID;
 };
 
-const ProfileContainer = ({ name, personId } :Props) => {
+const ProfileContainer = ({ personId } :Props) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(loadProfile(personId));
   }, [dispatch, personId]);
 
+  const loadProfileRS :?RequestState = useSelector((store) => store.getIn([PROFILE, LOAD_PROFILE, REQUEST_STATE]));
   const person :Map = useSelector((store :Map) => store.getIn([PROFILE, PERSON]));
+  const personName :string = getPersonName(person);
+
+  if (isPending(loadProfileRS)) {
+    return <CenterWrapper><Spinner size="3x" /></CenterWrapper>;
+  }
 
   return (
     <div>
       <Crumbs>
-        <CrumbItem>{ name }</CrumbItem>
+        <CrumbItem>{ personName }</CrumbItem>
       </Crumbs>
       <ProfileGrid>
         <ProfileAside />
-        <ProfileBody personId={personId} />
+        <ProfileBody />
       </ProfileGrid>
     </div>
   );
-};
-
-ProfileContainer.defaultProps = {
-  name: ''
 };
 
 export default ProfileContainer;
