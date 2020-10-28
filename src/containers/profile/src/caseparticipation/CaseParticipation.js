@@ -20,8 +20,8 @@ const CaseParticipation = () => {
       <Header>Case Participation</Header>
       <CardStack>
         {
-          personCases.map((crcCase) => (
-            <CaseParticipationListItem crcCase={crcCase} />
+          personCases.map((personCase) => (
+            <CaseParticipationListItem personCase={personCase} />
           ))
         }
       </CardStack>
