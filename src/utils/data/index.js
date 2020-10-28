@@ -1,6 +1,8 @@
 // @flow
-import { Map, getIn } from 'immutable';
+import { Map, getIn, set } from 'immutable';
 import { Models } from 'lattice';
+
+import * as NeighborUtils from './NeighborUtils';
 
 const { FQN } = Models;
 
@@ -16,13 +18,24 @@ const getPropertyValues = (
   defaultValue ? :string = ''
 ) :any[] => fqns.map((fqn :FQN | string) => getPropertyValue(entity, fqn, defaultValue));
 
-const getNeighborDetails = (neighbor :Map | Object) :Map | Object => getIn(neighbor, 'neighborDetails');
+const getPropertyValuesLU = (
+  entity :Map | Object,
+  fqns :Array<FQN | string>,
+  fallback ?:boolean | number | string = '',
+) :Object => {
 
-const getNeighborESID = (neighbor :Map | Object) :UUID => getIn(neighbor, ['neighborEntitySet', 'id']);
+  let propertyValues = {};
+
+  fqns.forEach((fqn :FQN | string) => {
+    const value = getPropertyValue(entity, fqn, fallback);
+    propertyValues = set(propertyValues, fqn, value);
+  });
+  return propertyValues;
+};
 
 export {
-  getNeighborDetails,
-  getNeighborESID,
+  NeighborUtils,
   getPropertyValue,
   getPropertyValues,
+  getPropertyValuesLU,
 };
