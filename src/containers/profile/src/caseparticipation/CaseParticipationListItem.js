@@ -1,5 +1,5 @@
 // @flow
-import React from 'react';
+import React, { useState } from 'react';
 
 import styled from 'styled-components';
 import { List, Map } from 'immutable';
@@ -7,15 +7,17 @@ import {
   Card,
   CardSegment,
   Colors,
-  StyleUtils,
-  Tag,
 } from 'lattice-ui-kit';
 import { DataUtils, DateTimeUtils } from 'lattice-utils';
 
+import CaseDetailsModal from './CaseDetailsModal';
+
+import { RoleTag } from '../../../../components';
 import { AppTypes, PropertyTypes } from '../../../../core/edm/constants';
 import { getPropertyValue, getPropertyValuesLU } from '../../../../utils/data';
 import { getPersonName } from '../../../../utils/people';
 import { useSelector } from '../../../app/AppProvider';
+import { RoleConstants } from '../constants';
 import {
   PEOPLE_IN_CASE_BY_ROLE_EKID_MAP,
   PERSON_CASE_NEIGHBOR_MAP,
@@ -23,41 +25,12 @@ import {
   PROFILE,
 } from '../reducers/constants';
 
-const { getStyleVariation } = StyleUtils;
-const {
-  BLUE,
-  GREEN,
-  NEUTRAL,
-  RED,
-} = Colors;
-
-const { getEntityKeyId } = DataUtils;
-const { formatAsDate } = DateTimeUtils;
-
-const { ROLE } = AppTypes;
 const { DATETIME_START, DESCRIPTION, TYPE } = PropertyTypes;
-
-const getBackgroundColor = getStyleVariation('roleName', {
-  peacemaker: BLUE.B00,
-  respondent: RED.R00,
-  victim: GREEN.G00,
-}, RED.R00);
-
-const getFontColor = getStyleVariation('roleName', {
-  peacemaker: BLUE.B400,
-  respondent: RED.R400,
-  victim: GREEN.G400,
-}, RED.R400);
-
-const RoleTag = styled(Tag)`
-  background-color: ${getBackgroundColor};
-  border-radius: 31px;
-  color: ${getFontColor};
-  font-size: 16px;
-  font-weight: 600;
-  padding: 10.5px 16.25px;
-  text-transform: capitalize;
-`;
+const { NEUTRAL } = Colors;
+const { RESPONDENT } = RoleConstants;
+const { ROLE } = AppTypes;
+const { formatAsDate } = DateTimeUtils;
+const { getEntityKeyId } = DataUtils;
 
 const ListItemCardSegment = styled(CardSegment)`
   align-items: center;
@@ -84,10 +57,12 @@ type Props = {
 
 const CaseParticipationListItem = ({ personCase } :Props) => {
 
-  const caseRoles :List = useSelector((store) => store.getIn([PROFILE, PERSON_CASE_NEIGHBOR_MAP, ROLE]));
+  const [modalIsVisible, setModalVisibility] = useState(false);
+
+  const caseRoles :List = useSelector((store) => store.getIn([PROFILE, PERSON_CASE_NEIGHBOR_MAP, ROLE], List()));
   const respondent = caseRoles.find((role :Map) => {
     const roleName = getPropertyValue(role, TYPE);
-    return roleName === 'Respondent';
+    return roleName === RESPONDENT;
   });
   const respondentEKID = getEntityKeyId(respondent);
   const respondentPerson :Map = useSelector((store) => store.getIn([
@@ -108,7 +83,7 @@ const CaseParticipationListItem = ({ personCase } :Props) => {
   const caseIdentifier = `Case #: ${caseNumber} - ${respondentPersonName}`;
 
   return (
-    <Card>
+    <Card onClick={() => setModalVisibility(true)}>
       <ListItemCardSegment padding="20px 30px">
         <div>
           <Date>{caseDate}</Date>
@@ -116,6 +91,11 @@ const CaseParticipationListItem = ({ personCase } :Props) => {
         </div>
         <RoleTag roleName={personRoleInCase}>{personRoleInCase}</RoleTag>
       </ListItemCardSegment>
+      <CaseDetailsModal
+          caseIdentifier={caseIdentifier}
+          caseRoles={caseRoles}
+          isVisible={modalIsVisible}
+          onClose={() => setModalVisibility(false)} />
     </Card>
   );
 };
