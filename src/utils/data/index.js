@@ -21,7 +21,7 @@ const getPropertyValues = (
 const getPropertyValuesLU = (
   entity :Map | Object,
   fqns :Array<FQN | string>,
-  fallback ?:boolean | number | string = '',
+  fallback ?:string = '',
 ) :Object => {
 
   let propertyValues = {};
