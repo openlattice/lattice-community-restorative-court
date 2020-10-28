@@ -1,6 +1,7 @@
 // @flow
 
 import {
+  all,
   call,
   put,
   select,
@@ -29,8 +30,11 @@ const { FQN } = Models;
 const { EFFECTIVE_DATE, TYPE } = PropertyTypes;
 const {
   CASE,
+  FORM,
   PEOPLE,
+  REFERRAL_REQUEST,
   ROLE,
+  STAFF,
   STATUS,
 } = AppTypes;
 
@@ -54,28 +58,30 @@ function* getPersonCaseNeighborsWorker(action :SequenceAction) :Saga<*> {
     const { personCaseEKIDs, personEKID } = value;
 
     const caseESID :UUID = yield select(selectEntitySetId(CASE));
+    const formESID :UUID = yield select(selectEntitySetId(FORM));
     const roleESID :UUID = yield select(selectEntitySetId(ROLE));
     const statusESID :UUID = yield select(selectEntitySetId(STATUS));
 
-    let filter = {
+    const filter = {
       entityKeyIds: personCaseEKIDs,
       destinationEntitySetIds: [roleESID, statusESID],
-      sourceEntitySetIds: [],
+      sourceEntitySetIds: [formESID],
     };
 
-    let response :Object = yield call(
+    const response :Object = yield call(
       searchEntityNeighborsWithFilterWorker,
       searchEntityNeighborsWithFilter({ entitySetId: caseESID, filter })
     );
     if (response.error) throw response.error;
 
     const roleEKIDs = [];
+    const statusEKIDs = [];
 
     const fqnsByESID :Map = yield select((store) => store.getIn(APP_PATHS.FQNS_BY_ESID));
 
     const caseByRoleEKID :Map = Map().asMutable();
 
-    const personCaseNeighborMap = Map().withMutations((mutator :Map) => {
+    let personCaseNeighborMap = Map().withMutations((mutator :Map) => {
       fromJS(response.data).forEach((neighborList :List, caseEKID :UUID) => {
         neighborList.forEach((neighbor :Map) => {
           const neighborESID :UUID = getNeighborESID(neighbor);
@@ -87,6 +93,9 @@ function* getPersonCaseNeighborsWorker(action :SequenceAction) :Saga<*> {
             const roleName = getPropertyValue(entity, TYPE);
             caseByRoleEKID.set(entityEKID, { caseEKID, roleName });
           }
+          if (neighborESID === statusESID) {
+            statusEKIDs.push(entityEKID);
+          }
           const entityList = mutator.get(neighborFqn, List()).push(entity);
           mutator.set(neighborFqn, entityList);
         });
@@ -97,23 +106,40 @@ function* getPersonCaseNeighborsWorker(action :SequenceAction) :Saga<*> {
     });
 
     const peopleESID :UUID = yield select(selectEntitySetId(PEOPLE));
+    const staffESID :UUID = yield select(selectEntitySetId(STAFF));
+    const referralRequestESID :UUID = yield select(selectEntitySetId(REFERRAL_REQUEST));
 
-    filter = {
+    const roleFilter = {
       entityKeyIds: roleEKIDs,
       destinationEntitySetIds: [],
       sourceEntitySetIds: [peopleESID],
     };
+    const statusFilter = {
+      entityKeyIds: statusEKIDs,
+      destinationEntitySetIds: [],
+      sourceEntitySetIds: [referralRequestESID, staffESID],
+    };
 
-    response = yield call(
-      searchEntityNeighborsWithFilterWorker,
-      searchEntityNeighborsWithFilter({ entitySetId: roleESID, filter })
-    );
-    if (response.error) throw response.error;
+    const [roleResponse, statusResponse] = yield all([
+      call(
+        searchEntityNeighborsWithFilterWorker,
+        searchEntityNeighborsWithFilter({ entitySetId: roleESID, filter: roleFilter })
+      ),
+      call(
+        searchEntityNeighborsWithFilterWorker,
+        searchEntityNeighborsWithFilter({ entitySetId: statusESID, filter: statusFilter })
+      ),
+    ]);
+    if (roleResponse.error) throw roleResponse.error;
+    if (statusResponse.error) throw statusResponse.error;
+
+    /*
+     * role-related maps
+     */
 
     let personRoleByCaseEKID = Map().asMutable();
-
     const peopleInCaseByRoleEKIDMap = Map().withMutations((mutator :Map) => {
-      fromJS(response.data).forEach((neighborList :List, roleEKID :UUID) => {
+      fromJS(roleResponse.data).forEach((neighborList :List, roleEKID :UUID) => {
         const personInCase :Map = neighborList.get(0);
         const personInCaseEKID :?UUID = getEntityKeyId(personInCase);
         if (personInCaseEKID === personEKID) {
@@ -123,14 +149,36 @@ function* getPersonCaseNeighborsWorker(action :SequenceAction) :Saga<*> {
         mutator.set(roleEKID, personInCase);
       });
     });
-
     personRoleByCaseEKID = personRoleByCaseEKID.asImmutable();
+
+    /*
+     * status-related maps
+     */
+
+    const statusNeighbors :Map = fromJS(statusResponse.data);
+    const referralRequest :Map = statusNeighbors.find((neighborList :List) => {
+      const entity = neighborList.find((neighbor :Map) => getNeighborESID(neighbor) === referralRequestESID);
+      if (isDefined(entity)) return getNeighborDetails(entity);
+      return undefined;
+    });
+    personCaseNeighborMap = personCaseNeighborMap.set(REFERRAL_REQUEST, List([referralRequest]));
+
+    const staffMemberByStatusEKID :Map = Map().withMutations((mutator :Map) => {
+      statusNeighbors.forEach((neighborList :List, statusEKID :UUID) => {
+        const onlyStaffNeighbors = neighborList.filter((neighbor :Map) => getNeighborESID(neighbor) === staffESID);
+        const staffMember = onlyStaffNeighbors.get(0);
+        if (isDefined(staffMember)) {
+          mutator.set(statusEKID, getNeighborDetails(staffMember));
+        }
+      });
+    });
 
     workerResponse.data = { peopleInCaseByRoleEKIDMap, personCaseNeighborMap };
     yield put(getPersonCaseNeighbors.success(action.id, {
       peopleInCaseByRoleEKIDMap,
       personCaseNeighborMap,
       personRoleByCaseEKID,
+      staffMemberByStatusEKID,
     }));
   }
   catch (error) {
