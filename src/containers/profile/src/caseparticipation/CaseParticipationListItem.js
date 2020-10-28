@@ -10,8 +10,7 @@ import {
   StyleUtils,
   Tag,
 } from 'lattice-ui-kit';
-import { DataUtils } from 'lattice-utils';
-import { DateTime } from 'luxon';
+import { DataUtils, DateTimeUtils } from 'lattice-utils';
 
 import { AppTypes, PropertyTypes } from '../../../../core/edm/constants';
 import { getPropertyValue, getPropertyValuesLU } from '../../../../utils/data';
@@ -33,6 +32,7 @@ const {
 } = Colors;
 
 const { getEntityKeyId } = DataUtils;
+const { formatAsDate } = DateTimeUtils;
 
 const { ROLE } = AppTypes;
 const { DATETIME_START, DESCRIPTION, TYPE } = PropertyTypes;
@@ -101,7 +101,7 @@ const CaseParticipationListItem = ({ personCase } :Props) => {
     personCase,
     [DATETIME_START, DESCRIPTION]
   );
-  const caseDate :string = DateTime.fromISO(dateTimeStart).toLocaleString(DateTime.DATE_SHORT);
+  const caseDate :string = formatAsDate(dateTimeStart);
 
   const caseEKID :?UUID = getEntityKeyId(personCase);
   const personRoleInCase = useSelector((store) => store.getIn([PROFILE, PERSON_ROLE_BY_CASE_EKID, caseEKID]));
