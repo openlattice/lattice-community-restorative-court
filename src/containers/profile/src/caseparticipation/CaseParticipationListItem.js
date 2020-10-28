@@ -2,7 +2,7 @@
 import React from 'react';
 
 import styled from 'styled-components';
-import { Map } from 'immutable';
+import { List, Map } from 'immutable';
 import {
   Card,
   CardSegment,
@@ -10,7 +10,19 @@ import {
   StyleUtils,
   Tag,
 } from 'lattice-ui-kit';
+import { DataUtils } from 'lattice-utils';
 import { DateTime } from 'luxon';
+
+import { AppTypes, PropertyTypes } from '../../../../core/edm/constants';
+import { getPropertyValue, getPropertyValuesLU } from '../../../../utils/data';
+import { getPersonName } from '../../../../utils/people';
+import { useSelector } from '../../../app/AppProvider';
+import {
+  PEOPLE_IN_CASE_BY_ROLE_EKID_MAP,
+  PERSON_CASE_NEIGHBOR_MAP,
+  PERSON_ROLE_BY_CASE_EKID,
+  PROFILE,
+} from '../reducers/constants';
 
 const { getStyleVariation } = StyleUtils;
 const {
@@ -19,6 +31,11 @@ const {
   NEUTRAL,
   RED,
 } = Colors;
+
+const { getEntityKeyId } = DataUtils;
+
+const { ROLE } = AppTypes;
+const { DATETIME_START, DESCRIPTION, TYPE } = PropertyTypes;
 
 const getBackgroundColor = getStyleVariation('roleName', {
   peacemaker: BLUE.B00,
@@ -62,12 +79,34 @@ const CaseNumberAndName = styled.div`
 `;
 
 type Props = {
-  crcCase :Map;
+  personCase :Map;
 };
 
-const CaseParticipationListItem = ({ crcCase } :Props) => {
-  const caseDate = DateTime.fromISO(crcCase.get('date')).toLocaleString(DateTime.DATE_SHORT);
-  const caseIdentifier = `Case #: ${crcCase.get('caseNumber')} - ${crcCase.get('person')}`;
+const CaseParticipationListItem = ({ personCase } :Props) => {
+
+  const caseRoles :List = useSelector((store) => store.getIn([PROFILE, PERSON_CASE_NEIGHBOR_MAP, ROLE]));
+  const respondent = caseRoles.find((role :Map) => {
+    const roleName = getPropertyValue(role, TYPE);
+    return roleName === 'Respondent';
+  });
+  const respondentEKID = getEntityKeyId(respondent);
+  const respondentPerson :Map = useSelector((store) => store.getIn([
+    PROFILE,
+    PEOPLE_IN_CASE_BY_ROLE_EKID_MAP,
+    respondentEKID
+  ]));
+  const respondentPersonName = getPersonName(respondentPerson);
+
+  const { [DATETIME_START]: dateTimeStart, [DESCRIPTION]: caseNumber } = getPropertyValuesLU(
+    personCase,
+    [DATETIME_START, DESCRIPTION]
+  );
+  const caseDate :string = DateTime.fromISO(dateTimeStart).toLocaleString(DateTime.DATE_SHORT);
+
+  const caseEKID :?UUID = getEntityKeyId(personCase);
+  const personRoleInCase = useSelector((store) => store.getIn([PROFILE, PERSON_ROLE_BY_CASE_EKID, caseEKID]));
+  const caseIdentifier = `Case #: ${caseNumber} - ${respondentPersonName}`;
+
   return (
     <Card>
       <ListItemCardSegment padding="20px 30px">
@@ -75,7 +114,7 @@ const CaseParticipationListItem = ({ crcCase } :Props) => {
           <Date>{caseDate}</Date>
           <CaseNumberAndName>{caseIdentifier}</CaseNumberAndName>
         </div>
-        <RoleTag roleName={crcCase.get('role')}>{crcCase.get('role')}</RoleTag>
+        <RoleTag roleName={personRoleInCase}>{personRoleInCase}</RoleTag>
       </ListItemCardSegment>
     </Card>
   );
