@@ -15,7 +15,7 @@ import type { SequenceAction } from 'redux-reqseq';
 
 import { AppTypes, PropertyTypes } from '../../../../core/edm/constants';
 import { selectEntitySetId } from '../../../../core/redux/selectors';
-import { getNeighborDetails, getNeighborESID } from '../../../../utils/data';
+import { NeighborUtils, getPropertyValue } from '../../../../utils/data';
 import { ERR_ACTION_VALUE_NOT_DEFINED } from '../../../../utils/error/constants';
 import { APP_PATHS } from '../../../app/constants';
 import { GET_PERSON_CASE_NEIGHBORS, getPersonCaseNeighbors } from '../actions';
@@ -24,8 +24,9 @@ const { isDefined } = LangUtils;
 const { getEntityKeyId } = DataUtils;
 const { searchEntityNeighborsWithFilter } = SearchApiActions;
 const { searchEntityNeighborsWithFilterWorker } = SearchApiSagas;
+const { getNeighborDetails, getNeighborESID } = NeighborUtils;
 const { FQN } = Models;
-const { EFFECTIVE_DATE } = PropertyTypes;
+const { EFFECTIVE_DATE, TYPE } = PropertyTypes;
 const {
   CASE,
   PEOPLE,
@@ -50,7 +51,7 @@ function* getPersonCaseNeighborsWorker(action :SequenceAction) :Saga<*> {
     const { value } = action;
     if (!isDefined(value)) throw ERR_ACTION_VALUE_NOT_DEFINED;
 
-    const personCaseEKIDs :UUID[] = value;
+    const { personCaseEKIDs, personEKID } = value;
 
     const caseESID :UUID = yield select(selectEntitySetId(CASE));
     const roleESID :UUID = yield select(selectEntitySetId(ROLE));
@@ -72,14 +73,20 @@ function* getPersonCaseNeighborsWorker(action :SequenceAction) :Saga<*> {
 
     const fqnsByESID :Map = yield select((store) => store.getIn(APP_PATHS.FQNS_BY_ESID));
 
+    const caseByRoleEKID :Map = Map().asMutable();
+
     const personCaseNeighborMap = Map().withMutations((mutator :Map) => {
-      fromJS(response.data).forEach((neighborList :List) => {
+      fromJS(response.data).forEach((neighborList :List, caseEKID :UUID) => {
         neighborList.forEach((neighbor :Map) => {
           const neighborESID :UUID = getNeighborESID(neighbor);
           const neighborFqn :FQN = fqnsByESID.get(neighborESID);
           const entity :Map = getNeighborDetails(neighbor);
           const entityEKID = getEntityKeyId(entity);
-          if (neighborESID === roleESID) roleEKIDs.push(entityEKID);
+          if (neighborESID === roleESID) {
+            roleEKIDs.push(entityEKID);
+            const roleName = getPropertyValue(entity, TYPE);
+            caseByRoleEKID.set(entityEKID, { caseEKID, roleName });
+          }
           const entityList = mutator.get(neighborFqn, List()).push(entity);
           mutator.set(neighborFqn, entityList);
         });
@@ -103,15 +110,28 @@ function* getPersonCaseNeighborsWorker(action :SequenceAction) :Saga<*> {
     );
     if (response.error) throw response.error;
 
+    let personRoleByCaseEKID = Map().asMutable();
+
     const peopleInCaseByRoleEKIDMap = Map().withMutations((mutator :Map) => {
       fromJS(response.data).forEach((neighborList :List, roleEKID :UUID) => {
-        const person :Map = neighborList.get(0);
-        mutator.set(roleEKID, person);
+        const personInCase :Map = neighborList.get(0);
+        const personInCaseEKID :?UUID = getEntityKeyId(personInCase);
+        if (personInCaseEKID === personEKID) {
+          const { caseEKID, roleName } = caseByRoleEKID.get(roleEKID);
+          personRoleByCaseEKID.set(caseEKID, roleName);
+        }
+        mutator.set(roleEKID, personInCase);
       });
     });
 
+    personRoleByCaseEKID = personRoleByCaseEKID.asImmutable();
+
     workerResponse.data = { peopleInCaseByRoleEKIDMap, personCaseNeighborMap };
-    yield put(getPersonCaseNeighbors.success(action.id, { peopleInCaseByRoleEKIDMap, personCaseNeighborMap }));
+    yield put(getPersonCaseNeighbors.success(action.id, {
+      peopleInCaseByRoleEKIDMap,
+      personCaseNeighborMap,
+      personRoleByCaseEKID,
+    }));
   }
   catch (error) {
     workerResponse.error = error;
