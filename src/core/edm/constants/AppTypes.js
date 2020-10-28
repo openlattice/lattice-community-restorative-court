@@ -6,6 +6,7 @@ const { FQN } = Models;
 
 const APP_TYPE_FQNS = {
   CASE: FQN.of('app.case'),
+  CONTACT_ACTIVITY: FQN.of('app.contactactivity'),
   FORM: FQN.of('app.form'),
   HAS: FQN.of('app.has'),
   PEOPLE: FQN.of('app.people'),
