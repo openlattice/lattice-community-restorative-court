@@ -15,7 +15,7 @@ import Portrait from './Portrait';
 import { EMPTY_VALUE } from './constants';
 
 import PROPERTY_TYPE_FQNS from '../../../core/edm/constants/PropertyTypes';
-import { getPropertyValues } from '../../../utils/data';
+import { getPropertyValuesLU } from '../../../utils/data';
 
 const { media } = StyleUtils;
 
@@ -50,15 +50,14 @@ const PortraitSegment = styled(CardSegment)`
 
 type Props = {
   person :Map;
-  imageUrl :string;
+  imageUrl ? :string;
 };
 
 const ProfileCard = ({ imageUrl, person } :Props) => {
-  const [firstName, lastName, dob] = getPropertyValues(person, [
-    GIVEN_NAME,
-    SURNAME,
-    DOB
-  ]);
+  const { [DOB]: dob, [GIVEN_NAME]: firstName, [SURNAME]: lastName } = getPropertyValuesLU(
+    person,
+    [DOB, GIVEN_NAME, SURNAME]
+  );
 
   const formattedDob = formatAsDate(dob);
 
