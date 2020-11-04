@@ -17,6 +17,7 @@ const PROPERTY_TYPE_FQNS = {
   OL_DATE_TIME: FQN.of('ol.datetime'),
   OL_ID: FQN.of('ol.id'),
   SOURCE: FQN.of('ol.source'),
+  STATUS: FQN.of('ol.status'),
   SURNAME: FQN.of('nc.PersonSurName'),
   TYPE: FQN.of('ol.type'),
 };
