@@ -27,7 +27,7 @@ const { searchEntityNeighborsWithFilter } = SearchApiActions;
 const { searchEntityNeighborsWithFilterWorker } = SearchApiSagas;
 const { getNeighborDetails, getNeighborESID } = NeighborUtils;
 const { FQN } = Models;
-const { EFFECTIVE_DATE, TYPE } = PropertyTypes;
+const { EFFECTIVE_DATE } = PropertyTypes;
 const {
   CASE,
   FORM,
@@ -90,7 +90,7 @@ function* getPersonCaseNeighborsWorker(action :SequenceAction) :Saga<*> {
           const entityEKID = getEntityKeyId(entity);
           if (neighborESID === roleESID) {
             roleEKIDs.push(entityEKID);
-            const roleName = getPropertyValue(entity, TYPE);
+            const roleName = getPropertyValue(entity, PropertyTypes.STATUS);
             caseByRoleEKID.set(entityEKID, { caseEKID, roleName });
           }
           if (neighborESID === statusESID) {
@@ -140,7 +140,7 @@ function* getPersonCaseNeighborsWorker(action :SequenceAction) :Saga<*> {
     let personRoleByCaseEKID = Map().asMutable();
     const peopleInCaseByRoleEKIDMap = Map().withMutations((mutator :Map) => {
       fromJS(roleResponse.data).forEach((neighborList :List, roleEKID :UUID) => {
-        const personInCase :Map = neighborList.get(0);
+        const personInCase :Map = getNeighborDetails(neighborList.get(0));
         const personInCaseEKID :?UUID = getEntityKeyId(personInCase);
         if (personInCaseEKID === personEKID) {
           const { caseEKID, roleName } = caseByRoleEKID.get(roleEKID);
