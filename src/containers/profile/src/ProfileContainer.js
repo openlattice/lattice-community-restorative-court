@@ -17,6 +17,7 @@ import { CrumbItem, Crumbs } from '../../../components/crumbs';
 import { REQUEST_STATE } from '../../../core/redux/constants';
 import { getPersonName } from '../../../utils/people';
 import { useDispatch, useSelector } from '../../app/AppProvider';
+import { APP_PATHS } from '../../app/constants';
 
 const { media } = StyleUtils;
 const { isPending } = ReduxUtils;
@@ -37,9 +38,10 @@ type Props = {
 const ProfileContainer = ({ personId } :Props) => {
   const dispatch = useDispatch();
 
+  const appConfig = useSelector((store :Map) => store.getIn(APP_PATHS.APP_CONFIG));
   useEffect(() => {
-    dispatch(loadProfile(personId));
-  }, [dispatch, personId]);
+    if (appConfig) dispatch(loadProfile(personId));
+  }, [appConfig, dispatch, personId]);
 
   const loadProfileRS :?RequestState = useSelector((store) => store.getIn([PROFILE, LOAD_PROFILE, REQUEST_STATE]));
   const person :Map = useSelector((store :Map) => store.getIn([PROFILE, PERSON]));
