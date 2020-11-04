@@ -51,14 +51,14 @@ function* loadProfileWorker(action :SequenceAction) :Saga<*> {
     const formESID :UUID = yield select(selectEntitySetId(FORM));
     const roleESID :UUID = yield select(selectEntitySetId(ROLE));
 
-    const neighbors = [
+    const neighborESIDs = [
       { direction: DST, entitySetId: caseESID },
       { direction: DST, entitySetId: formESID },
       { direction: DST, entitySetId: roleESID },
     ];
 
     const workerResponses :Object[] = yield all([
-      call(getPersonNeighborsWorker, getPersonNeighbors({ neighbors, personEKID })),
+      call(getPersonNeighborsWorker, getPersonNeighbors({ neighborESIDs, personEKID })),
       call(getPersonWorker, getPerson(personEKID)),
     ]);
     const responseError = workerResponses.reduce(
