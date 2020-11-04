@@ -25,7 +25,7 @@ import {
   PROFILE,
 } from '../reducers/constants';
 
-const { DATETIME_START, DESCRIPTION, TYPE } = PropertyTypes;
+const { DATETIME_START, DESCRIPTION, STATUS } = PropertyTypes;
 const { NEUTRAL } = Colors;
 const { RESPONDENT } = RoleConstants;
 const { ROLE } = AppTypes;
@@ -61,7 +61,7 @@ const CaseParticipationListItem = ({ personCase } :Props) => {
 
   const caseRoles :List = useSelector((store) => store.getIn([PROFILE, PERSON_CASE_NEIGHBOR_MAP, ROLE], List()));
   const respondent = caseRoles.find((role :Map) => {
-    const roleName = getPropertyValue(role, TYPE);
+    const roleName = getPropertyValue(role, STATUS);
     return roleName === RESPONDENT;
   });
   const respondentEKID = getEntityKeyId(respondent);
