@@ -38,15 +38,16 @@ const LOG = new Logger('AppSagas');
 
 function* initializeApplicationWorker(action :SequenceAction) :Saga<*> {
   const workerResponse :Object = {};
+  console.log('action ', action);
 
   try {
     yield put(initializeApplication.request(action.id));
 
     const { value: { match, organizationId, root } } = action;
-    if (!isValidUUID(organizationId)) throw ERR_ACTION_VALUE_TYPE;
-    if (typeof root !== 'string') throw ERR_ACTION_VALUE_TYPE;
-    if (!isDefined(match)) throw ERR_ACTION_VALUE_TYPE;
-    yield put(initializeApplication.request(action.id));
+    // if (!isValidUUID(organizationId)) throw ERR_ACTION_VALUE_TYPE;
+    // if (typeof root !== 'string') throw ERR_ACTION_VALUE_TYPE;
+    // if (!isDefined(match)) throw ERR_ACTION_VALUE_TYPE;
+    // yield put(initializeApplication.request(action.id));
 
     /*
      * 1. load App
@@ -71,7 +72,7 @@ function* initializeApplicationWorker(action :SequenceAction) :Saga<*> {
 
     const fqnsByESID = Map().withMutations((mutator :Map) => {
       fromJS(AppTypes).forEach((fqn :FQN) => {
-        mutator.set(getIn(appConfig, [fqn, ENTITY_SET_ID]), fqn);
+        mutator.set(getIn(appConfig, ['config', fqn, ENTITY_SET_ID]), fqn);
       });
     });
 
