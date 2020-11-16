@@ -52,7 +52,7 @@ function* addCaseStatusWorker(action :SequenceAction) :Saga<*> {
     const statusEKID :UUID = entityKeyIds[statusESID][0];
 
     const propertyFqnsByTypeId = yield select((store :Map) => store.getIn([EDM, PROPERTY_FQNS_BY_TYPE_ID]));
-    console.log('entityData ', entityData);
+
     const newStatus :Map = Map().withMutations((mutator :Map) => {
       mutator.set(OPENLATTICE_ID_FQN, statusEKID);
       fromJS(entityData[statusESID][0]).forEach((entityValue :List, propertyTypeId :UUID) => {
@@ -60,7 +60,6 @@ function* addCaseStatusWorker(action :SequenceAction) :Saga<*> {
         mutator.set(propertyFqn, entityValue);
       });
     });
-    console.log('newStatus ', newStatus.toJS());
 
     yield put(addCaseStatus.success(id, { caseEKID, newStatus, selectedStaffEKID }));
   }

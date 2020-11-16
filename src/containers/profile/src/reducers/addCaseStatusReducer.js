@@ -23,16 +23,12 @@ export default function reducer(state :Map, action :SequenceAction) {
       const { caseEKID, newStatus, selectedStaffEKID } = action.value;
       let personCaseNeighborMap = state.get(PERSON_CASE_NEIGHBOR_MAP);
       const caseStatuses :List = personCaseNeighborMap.getIn([STATUS, caseEKID], List()).push(newStatus);
-      console.log('caseStatuses ', caseStatuses.toJS());
       personCaseNeighborMap = personCaseNeighborMap.setIn([STATUS, caseEKID], caseStatuses);
-      console.log('personCaseNeighborMap ', personCaseNeighborMap.toJS());
 
       const staffMembers :List = state.get(STAFF_MEMBERS);
       const staffMember :Map = staffMembers.find((staff :Map) => getEntityKeyId(staff) === selectedStaffEKID);
-      console.log('staffMember: ', staffMember);
       const staffMemberByStatusEKID :Map = state.get(STAFF_MEMBER_BY_STATUS_EKID, Map())
         .set(getEntityKeyId(newStatus), staffMember);
-      console.log('staffMemberByStatusEKID: ', staffMemberByStatusEKID.toJS());
       return state
         .set(PERSON_CASE_NEIGHBOR_MAP, personCaseNeighborMap)
         .set(STAFF_MEMBER_BY_STATUS_EKID, staffMemberByStatusEKID)
