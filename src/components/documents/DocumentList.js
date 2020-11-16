@@ -33,6 +33,7 @@ const DocumentList = ({ caseIdentifier, forms, formNeighborMap } :Props) => (
         const staffMemberName = getPersonName(staffMember.get(0, Map()));
         return (
           <DocumentListItem
+              key={formEKID}
               caseIdentifier={caseIdentifier}
               formName={formName}
               staffMemberName={staffMemberName}
