@@ -11,6 +11,7 @@ import {
   Label,
   Modal,
 } from 'lattice-ui-kit';
+import { DataUtils, LangUtils } from 'lattice-utils';
 
 import AddStatusModal from './AddStatusModal';
 import CaseDetailsModalHeader from './CaseDetailsModalHeader';
@@ -20,7 +21,7 @@ import { AppTypes, PropertyTypes } from '../../../../core/edm/constants';
 import { getPersonName } from '../../../../utils/people';
 import { useSelector } from '../../../app/AppProvider';
 import { Header } from '../../typography';
-import { RoleConstants } from '../constants';
+import { CaseStatusConstants, RoleConstants } from '../constants';
 import {
   FORM_NEIGHBOR_MAP,
   PERSON_CASE_NEIGHBOR_MAP,
@@ -28,10 +29,13 @@ import {
   STAFF_MEMBER_BY_STATUS_EKID,
 } from '../reducers/constants';
 
+const { getEntityKeyId, getPropertyValue } = DataUtils;
+const { isDefined } = LangUtils;
 const { NEUTRAL } = Colors;
 const { FORM, REFERRAL_REQUEST, STATUS } = AppTypes;
 const { DATETIME_ADMINISTERED, EFFECTIVE_DATE } = PropertyTypes;
 const { PEACEMAKER, RESPONDENT, VICTIM } = RoleConstants;
+const { CLOSED, RESOLUTION } = CaseStatusConstants;
 
 const ModalInnerWrapper = styled.div`
   /* these responsive styles will need to be tested when the module is loaded into CARE */
@@ -57,6 +61,10 @@ const SmallHeader = styled(Header)`
   font-size: 22px;
   margin-right: 12px;
   margin-bottom: 0;
+`;
+
+const SmallHeaderWithExtraMargin = styled(SmallHeader)`
+  margin-bottom: 24px;
 `;
 
 const Name = styled.div`
@@ -114,9 +122,15 @@ const CaseDetailsModal = ({
   const victimList :List = caseRoleMap.get(VICTIM, List());
   const peacemakerList :List = caseRoleMap.get(PEACEMAKER, List());
 
-  const modalHeader = <CaseDetailsModalHeader mode="open" onClose={onClose} />;
+  const caseIsResolvedOrClosed = relevantStatuses.find((caseStatus :Map) => {
+    const statusType = getPropertyValue(caseStatus, [PropertyTypes.STATUS, 0]);
+    return statusType === CLOSED || statusType === RESOLUTION;
+  });
+  const mode :string = isDefined(caseIsResolvedOrClosed) ? 'closed' : 'open';
+  const modalHeader = <CaseDetailsModalHeader mode={mode} onClose={onClose} />;
+
   const renderParticipantTile = (person :Map, role :string) => (
-    <ParticipantTile>
+    <ParticipantTile key={getEntityKeyId(person)}>
       <Label subtle>Name</Label>
       <Name>{getPersonName(person)}</Name>
       <RoleTag roleName={role}>{role}</RoleTag>
@@ -145,13 +159,13 @@ const CaseDetailsModal = ({
             caseStatuses={relevantStatuses}
             referralRequest={referralRequest}
             staffMemberByStatusEKID={staffMemberByStatusEKID} />
-        <SmallHeader>Participants</SmallHeader>
+        <SmallHeaderWithExtraMargin>Participants</SmallHeaderWithExtraMargin>
         <ParticipantsTileGrid>
           { respondentList.map((respondent :Map) => renderParticipantTile(respondent, RESPONDENT)) }
           { victimList.map((victim :Map) => renderParticipantTile(victim, VICTIM)) }
           { peacemakerList.map((peacemaker :Map) => renderParticipantTile(peacemaker, PEACEMAKER)) }
         </ParticipantsTileGrid>
-        <SmallHeader>Documents</SmallHeader>
+        <SmallHeaderWithExtraMargin>Documents</SmallHeaderWithExtraMargin>
         <DocumentList caseIdentifier={caseIdentifier} forms={relevantForms} formNeighborMap={formNeighborMap} />
       </ModalInnerWrapper>
       <AddStatusModal
