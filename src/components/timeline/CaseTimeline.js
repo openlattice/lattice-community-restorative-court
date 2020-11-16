@@ -15,9 +15,8 @@ import {
 } from 'lattice-ui-kit';
 import { DataUtils, DateTimeUtils, LangUtils } from 'lattice-utils';
 
-import { CaseStatusConstants, EMPTY_VALUE } from '../../containers/profile/src/constants';
+import { CaseStatusConstants } from '../../containers/profile/src/constants';
 import { PropertyTypes } from '../../core/edm/constants';
-import { getPropertyValue, getPropertyValuesLU } from '../../utils/data';
 import { getPersonName } from '../../utils/people';
 
 const { NEUTRAL } = Colors;
@@ -25,11 +24,11 @@ const {
   DESCRIPTION,
   EFFECTIVE_DATE,
   SOURCE,
-  TYPE,
+  STATUS,
 } = PropertyTypes;
 const { CLOSED, REFERRAL } = CaseStatusConstants;
 const { isDefined } = LangUtils;
-const { getEntityKeyId } = DataUtils;
+const { getEntityKeyId, getPropertyValue } = DataUtils;
 const { formatAsDate } = DateTimeUtils;
 
 const TimelineContentWrapper = styled.div`
@@ -44,10 +43,14 @@ const Date = styled.div`
 const StatusDetailsWrapper = styled.div`
   display: flex;
   flex-direction: column;
+  margin-left: 16px;
 `;
 
-const Status = styled(Label)`
+const Status = styled.div`
   color: ${NEUTRAL.N900};
+  font-size: 14px;
+  font-weight: 600;
+  text-transform: uppercase;
 `;
 
 const StatusDescription = styled.div`
@@ -65,26 +68,13 @@ const CaseTimeline = ({ caseStatuses, referralRequest, staffMemberByStatusEKID }
     {
       caseStatuses.map((caseStatus :Map) => {
         const caseStatusEKID :?UUID = getEntityKeyId(caseStatus);
-        const { [DESCRIPTION]: description, [EFFECTIVE_DATE]: datetime, [TYPE]: status } = getPropertyValuesLU(
-          caseStatus,
-          [DESCRIPTION, EFFECTIVE_DATE, TYPE],
-          EMPTY_VALUE
-        );
+        const description = getPropertyValue(caseStatus, [DESCRIPTION, 0]);
+        const datetime = getPropertyValue(caseStatus, [EFFECTIVE_DATE, 0]);
+        const status = getPropertyValue(caseStatus, [STATUS, 0]);
         const date = formatAsDate(datetime);
-        const staffMemberWhoRecordedStatus :Map = staffMemberByStatusEKID.get(caseStatusEKID, Map());
 
-        const statusDescriptionSwitch = () => {
-          switch (caseStatus) {
-            case status === CLOSED:
-              return description;
-            case status === REFERRAL && isDefined(referralRequest):
-              return getPropertyValue(referralRequest, SOURCE, '');
-            case !staffMemberWhoRecordedStatus.isEmpty():
-              return `Case Manager: ${getPersonName(staffMemberWhoRecordedStatus)}`;
-            default:
-              return '';
-          }
-        };
+        const staffMemberWhoRecordedStatus :Map = staffMemberByStatusEKID.get(caseStatusEKID, Map());
+        const referralSource = getPropertyValue(referralRequest, [SOURCE, 0]);
 
         return (
           <TimelineItem key={caseStatusEKID}>
@@ -96,9 +86,14 @@ const CaseTimeline = ({ caseStatuses, referralRequest, staffMemberByStatusEKID }
               <TimelineContentWrapper>
                 <Date>{date}</Date>
                 <StatusDetailsWrapper>
-                  <Status>{status}</Status>
+                  <Status subtle>{status}</Status>
                   <StatusDescription>
-                    {statusDescriptionSwitch()}
+                    {status === CLOSED && description}
+                    {(status === REFERRAL && isDefined(referralRequest)) && referralSource}
+                    {(status !== CLOSED
+                        && status !== REFERRAL
+                        && !staffMemberWhoRecordedStatus.isEmpty())
+                        && `Case Manager: ${getPersonName(staffMemberWhoRecordedStatus)}`}
                   </StatusDescription>
                 </StatusDetailsWrapper>
               </TimelineContentWrapper>
