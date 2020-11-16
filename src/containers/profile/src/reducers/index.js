@@ -1,17 +1,19 @@
 // @flow
 
-import { Map, fromJS } from 'immutable';
+import { List, Map, fromJS } from 'immutable';
 
 import getFormNeighborsReducer from './getFormNeighborsReducer';
 import getPersonCaseNeighborsReducer from './getPersonCaseNeighborsReducer';
 import getPersonNeighborsReducer from './getPersonNeighborsReducer';
 import getPersonReducer from './getPersonReducer';
+import getStaffReducer from './getStaffReducer';
 import loadProfileReducer from './loadProfileReducer';
 import {
   FORM_NEIGHBOR_MAP,
   PERSON,
   PERSON_CASE_NEIGHBOR_MAP,
   PERSON_NEIGHBOR_MAP,
+  STAFF_MEMBERS,
   STAFF_MEMBER_BY_STATUS_EKID,
 } from './constants';
 
@@ -21,11 +23,13 @@ import {
   GET_PERSON,
   GET_PERSON_CASE_NEIGHBORS,
   GET_PERSON_NEIGHBORS,
+  GET_STAFF,
   LOAD_PROFILE,
   getFormNeighbors,
   getPerson,
   getPersonCaseNeighbors,
   getPersonNeighbors,
+  getStaff,
   loadProfile,
 } from '../actions';
 
@@ -35,12 +39,14 @@ const INITIAL_STATE :Map = fromJS({
   [GET_PERSON]: RS_INITIAL_STATE,
   [GET_PERSON_CASE_NEIGHBORS]: RS_INITIAL_STATE,
   [GET_PERSON_NEIGHBORS]: RS_INITIAL_STATE,
+  [GET_STAFF]: RS_INITIAL_STATE,
   [LOAD_PROFILE]: RS_INITIAL_STATE,
   // data
   [FORM_NEIGHBOR_MAP]: Map(),
   [PERSON]: Map(),
   [PERSON_CASE_NEIGHBOR_MAP]: Map(),
   [PERSON_NEIGHBOR_MAP]: Map(),
+  [STAFF_MEMBERS]: List(),
   [STAFF_MEMBER_BY_STATUS_EKID]: Map(),
 });
 
@@ -59,6 +65,9 @@ export default function profileReducer(state :Map = INITIAL_STATE, action :Objec
 
     case getPersonNeighbors.case(action.type):
       return getPersonNeighborsReducer(state, action);
+
+    case getStaff.case(action.type):
+      return getStaffReducer(state, action);
 
     case loadProfile.case(action.type):
       return loadProfileReducer(state, action);

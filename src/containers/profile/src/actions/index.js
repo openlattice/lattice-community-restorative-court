@@ -15,6 +15,9 @@ const getPersonCaseNeighbors :RequestSequence = newRequestSequence(GET_PERSON_CA
 const GET_PERSON_NEIGHBORS :'GET_PERSON_NEIGHBORS' = 'GET_PERSON_NEIGHBORS';
 const getPersonNeighbors :RequestSequence = newRequestSequence(GET_PERSON_NEIGHBORS);
 
+const GET_STAFF :'GET_STAFF' = 'GET_STAFF';
+const getStaff :RequestSequence = newRequestSequence(GET_STAFF);
+
 const LOAD_PROFILE :'LOAD_PROFILE' = 'LOAD_PROFILE';
 const loadProfile :RequestSequence = newRequestSequence(LOAD_PROFILE);
 
@@ -23,10 +26,12 @@ export {
   GET_PERSON,
   GET_PERSON_CASE_NEIGHBORS,
   GET_PERSON_NEIGHBORS,
+  GET_STAFF,
   LOAD_PROFILE,
   getFormNeighbors,
   getPerson,
   getPersonCaseNeighbors,
   getPersonNeighbors,
+  getStaff,
   loadProfile,
 };

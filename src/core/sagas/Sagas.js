@@ -32,6 +32,7 @@ export default function* sagas() :Saga<*> {
     fork(ProfileSagas.getPersonCaseNeighborsWatcher),
     fork(ProfileSagas.getPersonNeighborsWatcher),
     fork(ProfileSagas.getPersonWatcher),
+    fork(ProfileSagas.getStaffWatcher),
     fork(ProfileSagas.loadProfileWatcher),
 
     // RoutingSagas
