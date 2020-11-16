@@ -5,6 +5,7 @@ import { Models } from 'lattice';
 const { FQN } = Models;
 
 const APP_TYPE_FQNS = {
+  APPEARS_IN: FQN.of('app.appearsin'),
   CASE: FQN.of('app.case'),
   FORM: FQN.of('app.form'),
   HAS: FQN.of('app.has'),
