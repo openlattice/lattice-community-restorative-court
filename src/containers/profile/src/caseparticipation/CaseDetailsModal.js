@@ -23,7 +23,7 @@ import {
 
 const { NEUTRAL } = Colors;
 const { FORM, REFERRAL_REQUEST, STATUS } = AppTypes;
-const { EFFECTIVE_DATE } = PropertyTypes;
+const { DATETIME_ADMINISTERED, EFFECTIVE_DATE } = PropertyTypes;
 const { PEACEMAKER, RESPONDENT, VICTIM } = RoleConstants;
 
 const ModalInnerWrapper = styled.div`
@@ -89,7 +89,9 @@ const CaseDetailsModal = ({
   const staffMemberByStatusEKID :Map = useSelector((store) => store.getIn([PROFILE, STAFF_MEMBER_BY_STATUS_EKID]));
   const referralRequest :?Map = useSelector((store) => store
     .getIn([PROFILE, PERSON_CASE_NEIGHBOR_MAP, REFERRAL_REQUEST], List())).get(0);
-  const forms :List = useSelector((store) => store.getIn([PROFILE, PERSON_NEIGHBOR_MAP, FORM], List()));
+  const formMap :Map = useSelector((store) => store.getIn([PROFILE, PERSON_CASE_NEIGHBOR_MAP, FORM], Map()));
+  const relevantForms :List = formMap.get(caseEKID, List())
+    .sortBy((form :Map) => form.getIn([DATETIME_ADMINISTERED, 0])).reverse();
   const formNeighborMap :Map = useSelector((store) => store.getIn([PROFILE, FORM_NEIGHBOR_MAP], Map()));
 
   const respondentList :List = caseRoleMap.get(RESPONDENT, List());
@@ -125,7 +127,7 @@ const CaseDetailsModal = ({
           { peacemakerList.map((peacemaker :Map) => renderParticipantTile(peacemaker, PEACEMAKER)) }
         </ParticipantsTileGrid>
         <SmallHeader>Documents</SmallHeader>
-        <DocumentList caseIdentifier={caseIdentifier} forms={forms} formNeighborMap={formNeighborMap} />
+        <DocumentList caseIdentifier={caseIdentifier} forms={relevantForms} formNeighborMap={formNeighborMap} />
       </ModalInnerWrapper>
     </Modal>
   );
