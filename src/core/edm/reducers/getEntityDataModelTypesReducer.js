@@ -20,6 +20,7 @@ import {
   ENTITY_TYPES_INDEX_MAP,
   PROPERTY_TYPES,
   PROPERTY_TYPES_INDEX_MAP,
+  PROPERTY_TYPE_IDS,
   REQUEST_STATE,
 } from '../../redux/constants';
 import {
@@ -55,6 +56,13 @@ export default function reducer(state :Map, action :SequenceAction) {
       const propertyTypes :List<PropertyType> = List().asMutable();
       const propertyTypesIndexMap :Map<UUID | FQN, number> = Map().asMutable();
 
+      const propertyTypeIds :Map = Map().withMutations((mutator :Map) => {
+        rawPropertyTypes.forEach((propertyType :Object) => {
+          const fqn = Models.FQN.of(propertyType.type);
+          mutator.set(fqn, propertyType.id);
+        });
+      });
+
       rawPropertyTypes.forEach((pt :PropertyTypeObject, index :number) => {
         const propertyType = (new PropertyTypeBuilder(pt)).build();
         propertyTypes.push(propertyType);
@@ -67,6 +75,7 @@ export default function reducer(state :Map, action :SequenceAction) {
         .set(ENTITY_TYPES_INDEX_MAP, entityTypesIndexMap.asImmutable())
         .set(PROPERTY_TYPES, propertyTypes.asImmutable())
         .set(PROPERTY_TYPES_INDEX_MAP, propertyTypesIndexMap.asImmutable())
+        .set(PROPERTY_TYPE_IDS, propertyTypeIds)
         .setIn([GET_EDM_TYPES, REQUEST_STATE], RequestStates.SUCCESS);
     },
     FAILURE: () => state

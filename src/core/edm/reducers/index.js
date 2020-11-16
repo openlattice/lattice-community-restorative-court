@@ -16,6 +16,7 @@ import {
   ENTITY_TYPES_INDEX_MAP,
   PROPERTY_TYPES,
   PROPERTY_TYPES_INDEX_MAP,
+  PROPERTY_TYPE_IDS,
   RS_INITIAL_STATE,
 } from '../../redux/constants';
 import {
@@ -42,6 +43,7 @@ const INITIAL_STATE :Map = fromJS({
   [ENTITY_TYPES_INDEX_MAP]: Map(),
   [PROPERTY_TYPES]: List(),
   [PROPERTY_TYPES_INDEX_MAP]: Map(),
+  [PROPERTY_TYPE_IDS]: Map(),
 });
 
 export default function reducer(state :Map = INITIAL_STATE, action :Object) {
