@@ -1,10 +1,18 @@
 // @flow
-import React from 'react';
+import React, { useState } from 'react';
 
 import styled from 'styled-components';
+import { faPlus } from '@fortawesome/pro-regular-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { List, Map } from 'immutable';
-import { Colors, Label, Modal } from 'lattice-ui-kit';
+import {
+  Colors,
+  IconButton,
+  Label,
+  Modal,
+} from 'lattice-ui-kit';
 
+import AddStatusModal from './AddStatusModal';
 import CaseDetailsModalHeader from './CaseDetailsModalHeader';
 
 import { CaseTimeline, DocumentList, RoleTag } from '../../../../components';
@@ -40,8 +48,15 @@ const CaseHeader = styled(Header)`
   padding-top: 24px;
 `;
 
+const HeaderAndButtonWrapper = styled.div`
+  display: flex;
+  margin-bottom: 24px;
+`;
+
 const SmallHeader = styled(Header)`
   font-size: 22px;
+  margin-right: 12px;
+  margin-bottom: 0;
 `;
 
 const Name = styled.div`
@@ -81,6 +96,8 @@ const CaseDetailsModal = ({
   onClose,
 } :Props) => {
 
+  const [statusModalIsVisible, setStatusModalVisibility] = useState(false);
+
   const caseStatusMap :Map = useSelector((store) => store.getIn([PROFILE, PERSON_CASE_NEIGHBOR_MAP, STATUS], Map()));
   const relevantStatuses :List = caseStatusMap.get(caseEKID, List())
     .sortBy((status :Map) => status.getIn([EFFECTIVE_DATE, 0])).reverse();
@@ -114,7 +131,16 @@ const CaseDetailsModal = ({
         withHeader={modalHeader}>
       <ModalInnerWrapper>
         <CaseHeader>{caseIdentifier}</CaseHeader>
-        <SmallHeader>Status</SmallHeader>
+        <HeaderAndButtonWrapper>
+          <SmallHeader>Status</SmallHeader>
+          <IconButton
+              aria-label="Small Status Icon Button"
+              color="success"
+              size="small"
+              onClick={() => setStatusModalVisibility(true)}>
+            <FontAwesomeIcon fixedWidth icon={faPlus} />
+          </IconButton>
+        </HeaderAndButtonWrapper>
         <CaseTimeline
             caseStatuses={relevantStatuses}
             referralRequest={referralRequest}
@@ -128,6 +154,10 @@ const CaseDetailsModal = ({
         <SmallHeader>Documents</SmallHeader>
         <DocumentList caseIdentifier={caseIdentifier} forms={relevantForms} formNeighborMap={formNeighborMap} />
       </ModalInnerWrapper>
+      <AddStatusModal
+          caseEKID={caseEKID}
+          isVisible={statusModalIsVisible}
+          onClose={() => setStatusModalVisibility(false)} />
     </Modal>
   );
 };
