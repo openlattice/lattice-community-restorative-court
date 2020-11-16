@@ -14,7 +14,6 @@ import CaseDetailsModal from './CaseDetailsModal';
 
 import { RoleTag } from '../../../../components';
 import { PropertyTypes } from '../../../../core/edm/constants';
-import { getPropertyValuesLU } from '../../../../utils/data';
 import { getPersonName } from '../../../../utils/people';
 import { useSelector } from '../../../app/AppProvider';
 import { RoleConstants } from '../constants';
@@ -28,7 +27,7 @@ const {
 const { NEUTRAL } = Colors;
 const { RESPONDENT } = RoleConstants;
 const { formatAsDate } = DateTimeUtils;
-const { getEntityKeyId } = DataUtils;
+const { getEntityKeyId, getPropertyValue } = DataUtils;
 
 const ListItemCardSegment = styled(CardSegment)`
   align-items: center;
@@ -64,10 +63,8 @@ const CaseParticipationListItem = ({ personCase } :Props) => {
   const respondentPerson = caseRoleMap.getIn([RESPONDENT, 0], Map());
   const respondentPersonName = getPersonName(respondentPerson);
 
-  const { [DATETIME_START]: dateTimeStart, [DESCRIPTION]: caseNumber } = getPropertyValuesLU(
-    personCase,
-    [DATETIME_START, DESCRIPTION]
-  );
+  const dateTimeStart = getPropertyValue(personCase, [DATETIME_START, 0]);
+  const caseNumber = getPropertyValue(personCase, [DESCRIPTION, 0]);
   const caseDate :string = formatAsDate(dateTimeStart);
 
   const personRoleInCase = useSelector((store) => store.getIn([PROFILE, PERSON_NEIGHBOR_MAP, ROLE, caseEKID], ''));
