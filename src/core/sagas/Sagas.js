@@ -6,6 +6,7 @@ import { all, fork } from '@redux-saga/core/effects';
 import { AuthSagas } from 'lattice-auth';
 import type { Saga } from '@redux-saga/core';
 
+import * as DataSagas from '../data/sagas';
 import * as ProfileSagas from '../../containers/profile/src/sagas';
 import { AppSagas } from '../../containers/app';
 import { EDMSagas } from '../edm';
@@ -23,6 +24,9 @@ export default function* sagas() :Saga<*> {
 
     // AppSagas
     fork(AppSagas.initializeApplicationWatcher),
+
+    // DataSagas
+    fork(DataSagas.submitDataGraphWatcher),
 
     // EDMSagas
     fork(EDMSagas.getEntityDataModelTypesWatcher),
