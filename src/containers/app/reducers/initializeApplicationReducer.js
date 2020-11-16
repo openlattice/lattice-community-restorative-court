@@ -12,6 +12,7 @@ import {
 import { INITIALIZE_APPLICATION, initializeApplication } from '../actions';
 import {
   APP_CONFIG,
+  ENTITY_SET_IDS,
   FQNS_BY_ESID,
   MATCH,
   ROOT,
@@ -23,6 +24,7 @@ export default function reducer(state :Map, action :SequenceAction) {
     REQUEST: () => state.setIn([INITIALIZE_APPLICATION, REQUEST_STATE], RequestStates.PENDING),
     SUCCESS: () => state
       .set(APP_CONFIG, action.value.appConfig)
+      .set(ENTITY_SET_IDS, action.value.entitySetIdsByFqn)
       .set(FQNS_BY_ESID, action.value.fqnsByESID)
       .set(MATCH, action.value.match)
       .set(ROOT, action.value.root)
