@@ -86,6 +86,7 @@ const CaseParticipationListItem = ({ personCase } :Props) => {
         </ListItemCardSegment>
       </Card>
       <CaseDetailsModal
+          caseEKID={caseEKID}
           caseIdentifier={caseIdentifier}
           caseRoleMap={caseRoleMap}
           isVisible={modalIsVisible}

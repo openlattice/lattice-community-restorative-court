@@ -8,7 +8,7 @@ import { Colors, Label, Modal } from 'lattice-ui-kit';
 import CaseDetailsModalHeader from './CaseDetailsModalHeader';
 
 import { CaseTimeline, DocumentList, RoleTag } from '../../../../components';
-import { AppTypes } from '../../../../core/edm/constants';
+import { AppTypes, PropertyTypes } from '../../../../core/edm/constants';
 import { getPersonName } from '../../../../utils/people';
 import { useSelector } from '../../../app/AppProvider';
 import { Header } from '../../typography';
@@ -23,6 +23,7 @@ import {
 
 const { NEUTRAL } = Colors;
 const { FORM, REFERRAL_REQUEST, STATUS } = AppTypes;
+const { EFFECTIVE_DATE } = PropertyTypes;
 const { PEACEMAKER, RESPONDENT, VICTIM } = RoleConstants;
 
 const ModalInnerWrapper = styled.div`
@@ -63,13 +64,10 @@ const ParticipantsTileGrid = styled.div`
   grid-gap: 24px;
   grid-template-columns: repeat(auto-fit, 280px);
   margin-bottom: 36px;
-
-  /* @media only screen and (min-width: 420px) {
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  } */
 `;
 
 type Props = {
+  caseEKID :UUID;
   caseIdentifier :string;
   caseRoleMap :Map;
   isVisible :boolean;
@@ -77,13 +75,17 @@ type Props = {
 };
 
 const CaseDetailsModal = ({
+  caseEKID,
   caseIdentifier,
   caseRoleMap,
   isVisible,
   onClose,
 } :Props) => {
 
-  const caseStatuses :List = useSelector((store) => store.getIn([PROFILE, PERSON_CASE_NEIGHBOR_MAP, STATUS], List()));
+  const caseStatusMap :Map = useSelector((store) => store.getIn([PROFILE, PERSON_CASE_NEIGHBOR_MAP, STATUS], Map()));
+  const relevantStatuses :List = caseStatusMap.get(caseEKID, List())
+    .sortBy((status :Map) => status.getIn([EFFECTIVE_DATE, 0])).reverse();
+
   const staffMemberByStatusEKID :Map = useSelector((store) => store.getIn([PROFILE, STAFF_MEMBER_BY_STATUS_EKID]));
   const referralRequest :?Map = useSelector((store) => store
     .getIn([PROFILE, PERSON_CASE_NEIGHBOR_MAP, REFERRAL_REQUEST], List())).get(0);
@@ -113,7 +115,7 @@ const CaseDetailsModal = ({
         <CaseHeader>{caseIdentifier}</CaseHeader>
         <SmallHeader>Status</SmallHeader>
         <CaseTimeline
-            caseStatuses={caseStatuses}
+            caseStatuses={relevantStatuses}
             referralRequest={referralRequest}
             staffMemberByStatusEKID={staffMemberByStatusEKID} />
         <SmallHeader>Participants</SmallHeader>
