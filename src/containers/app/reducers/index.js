@@ -10,6 +10,7 @@ import { RS_INITIAL_STATE } from '../../../core/redux/constants';
 import { INITIALIZE_APPLICATION, initializeApplication } from '../actions';
 import {
   APP_CONFIG,
+  ENTITY_SET_IDS,
   FQNS_BY_ESID,
   MATCH,
   ROOT,
@@ -20,6 +21,7 @@ const INITIAL_STATE :Map = fromJS({
   [INITIALIZE_APPLICATION]: RS_INITIAL_STATE,
   // data
   [APP_CONFIG]: Map(),
+  [ENTITY_SET_IDS]: Map(),
   [FQNS_BY_ESID]: Map(),
   [MATCH]: '',
   [ROOT]: '',

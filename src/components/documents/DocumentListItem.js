@@ -12,15 +12,21 @@ const DocumentCardSegment = styled(CardSegment)`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+
+  :first-of-type {
+    padding-top: 0;
+  }
 `;
 
 const FormNameBlock = styled.div`
   display: flex;
+  margin-right: 20px;
 `;
 
 const FormNameAndCaseNumber = styled.div`
   display: flex;
   flex-direction: column;
+  margin-left: 18px;
 `;
 
 const FormName = styled.div`

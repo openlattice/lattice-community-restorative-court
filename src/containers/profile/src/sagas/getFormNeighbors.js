@@ -50,7 +50,7 @@ function* getFormNeighborsWorker(action :SequenceAction) :Saga<*> {
     const staffESID :UUID = yield select(selectEntitySetId(STAFF));
 
     const filter = {
-      entityKeyIds: [formEKIDs],
+      entityKeyIds: formEKIDs,
       destinationEntitySetIds: [staffESID],
       sourceEntitySetIds: [],
     };

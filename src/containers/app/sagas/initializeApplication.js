@@ -3,6 +3,7 @@
  */
 
 import {
+  all,
   call,
   put,
   takeEvery,
@@ -17,7 +18,9 @@ import { LangUtils, Logger, ValidationUtils } from 'lattice-utils';
 import type { Saga } from '@redux-saga/core';
 import type { SequenceAction } from 'redux-reqseq';
 
+import { getEntityDataModelTypes } from '../../../core/edm/actions';
 import { AppTypes } from '../../../core/edm/constants';
+import { getEntityDataModelTypesWorker } from '../../../core/edm/sagas/getEntityDataModelTypes';
 import { ERR_ACTION_VALUE_TYPE } from '../../../utils/error/constants';
 import { INITIALIZE_APPLICATION, initializeApplication } from '../actions';
 import { APP_NAME, ENTITY_SET_ID } from '../constants';
@@ -50,16 +53,21 @@ function* initializeApplicationWorker(action :SequenceAction) :Saga<*> {
     // yield put(initializeApplication.request(action.id));
 
     /*
-     * 1. load App
+     * 1. load App and EDM
      */
-    const response :any = yield call(getAppWorker, getApp(APP_NAME));
-    if (response.error) throw response.error;
+
+    const [appResponse, edmResponse] = yield all([
+      call(getAppWorker, getApp(APP_NAME)),
+      call(getEntityDataModelTypesWorker, getEntityDataModelTypes())
+    ]);
+    if (appResponse.error) throw appResponse.error;
+    if (edmResponse.error) throw edmResponse.error;
 
     /*
      * 2. load AppConfig, AppTypes
      */
 
-    const app = response.data;
+    const app = appResponse.data;
     const appConfigsResponse = yield call(getAppConfigsWorker, getAppConfigs(app.id));
     if (appConfigsResponse.error) throw appConfigsResponse.error;
     const appConfig = appConfigsResponse.data.reduce((acc, config) => {
@@ -76,8 +84,11 @@ function* initializeApplicationWorker(action :SequenceAction) :Saga<*> {
       });
     });
 
+    const entitySetIdsByFqn = fromJS(appConfig).get('config').map((fqnMap :Map) => fqnMap.get(ENTITY_SET_ID, ''));
+
     workerResponse.data = {
       appConfig,
+      entitySetIdsByFqn,
       fqnsByESID,
       root,
       match,
