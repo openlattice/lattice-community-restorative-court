@@ -26,7 +26,7 @@ const { searchEntityNeighborsWithFilter } = SearchApiActions;
 const { searchEntityNeighborsWithFilterWorker } = SearchApiSagas;
 const { getAssociationDetails, getNeighborDetails, getNeighborESID } = NeighborUtils;
 const { FQN } = Models;
-const { EFFECTIVE_DATE, ROLE } = PropertyTypes;
+const { ROLE } = PropertyTypes;
 const {
   CASE,
   FORM,

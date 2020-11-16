@@ -5,7 +5,6 @@ import styled from 'styled-components';
 import { List, Map } from 'immutable';
 import {
   Colors,
-  Label,
   Timeline,
   TimelineConnector,
   TimelineContent,

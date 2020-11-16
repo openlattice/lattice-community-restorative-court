@@ -16,7 +16,6 @@ import { RoleConstants } from '../constants';
 import {
   FORM_NEIGHBOR_MAP,
   PERSON_CASE_NEIGHBOR_MAP,
-  PERSON_NEIGHBOR_MAP,
   PROFILE,
   STAFF_MEMBER_BY_STATUS_EKID,
 } from '../reducers/constants';
@@ -67,7 +66,7 @@ const ParticipantsTileGrid = styled.div`
 `;
 
 type Props = {
-  caseEKID :UUID;
+  caseEKID :?UUID;
   caseIdentifier :string;
   caseRoleMap :Map;
   isVisible :boolean;
