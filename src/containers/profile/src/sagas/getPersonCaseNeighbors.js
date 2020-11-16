@@ -95,6 +95,15 @@ function* getPersonCaseNeighborsWorker(action :SequenceAction) :Saga<*> {
             mutator.set(STATUS, statusMap);
             statusEKIDs.push(entityEKID);
           }
+          else if (neighborESID === formESID) {
+            const formMap = mutator.get(FORM, Map())
+              .update(
+                caseEKID,
+                List(),
+                (existingFormsForCase :List) => existingFormsForCase.push(entity)
+              );
+            mutator.set(FORM, formMap);
+          }
           else if (neighborESID === peopleESID) {
             const associationDetails = getAssociationDetails(neighbor);
             const role = getPropertyValue(associationDetails, [ROLE, 0]);
