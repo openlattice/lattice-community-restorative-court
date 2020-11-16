@@ -36,3 +36,5 @@ export const RS_INITIAL_STATE = {
   [ERROR]: false,
   [REQUEST_STATE]: RequestStates.STANDBY,
 };
+
+export const PROPERTY_TYPE_IDS :string = 'propertyTypeIds';
