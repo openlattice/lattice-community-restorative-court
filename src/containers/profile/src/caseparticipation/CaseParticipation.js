@@ -3,6 +3,7 @@ import React from 'react';
 
 import { List } from 'immutable';
 import { CardStack } from 'lattice-ui-kit';
+import { DataUtils } from 'lattice-utils';
 
 import CaseParticipationListItem from './CaseParticipationListItem';
 
@@ -11,6 +12,7 @@ import { useSelector } from '../../../app/AppProvider';
 import { Header } from '../../typography';
 import { PERSON_NEIGHBOR_MAP, PROFILE } from '../reducers/constants';
 
+const { getEntityKeyId } = DataUtils;
 const { CASE } = AppTypes;
 
 const CaseParticipation = () => {
@@ -21,7 +23,7 @@ const CaseParticipation = () => {
       <CardStack>
         {
           personCases.map((personCase) => (
-            <CaseParticipationListItem personCase={personCase} />
+            <CaseParticipationListItem key={getEntityKeyId(personCase)} personCase={personCase} />
           ))
         }
       </CardStack>
