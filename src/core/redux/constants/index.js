@@ -38,3 +38,4 @@ export const RS_INITIAL_STATE = {
 };
 
 export const PROPERTY_TYPE_IDS :string = 'propertyTypeIds';
+export const PROPERTY_FQNS_BY_TYPE_ID :string = 'propertyFqnsByTypeId';

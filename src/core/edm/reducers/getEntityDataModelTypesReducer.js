@@ -18,6 +18,7 @@ import type { SequenceAction } from 'redux-reqseq';
 import {
   ENTITY_TYPES,
   ENTITY_TYPES_INDEX_MAP,
+  PROPERTY_FQNS_BY_TYPE_ID,
   PROPERTY_TYPES,
   PROPERTY_TYPES_INDEX_MAP,
   PROPERTY_TYPE_IDS,
@@ -63,6 +64,8 @@ export default function reducer(state :Map, action :SequenceAction) {
         });
       });
 
+      const propertyFqnsByTypeId :Map = propertyTypeIds.flip();
+
       rawPropertyTypes.forEach((pt :PropertyTypeObject, index :number) => {
         const propertyType = (new PropertyTypeBuilder(pt)).build();
         propertyTypes.push(propertyType);
@@ -76,6 +79,7 @@ export default function reducer(state :Map, action :SequenceAction) {
         .set(PROPERTY_TYPES, propertyTypes.asImmutable())
         .set(PROPERTY_TYPES_INDEX_MAP, propertyTypesIndexMap.asImmutable())
         .set(PROPERTY_TYPE_IDS, propertyTypeIds)
+        .set(PROPERTY_FQNS_BY_TYPE_ID, propertyFqnsByTypeId)
         .setIn([GET_EDM_TYPES, REQUEST_STATE], RequestStates.SUCCESS);
     },
     FAILURE: () => state
