@@ -2,6 +2,7 @@
 
 import { List, Map, fromJS } from 'immutable';
 
+import addCaseStatusReducer from './addCaseStatusReducer';
 import getFormNeighborsReducer from './getFormNeighborsReducer';
 import getPersonCaseNeighborsReducer from './getPersonCaseNeighborsReducer';
 import getPersonNeighborsReducer from './getPersonNeighborsReducer';
@@ -19,12 +20,14 @@ import {
 
 import { RS_INITIAL_STATE } from '../../../../core/redux/constants';
 import {
+  ADD_CASE_STATUS,
   GET_FORM_NEIGHBORS,
   GET_PERSON,
   GET_PERSON_CASE_NEIGHBORS,
   GET_PERSON_NEIGHBORS,
   GET_STAFF,
   LOAD_PROFILE,
+  addCaseStatus,
   getFormNeighbors,
   getPerson,
   getPersonCaseNeighbors,
@@ -35,6 +38,7 @@ import {
 
 const INITIAL_STATE :Map = fromJS({
   // actions
+  [ADD_CASE_STATUS]: RS_INITIAL_STATE,
   [GET_FORM_NEIGHBORS]: RS_INITIAL_STATE,
   [GET_PERSON]: RS_INITIAL_STATE,
   [GET_PERSON_CASE_NEIGHBORS]: RS_INITIAL_STATE,
@@ -53,6 +57,9 @@ const INITIAL_STATE :Map = fromJS({
 export default function profileReducer(state :Map = INITIAL_STATE, action :Object) {
 
   switch (action.type) {
+
+    case addCaseStatus.case(action.type):
+      return addCaseStatusReducer(state, action);
 
     case getFormNeighbors.case(action.type):
       return getFormNeighborsReducer(state, action);

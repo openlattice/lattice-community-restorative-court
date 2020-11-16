@@ -32,6 +32,7 @@ export default function* sagas() :Saga<*> {
     fork(EDMSagas.getEntityDataModelTypesWatcher),
 
     // ProfileSagas
+    fork(ProfileSagas.addCaseStatusWatcher),
     fork(ProfileSagas.getFormNeighborsWatcher),
     fork(ProfileSagas.getPersonCaseNeighborsWatcher),
     fork(ProfileSagas.getPersonNeighborsWatcher),

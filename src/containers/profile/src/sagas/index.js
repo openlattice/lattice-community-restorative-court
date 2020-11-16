@@ -1,5 +1,6 @@
 // @flow
 
+export * from './addCaseStatus';
 export * from './getFormNeighbors';
 export * from './getPerson';
 export * from './getPersonCaseNeighbors';
