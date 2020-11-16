@@ -86,10 +86,16 @@ function* getPersonCaseNeighborsWorker(action :SequenceAction) :Saga<*> {
           const entityEKID = getEntityKeyId(entity);
 
           if (neighborESID === statusESID) {
+            const statusMap = mutator.get(STATUS, Map())
+              .update(
+                caseEKID,
+                List(),
+                (existingStatusesForCase :List) => existingStatusesForCase.push(entity)
+              );
+            mutator.set(STATUS, statusMap);
             statusEKIDs.push(entityEKID);
           }
-
-          if (neighborESID === peopleESID) {
+          else if (neighborESID === peopleESID) {
             const associationDetails = getAssociationDetails(neighbor);
             const role = getPropertyValue(associationDetails, [ROLE, 0]);
             const roleMap = mutator.get(ROLE, Map())
@@ -106,9 +112,6 @@ function* getPersonCaseNeighborsWorker(action :SequenceAction) :Saga<*> {
             mutator.set(neighborFqn, entityList);
           }
         });
-        if (isDefined(mutator.get(STATUS))) {
-          mutator.set(STATUS, mutator.get(STATUS).sortBy((status :Map) => status.getIn([EFFECTIVE_DATE, 0])).reverse());
-        }
       });
     });
 
