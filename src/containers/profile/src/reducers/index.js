@@ -9,7 +9,6 @@ import getPersonReducer from './getPersonReducer';
 import loadProfileReducer from './loadProfileReducer';
 import {
   FORM_NEIGHBOR_MAP,
-  PEOPLE_IN_CASE_BY_ROLE_EKID_MAP,
   PERSON,
   PERSON_CASE_NEIGHBOR_MAP,
   PERSON_NEIGHBOR_MAP,
@@ -39,7 +38,6 @@ const INITIAL_STATE :Map = fromJS({
   [LOAD_PROFILE]: RS_INITIAL_STATE,
   // data
   [FORM_NEIGHBOR_MAP]: Map(),
-  [PEOPLE_IN_CASE_BY_ROLE_EKID_MAP]: Map(),
   [PERSON]: Map(),
   [PERSON_CASE_NEIGHBOR_MAP]: Map(),
   [PERSON_NEIGHBOR_MAP]: Map(),
