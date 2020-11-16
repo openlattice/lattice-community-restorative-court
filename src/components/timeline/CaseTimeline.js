@@ -12,7 +12,8 @@ import {
   TimelineItem,
   TimelineSeparator,
 } from 'lattice-ui-kit';
-import { DataUtils, DateTimeUtils, LangUtils } from 'lattice-utils';
+import { DataUtils, LangUtils } from 'lattice-utils';
+import { DateTime } from 'luxon';
 
 import { CaseStatusConstants } from '../../containers/profile/src/constants';
 import { PropertyTypes } from '../../core/edm/constants';
@@ -28,7 +29,6 @@ const {
 const { CLOSED, REFERRAL } = CaseStatusConstants;
 const { isDefined } = LangUtils;
 const { getEntityKeyId, getPropertyValue } = DataUtils;
-const { formatAsDate } = DateTimeUtils;
 
 const TimelineContentWrapper = styled.div`
   display: flex;
@@ -70,7 +70,7 @@ const CaseTimeline = ({ caseStatuses, referralRequest, staffMemberByStatusEKID }
         const description = getPropertyValue(caseStatus, [DESCRIPTION, 0]);
         const datetime = getPropertyValue(caseStatus, [EFFECTIVE_DATE, 0]);
         const status = getPropertyValue(caseStatus, [STATUS, 0]);
-        const date = formatAsDate(datetime);
+        const date = DateTime.fromISO(datetime).toFormat('MM/dd/yyyy');
 
         const staffMemberWhoRecordedStatus :Map = staffMemberByStatusEKID.get(caseStatusEKID, Map());
         const referralSource = getPropertyValue(referralRequest, [SOURCE, 0]);
