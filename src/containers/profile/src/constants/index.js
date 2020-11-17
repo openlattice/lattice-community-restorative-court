@@ -1,14 +1,14 @@
 // @flow
 
 import * as CaseStatusConstants from './CaseStatusConstants';
-import * as ContactConstants from './ContactConstants';
+import * as ContactActivityConstants from './ContactActivityConstants';
 import * as RoleConstants from './RoleConstants';
 
 const EMPTY_VALUE = '---';
 
 export {
   CaseStatusConstants,
-  ContactConstants,
+  ContactActivityConstants,
   RoleConstants,
   EMPTY_VALUE
 };
