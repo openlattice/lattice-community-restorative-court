@@ -69,7 +69,7 @@ const AddContactActivityModal = ({ isVisible, onClose } :Props) => {
 
   useEffect(() => {
     if (isSuccess(submitRequestState)) {
-      dispatch(resetRequestState([PROFILE, ADD_CONTACT_ACTIVITY]));
+      dispatch(resetRequestState([ADD_CONTACT_ACTIVITY]));
       onClose();
     }
   }, [dispatch, onClose, submitRequestState]);
