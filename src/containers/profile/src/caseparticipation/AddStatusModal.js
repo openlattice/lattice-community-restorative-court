@@ -109,7 +109,7 @@ const CaseDetailsModal = ({
 
   useEffect(() => {
     if (isSuccess(submitRequestState)) {
-      dispatch(resetRequestState([PROFILE, ADD_CASE_STATUS]));
+      dispatch(resetRequestState([ADD_CASE_STATUS]));
       onClose();
     }
   }, [dispatch, onClose, submitRequestState]);
