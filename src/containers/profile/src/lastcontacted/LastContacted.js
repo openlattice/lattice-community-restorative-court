@@ -38,8 +38,10 @@ const ContactTag = styled.div`
   background-color: ${getBackgroundColor};
   border-radius: 5px;
   color: ${getFontColor};
+  display: flex;
   font-size: 16px;
   font-weight: 600;
+  justify-content: center;
   padding: 8px;
 `;
 
@@ -50,7 +52,7 @@ const SectionWrapper = styled.div`
 const ContactGrid = styled.div`
   display: grid;
   grid-gap: 24px 16px;
-  grid-template-columns: repeat(auto-fit, 98px);
+  grid-template-columns: repeat(auto-fit, minmax(98px, 1fr));
   margin-bottom: 36px;
 `;
 
