@@ -1,3 +1,3 @@
 // @flow
-export const FAILURE :string = 'Failure';
-export const SUCCESS :string = 'Success';
+export const ATTENDED :string = 'Attended';
+export const DID_NOT_ATTEND :string = 'Did not attend';

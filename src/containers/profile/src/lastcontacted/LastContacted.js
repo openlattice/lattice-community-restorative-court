@@ -19,19 +19,19 @@ import { PERSON_NEIGHBOR_MAP, PROFILE } from '../reducers/constants';
 const { CONTACT_ACTIVITY } = AppTypes;
 const { CONTACT_DATETIME, OUTCOME } = PropertyTypes;
 const { GREEN, NEUTRAL, RED } = Colors;
-const { FAILURE, SUCCESS } = ContactActivityConstants;
+const { DID_NOT_ATTEND, ATTENDED } = ContactActivityConstants;
 const { getPropertyValue } = DataUtils;
 const { formatAsDate } = DateTimeUtils;
 const { getStyleVariation } = StyleUtils;
 
 const getBackgroundColor = getStyleVariation('outcome', {
-  [FAILURE]: RED.R00,
-  [SUCCESS]: GREEN.G00,
+  [ATTENDED]: GREEN.G00,
+  [DID_NOT_ATTEND]: RED.R00,
 }, RED.R00);
 
 const getFontColor = getStyleVariation('outcome', {
-  [FAILURE]: RED.R400,
-  [SUCCESS]: GREEN.G400,
+  [ATTENDED]: GREEN.G400,
+  [DID_NOT_ATTEND]: RED.R400,
 }, RED.R400);
 
 const ContactTag = styled.div`

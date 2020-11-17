@@ -5,7 +5,7 @@ import { DateTime } from 'luxon';
 import { AppTypes, PropertyTypes } from '../../../../core/edm/constants';
 import { ContactActivityConstants } from '../constants';
 
-const { FAILURE, SUCCESS } = ContactActivityConstants;
+const { ATTENDED, DID_NOT_ATTEND } = ContactActivityConstants;
 const { CONTACT_ACTIVITY } = AppTypes;
 const { CONTACT_DATETIME, OUTCOME } = PropertyTypes;
 const { getEntityAddressKey, getPageSectionKey } = DataProcessingUtils;
@@ -27,7 +27,7 @@ const schema = {
         [getEntityAddressKey(0, CONTACT_ACTIVITY, OUTCOME)]: {
           type: 'string',
           title: 'Attendance',
-          enum: [SUCCESS, FAILURE]
+          enum: [ATTENDED, DID_NOT_ATTEND]
         },
       },
       required: [
