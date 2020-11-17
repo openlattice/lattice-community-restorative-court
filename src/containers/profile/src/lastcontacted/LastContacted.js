@@ -8,16 +8,18 @@ import { List, Map } from 'immutable';
 import { Colors, IconButton, StyleUtils } from 'lattice-ui-kit';
 import { DataUtils, DateTimeUtils } from 'lattice-utils';
 
+import AddContactActivityModal from './AddContactActivityModal';
+
 import { AppTypes, PropertyTypes } from '../../../../core/edm/constants';
 import { useSelector } from '../../../app/AppProvider';
 import { Header } from '../../typography';
-import { ContactConstants } from '../constants';
+import { ContactActivityConstants } from '../constants';
 import { PERSON_NEIGHBOR_MAP, PROFILE } from '../reducers/constants';
 
 const { CONTACT_ACTIVITY } = AppTypes;
 const { CONTACT_DATETIME, OUTCOME } = PropertyTypes;
 const { GREEN, NEUTRAL, RED } = Colors;
-const { FAILURE, SUCCESS } = ContactConstants;
+const { FAILURE, SUCCESS } = ContactActivityConstants;
 const { getPropertyValue } = DataUtils;
 const { formatAsDate } = DateTimeUtils;
 const { getStyleVariation } = StyleUtils;
@@ -53,8 +55,14 @@ const ContactGrid = styled.div`
 `;
 
 const HeaderRow = styled.div`
+  align-items: center;
   display: flex;
-  justify-content: space-between;
+  margin-bottom: 24px;
+
+  ${Header} {
+    margin-right: 14px;
+    margin-bottom: 0;
+  }
 `;
 
 const LastContacted = () => {
@@ -83,6 +91,7 @@ const LastContacted = () => {
           })
         }
       </ContactGrid>
+      <AddContactActivityModal isVisible={modalIsVisible} onClose={() => setModalVisibility(false)} />
     </SectionWrapper>
   );
 };
