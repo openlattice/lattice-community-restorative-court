@@ -13,6 +13,7 @@ import type { SequenceAction } from 'redux-reqseq';
 
 import { getPersonWorker } from './getPerson';
 import { getPersonNeighborsWorker } from './getPersonNeighbors';
+import { getStaffWorker } from './getStaff';
 
 import { AppTypes } from '../../../../core/edm/constants';
 import { selectEntitySetId } from '../../../../core/redux/selectors';
@@ -22,6 +23,7 @@ import {
   LOAD_PROFILE,
   getPerson,
   getPersonNeighbors,
+  getStaff,
   loadProfile
 } from '../actions';
 
@@ -60,6 +62,7 @@ function* loadProfileWorker(action :SequenceAction) :Saga<*> {
     const workerResponses :Object[] = yield all([
       call(getPersonNeighborsWorker, getPersonNeighbors({ neighborESIDs, personEKID })),
       call(getPersonWorker, getPerson(personEKID)),
+      call(getStaffWorker, getStaff()),
     ]);
     const responseError = workerResponses.reduce(
       (error, workerResponse) => error || workerResponse.error,

@@ -9,16 +9,15 @@ import {
   Label,
   StyleUtils,
 } from 'lattice-ui-kit';
-import { DateTimeUtils } from 'lattice-utils';
+import { DataUtils, DateTimeUtils } from 'lattice-utils';
 
 import Portrait from './Portrait';
 import { EMPTY_VALUE } from './constants';
 
 import PROPERTY_TYPE_FQNS from '../../../core/edm/constants/PropertyTypes';
-import { getPropertyValuesLU } from '../../../utils/data';
 
 const { media } = StyleUtils;
-
+const { getPropertyValue } = DataUtils;
 const { formatAsDate } = DateTimeUtils;
 
 const {
@@ -54,10 +53,9 @@ type Props = {
 };
 
 const ProfileCard = ({ imageUrl, person } :Props) => {
-  const { [DOB]: dob, [GIVEN_NAME]: firstName, [SURNAME]: lastName } = getPropertyValuesLU(
-    person,
-    [DOB, GIVEN_NAME, SURNAME]
-  );
+  const dob = getPropertyValue(person, [DOB, 0]);
+  const firstName = getPropertyValue(person, [GIVEN_NAME, 0]);
+  const lastName = getPropertyValue(person, [SURNAME, 0]);
 
   const formattedDob = formatAsDate(dob);
 
