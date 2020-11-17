@@ -19,7 +19,9 @@ import {
   STAFF_MEMBER_BY_STATUS_EKID,
 } from './constants';
 
+import { RESET_REQUEST_STATE } from '../../../../core/redux/actions';
 import { RS_INITIAL_STATE } from '../../../../core/redux/constants';
+import { resetRequestStateReducer } from '../../../../core/redux/reducers';
 import {
   ADD_CASE_STATUS,
   ADD_CONTACT_ACTIVITY,
@@ -61,6 +63,10 @@ const INITIAL_STATE :Map = fromJS({
 export default function profileReducer(state :Map = INITIAL_STATE, action :Object) {
 
   switch (action.type) {
+
+    case RESET_REQUEST_STATE: {
+      return resetRequestStateReducer(state, action);
+    }
 
     case addCaseStatus.case(action.type):
       return addCaseStatusReducer(state, action);
