@@ -28,8 +28,13 @@ import {
 } from '../actions';
 
 const { isDefined } = LangUtils;
-const { CASE, FORM, ROLE } = AppTypes;
-const { DST } = NEIGHBOR_DIRECTIONS;
+const {
+  CASE,
+  CONTACT_ACTIVITY,
+  FORM,
+  ROLE,
+} = AppTypes;
+const { DST, SRC } = NEIGHBOR_DIRECTIONS;
 
 const LOG = new Logger('ProfileSagas');
 
@@ -50,11 +55,13 @@ function* loadProfileWorker(action :SequenceAction) :Saga<*> {
     const personEKID :UUID = value;
 
     const caseESID :UUID = yield select(selectEntitySetId(CASE));
+    const contactActivityESID :UUID = yield select(selectEntitySetId(CONTACT_ACTIVITY));
     const formESID :UUID = yield select(selectEntitySetId(FORM));
     const roleESID :UUID = yield select(selectEntitySetId(ROLE));
 
     const neighborESIDs = [
       { direction: DST, entitySetId: caseESID },
+      { direction: SRC, entitySetId: contactActivityESID },
       { direction: DST, entitySetId: formESID },
       { direction: DST, entitySetId: roleESID },
     ];

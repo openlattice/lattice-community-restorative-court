@@ -41,6 +41,7 @@ const LOG = new Logger('AppSagas');
 
 function* initializeApplicationWorker(action :SequenceAction) :Saga<*> {
   const workerResponse :Object = {};
+  console.log('action ', action);
 
   try {
     yield put(initializeApplication.request(action.id));

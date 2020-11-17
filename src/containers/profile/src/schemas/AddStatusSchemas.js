@@ -1,5 +1,5 @@
-import { Constants } from 'lattice';
 // @flow
+import { Constants } from 'lattice';
 import { DataProcessingUtils } from 'lattice-fabricate';
 import { DateTime } from 'luxon';
 
