@@ -14,6 +14,7 @@ const APP_TYPE_FQNS = {
   RECORDED_BY: FQN.of('app.recordedby'),
   REFERRAL_REQUEST: FQN.of('app.referralrequest'),
   ROLE: FQN.of('app.role'),
+  SENT_TO: FQN.of('app.sentto'),
   STAFF: FQN.of('app.staff'),
   STATUS: FQN.of('app.status'),
 };
