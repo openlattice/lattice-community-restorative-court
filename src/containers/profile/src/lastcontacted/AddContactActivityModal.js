@@ -90,6 +90,7 @@ const AddContactActivityModal = ({ isVisible, onClose } :Props) => {
         textTitle="Add Contact Activity"
         viewportScrolling
         withFooter={withFooter}>
+      <div>Enter the date this person was contacted to appear in a circle and whether they attended a circle. </div>
       <Form
           formData={formData}
           hideSubmit

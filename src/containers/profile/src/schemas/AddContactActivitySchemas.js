@@ -20,13 +20,13 @@ const schema = {
       properties: {
         [getEntityAddressKey(0, CONTACT_ACTIVITY, CONTACT_DATETIME)]: {
           type: 'string',
-          title: 'Date contacted',
+          title: 'Date of Contact',
           format: 'date',
           default: DateTime.local().toISODate()
         },
         [getEntityAddressKey(0, CONTACT_ACTIVITY, OUTCOME)]: {
           type: 'string',
-          title: 'Outcome',
+          title: 'Attendance',
           enum: [SUCCESS, FAILURE]
         },
       },
