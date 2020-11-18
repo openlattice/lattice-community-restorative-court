@@ -24,7 +24,7 @@ type Props = {
   root :string;
 };
 
-const HelplineSwitch = ({
+const AppSwitch = ({
   match,
   organizationId,
   personId,
@@ -49,4 +49,4 @@ const HelplineSwitch = ({
   );
 };
 
-export default HelplineSwitch;
+export default AppSwitch;

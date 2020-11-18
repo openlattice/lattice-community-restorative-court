@@ -64,11 +64,7 @@ function* initializeApplicationWorker(action :SequenceAction) :Saga<*> {
       return selectedConfig;
     }, {});
 
-    workerResponse.data = {
-      appConfig,
-      root,
-      match,
-    };
+    workerResponse.data = { appConfig };
 
     yield put(initializeApplication.success(action.id, workerResponse.data));
   }
