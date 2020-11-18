@@ -3,6 +3,7 @@ import React from 'react';
 
 import styled from 'styled-components';
 import { StyleUtils } from 'lattice-ui-kit';
+import type { UUID } from 'lattice';
 
 import ProfileAside from './ProfileAside';
 

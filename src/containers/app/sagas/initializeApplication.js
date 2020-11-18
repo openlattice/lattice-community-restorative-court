@@ -40,9 +40,7 @@ function* initializeApplicationWorker(action :SequenceAction) :Saga<*> {
     yield put(initializeApplication.request(action.id));
 
     const { value: { match, organizationId, root } } = action;
-    if (!isValidUUID(organizationId)) throw ERR_ACTION_VALUE_TYPE;
-    if (typeof root !== 'string') throw ERR_ACTION_VALUE_TYPE;
-    if (!isDefined(match)) throw ERR_ACTION_VALUE_TYPE;
+    if (!isValidUUID(organizationId) || typeof root !== 'string' || !isDefined(match)) throw ERR_ACTION_VALUE_TYPE;
     yield put(initializeApplication.request(action.id));
 
     /*
