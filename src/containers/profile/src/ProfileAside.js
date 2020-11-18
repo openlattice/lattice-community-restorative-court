@@ -15,8 +15,9 @@ const Centered = styled.div`
 `;
 
 const ButtonWrapper = styled.div`
-  display: flex;
-  align-content: stretch;
+  display: grid;
+  grid-gap: 0 10px;
+  grid-template-columns: 1fr 1fr;
   margin-top: 16px;
 `;
 
@@ -26,9 +27,12 @@ const ProfileAside = () => {
   return (
     <Centered>
       <ProfileCard person={person} />
-      <ButtonWrapper>
-        <Button color="primary" onClick={() => setFormChoiceModalVisibility(true)}>Add Form</Button>
-      </ButtonWrapper>
+      <div>
+        <ButtonWrapper>
+          <Button onClick={() => {}}>Edit Profile</Button>
+          <Button color="primary" onClick={() => setFormChoiceModalVisibility(true)}>Add Form</Button>
+        </ButtonWrapper>
+      </div>
       <ChooseFormTypeModal isVisible={formChoiceModalIsVisible} onClose={() => setFormChoiceModalVisibility(false)} />
     </Centered>
   );
