@@ -5,8 +5,8 @@ import styled from 'styled-components';
 import { Map } from 'immutable';
 import { Spinner, StyleUtils } from 'lattice-ui-kit';
 import { ReduxUtils } from 'lattice-utils';
-import type { RequestState } from 'redux-reqseq';
 import type { UUID } from 'lattice';
+import type { RequestState } from 'redux-reqseq';
 
 import ProfileAside from './ProfileAside';
 import ProfileBody from './ProfileBody';
@@ -49,7 +49,7 @@ const ProfileContainer = ({ personId } :Props) => {
   const personName :string = getPersonName(person);
 
   if (isPending(loadProfileRS)) {
-    return <CenterWrapper><Spinner size="3x" /></CenterWrapper>;
+    return <CenterWrapper><Spinner size="2x" /></CenterWrapper>;
   }
 
   return (
