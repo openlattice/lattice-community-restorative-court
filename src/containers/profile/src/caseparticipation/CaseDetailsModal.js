@@ -16,7 +16,12 @@ import { DataUtils, LangUtils } from 'lattice-utils';
 import AddStatusModal from './AddStatusModal';
 import CaseDetailsModalHeader from './CaseDetailsModalHeader';
 
-import { CaseTimeline, DocumentList, RoleTag } from '../../../../components';
+import {
+  CaseTimeline,
+  DocumentList,
+  ModalInnerWrapper,
+  RoleTag,
+} from '../../../../components';
 import { AppTypes, PropertyTypes } from '../../../../core/edm/constants';
 import { getPersonName } from '../../../../utils/people';
 import { useSelector } from '../../../app/AppProvider';
@@ -36,17 +41,6 @@ const { FORM, REFERRAL_REQUEST, STATUS } = AppTypes;
 const { DATETIME_ADMINISTERED, EFFECTIVE_DATE } = PropertyTypes;
 const { PEACEMAKER, RESPONDENT, VICTIM } = RoleConstants;
 const { CLOSED, RESOLUTION } = CaseStatusConstants;
-
-const ModalInnerWrapper = styled.div`
-  /* these responsive styles will need to be tested when the module is loaded into CARE */
-  @media only screen and (min-width: 584px) {
-    width: 584px;
-  }
-
-  @media only screen and (min-width: 900px) {
-    width: 900px;
-  }
-`;
 
 const CaseHeader = styled(Header)`
   padding-top: 24px;
