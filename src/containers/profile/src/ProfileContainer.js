@@ -7,8 +7,6 @@ import type { UUID } from 'lattice';
 
 import ProfileAside from './ProfileAside';
 
-import { CrumbItem, Crumbs } from '../../../components/crumbs';
-
 const { media } = StyleUtils;
 
 const ProfileGrid = styled.div`
@@ -21,23 +19,15 @@ const ProfileGrid = styled.div`
 `;
 
 type Props = {
-  name ?:string;
   personId :UUID;
 };
 
-const ProfileContainer = ({ name, personId } :Props) => (
+const ProfileContainer = ({ personId } :Props) => (
   <div>
-    <Crumbs>
-      <CrumbItem>{ name }</CrumbItem>
-    </Crumbs>
     <ProfileGrid>
       <ProfileAside personId={personId} />
     </ProfileGrid>
   </div>
 );
-
-ProfileContainer.defaultProps = {
-  name: ''
-};
 
 export default ProfileContainer;
