@@ -17,6 +17,7 @@ import { DateTime } from 'luxon';
 
 import { CaseStatusConstants } from '../../containers/profile/src/constants';
 import { PropertyTypes } from '../../core/edm/constants';
+import { MM_DD_YYYY } from '../../utils/datetime/constants';
 import { getPersonName } from '../../utils/people';
 
 const { NEUTRAL } = Colors;
@@ -70,7 +71,7 @@ const CaseTimeline = ({ caseStatuses, referralRequest, staffMemberByStatusEKID }
         const description = getPropertyValue(caseStatus, [DESCRIPTION, 0]);
         const datetime = getPropertyValue(caseStatus, [EFFECTIVE_DATE, 0]);
         const status = getPropertyValue(caseStatus, [STATUS, 0]);
-        const date = DateTime.fromISO(datetime).toFormat('MM/dd/yyyy');
+        const date = DateTime.fromISO(datetime).toFormat(MM_DD_YYYY);
 
         const staffMemberWhoRecordedStatus :Map = staffMemberByStatusEKID.get(caseStatusEKID, Map());
         const referralSource = getPropertyValue(referralRequest, [SOURCE, 0]);
