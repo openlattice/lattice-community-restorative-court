@@ -11,7 +11,9 @@ import { useDispatch, useSelector } from './AppProvider';
 import { INITIALIZE_APPLICATION, initializeApplication } from './actions';
 
 import ProfileContainer from '../profile/src/ProfileContainer';
+import ReferralForm from '../referral/ReferralForm';
 import { APP, REQUEST_STATE } from '../../core/redux/constants';
+import { PERSON_ID, REFERRAL } from '../../core/router/Routes';
 import { CenterWrapper } from '../profile/src/styled';
 
 const { isPending } = ReduxUtils;
@@ -44,6 +46,7 @@ const AppSwitch = ({
 
   return (
     <Switch>
+      <Route path={`${root}/${PERSON_ID}/${REFERRAL}`} render={() => <ReferralForm />} />
       <Route render={() => <ProfileContainer personId={personId} />} />
     </Switch>
   );
