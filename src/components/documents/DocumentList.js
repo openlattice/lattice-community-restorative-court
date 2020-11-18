@@ -4,6 +4,7 @@ import React from 'react';
 import { List, Map } from 'immutable';
 import { CardStack } from 'lattice-ui-kit';
 import { DataUtils, DateTimeUtils } from 'lattice-utils';
+import type { UUID } from 'lattice';
 
 import DocumentListItem from './DocumentListItem';
 
@@ -29,8 +30,8 @@ const DocumentList = ({ caseIdentifier, forms, formNeighborMap } :Props) => (
         const formName = getPropertyValue(form, [NAME, 0]);
         const submittedDate = formatAsDate(datetime);
         const formEKID :?UUID = getEntityKeyId(form);
-        const staffMember :Map = formNeighborMap.getIn([formEKID, STAFF], List());
-        const staffMemberName = getPersonName(staffMember.get(0, Map()));
+        const staffMembers :List = formNeighborMap.getIn([formEKID, STAFF], List());
+        const staffMemberName = getPersonName(staffMembers.get(0, Map()));
         return (
           <DocumentListItem
               key={formEKID}
