@@ -10,8 +10,10 @@ import type { RequestState } from 'redux-reqseq';
 import { useDispatch, useSelector } from './AppProvider';
 import { INITIALIZE_APPLICATION, initializeApplication } from './actions';
 
+import PeacemakerInformationForm from '../peacemaker/PeacemakerInformationForm';
 import ProfileContainer from '../profile/src/ProfileContainer';
 import { APP, REQUEST_STATE } from '../../core/redux/constants';
+import { PEACEMAKER_INFORMATION, PERSON_ID } from '../../core/router/Routes';
 import { CenterWrapper } from '../profile/src/styled';
 
 const { isPending } = ReduxUtils;
@@ -44,6 +46,9 @@ const AppSwitch = ({
 
   return (
     <Switch>
+      <Route
+          path={`${root}/${PERSON_ID}/${PEACEMAKER_INFORMATION}`}
+          render={() => <PeacemakerInformationForm personId={personId} />} />
       <Route render={() => <ProfileContainer personId={personId} />} />
     </Switch>
   );
