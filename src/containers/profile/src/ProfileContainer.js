@@ -6,6 +6,7 @@ import { Map } from 'immutable';
 import { Spinner, StyleUtils } from 'lattice-ui-kit';
 import { ReduxUtils } from 'lattice-utils';
 import type { RequestState } from 'redux-reqseq';
+import type { UUID } from 'lattice';
 
 import ProfileAside from './ProfileAside';
 import ProfileBody from './ProfileBody';

@@ -4,6 +4,7 @@ import React, { useEffect } from 'react';
 import { Spinner } from 'lattice-ui-kit';
 import { ReduxUtils } from 'lattice-utils';
 import { Route, Switch } from 'react-router-dom';
+import type { UUID } from 'lattice';
 import type { Match } from 'react-router';
 import type { RequestState } from 'redux-reqseq';
 

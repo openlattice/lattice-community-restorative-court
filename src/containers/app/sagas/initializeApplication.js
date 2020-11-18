@@ -46,10 +46,8 @@ function* initializeApplicationWorker(action :SequenceAction) :Saga<*> {
     yield put(initializeApplication.request(action.id));
 
     const { value: { match, organizationId, root } } = action;
-    // if (!isValidUUID(organizationId)) throw ERR_ACTION_VALUE_TYPE;
-    // if (typeof root !== 'string') throw ERR_ACTION_VALUE_TYPE;
-    // if (!isDefined(match)) throw ERR_ACTION_VALUE_TYPE;
-    // yield put(initializeApplication.request(action.id));
+    if (!isValidUUID(organizationId) || typeof root !== 'string' || !isDefined(match)) throw ERR_ACTION_VALUE_TYPE;
+    yield put(initializeApplication.request(action.id));
 
     /*
      * 1. load App and EDM
@@ -89,8 +87,6 @@ function* initializeApplicationWorker(action :SequenceAction) :Saga<*> {
       appConfig,
       entitySetIdsByFqn,
       fqnsByESID,
-      root,
-      match,
     };
 
     yield put(initializeApplication.success(action.id, workerResponse.data));

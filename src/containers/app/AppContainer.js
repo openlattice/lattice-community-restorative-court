@@ -4,6 +4,7 @@
 
 import React from 'react';
 
+import type { UUID } from 'lattice';
 import type { Match } from 'react-router';
 
 import AppProvider from './AppProvider';
