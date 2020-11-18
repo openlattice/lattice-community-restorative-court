@@ -1,5 +1,5 @@
 // @flow
-import React from 'react';
+import React, { useState } from 'react';
 
 import styled from 'styled-components';
 import { Button } from 'lattice-ui-kit';
@@ -7,6 +7,7 @@ import { Button } from 'lattice-ui-kit';
 import ProfileCard from './ProfileCard';
 import { PERSON, PROFILE } from './reducers/constants';
 
+import ChooseFormTypeModal from '../../../components/forms/ChooseFormTypeModal';
 import { useSelector } from '../../app/AppProvider';
 
 const Centered = styled.div`
@@ -22,14 +23,15 @@ const ButtonWrapper = styled.div`
 `;
 
 const ProfileAside = () => {
+  const [formChoiceModalIsVisible, setFormChoiceModalVisibility] = useState(false);
   const person = useSelector((store) => store.getIn([PROFILE, PERSON]));
-
   return (
     <Centered>
       <ProfileCard person={person} />
       <ButtonWrapper>
-        <Button color="primary" onClick={() => {}}>Add Form</Button>
+        <Button color="primary" onClick={() => setFormChoiceModalVisibility(true)}>Add Form</Button>
       </ButtonWrapper>
+      <ChooseFormTypeModal isVisible={formChoiceModalIsVisible} onClose={() => setFormChoiceModalVisibility(false)} />
     </Centered>
   );
 };
