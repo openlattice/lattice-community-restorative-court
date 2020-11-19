@@ -86,7 +86,7 @@ const PeacemakerInformationForm = ({ personId } :Props) => {
   const personDetails :List = useSelector((store) => store
     .getIn([PROFILE, PERSON_NEIGHBOR_MAP, PERSON_DETAILS], List()));
 
-  const entityIndexToIdMap :Map = Map.withMutations((mutator :Map) => {
+  const entityIndexToIdMap :Map = Map().withMutations((mutator :Map) => {
     mutator.set(COMMUNICATION, List([getEntityKeyId(communication.get(0))]));
     mutator.set(FORM, List([formEKID]));
     mutator.set(PERSON_DETAILS, List([getEntityKeyId(personDetails.get(0))]));
