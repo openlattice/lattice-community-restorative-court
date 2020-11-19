@@ -16,28 +16,24 @@ const DocumentCardSegment = styled(CardSegment)`
   :first-of-type {
     padding-top: 0;
   }
+
+  div:first-child {
+    display: flex;
+    margin-right: 20px;
+  }
+
+  span {
+    margin-left: 18px;
+  }
+
+  div:last-child {
+    align-items: flex-end;
+    display: flex;
+  }
 `;
 
-const FormNameBlock = styled.div`
-  display: flex;
-  margin-right: 20px;
-`;
-
-const FormNameAndCaseNumber = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin-left: 18px;
-`;
-
-const FormName = styled.div`
+const FormName = styled(Typography)`
   color: ${NEUTRAL.N900};
-  font-size: 16px;
-  font-weight: 600;
-`;
-
-const SubmittedBlock = styled(FormName)`
-  align-items: flex-end;
-  display: flex;
 `;
 
 type Props = {
@@ -54,16 +50,18 @@ const DocumentListItem = ({
   submittedDate
 } :Props) => (
   <DocumentCardSegment noBleed>
-    <FormNameBlock>
+    <div>
       <FontAwesomeIcon color={NEUTRAL.N900} icon={faFileAlt} />
-      <FormNameAndCaseNumber>
-        <Typography variant="h5">{formName}</Typography>
-        <Typography color={NEUTRAL.N600} variant="h6">{caseIdentifier}</Typography>
-      </FormNameAndCaseNumber>
-    </FormNameBlock>
-    <Typography variant="h5">
-      {`Submitted on ${submittedDate} by ${staffMemberName}`}
-    </Typography>
+      <span>
+        <FormName variant="h5">{formName}</FormName>
+        <Typography variant="h6">{caseIdentifier}</Typography>
+      </span>
+    </div>
+    <div>
+      <Typography variant="h6">
+        {`Submitted on ${submittedDate} by ${staffMemberName}`}
+      </Typography>
+    </div>
   </DocumentCardSegment>
 );
 

@@ -7,6 +7,7 @@ import {
   Card,
   CardSegment,
   Colors,
+  Typography,
 } from 'lattice-ui-kit';
 import { DataUtils, DateTimeUtils } from 'lattice-utils';
 import type { UUID } from 'lattice';
@@ -37,16 +38,12 @@ const ListItemCardSegment = styled(CardSegment)`
   justify-content: space-between;
 `;
 
-const Date = styled.div`
+const Date = styled(Typography)`
   color: ${NEUTRAL.N600};
-  font-size: 14px;
-  font-weight: 600;
 `;
 
-const CaseNumberAndName = styled.div`
+const CaseNumberAndName = styled(Typography)`
   color: ${NEUTRAL.N800};
-  font-size: 16px;
-  font-weight: 600;
   margin-top: 8px;
 `;
 
@@ -78,10 +75,12 @@ const CaseParticipationListItem = ({ personCase } :Props) => {
       <Card onClick={() => setModalVisibility(true)}>
         <ListItemCardSegment padding="20px 30px">
           <div>
-            <Date>{caseDate}</Date>
-            <CaseNumberAndName>{caseIdentifier}</CaseNumberAndName>
+            <Date variant="subtitle2">{caseDate}</Date>
+            <CaseNumberAndName variant="body2">{caseIdentifier}</CaseNumberAndName>
           </div>
-          <RoleTag roleName={personRoleInCase}>{personRoleInCase}</RoleTag>
+          <RoleTag roleName={personRoleInCase}>
+            <Typography color="inherit" variant="body2">{personRoleInCase}</Typography>
+          </RoleTag>
         </ListItemCardSegment>
       </Card>
       <CaseDetailsModal
