@@ -7,15 +7,18 @@ import { Models } from 'lattice';
 const { FQN } = Models;
 
 const PROPERTY_TYPE_FQNS = {
+  CASE_NUMBER: FQN.of('j.CaseNumberText'),
   CONTACT_DATETIME: FQN.of('ol.contactdatetime'),
   DATETIME_ADMINISTERED: FQN.of('ol.datetimeadministered'),
   DATETIME_COMPLETED: FQN.of('date.completeddatetime'),
   DATETIME_START: FQN.of('ol.datetimestart'),
+  DA_CASE_NUMBER: FQN.of('justice.courtcasenumber'),
   DESCRIPTION: FQN.of('ol.description'),
   DOB: FQN.of('nc.PersonBirthDate'),
   EFFECTIVE_DATE: FQN.of('ol.effectivedate'),
   ETHNICITY: FQN.of('nc.PersonEthnicity'),
   GENDER: FQN.of('person.gender'),
+  GENERAL_DATETIME: FQN.of('general.datetime'),
   GIVEN_NAME: FQN.of('nc.PersonGivenName'),
   ID: FQN.of('ol.id'),
   INTERESTS_AND_HOBBIES: FQN.of('ol.interestsandhobbies'),
