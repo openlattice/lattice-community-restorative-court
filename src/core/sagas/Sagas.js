@@ -28,6 +28,7 @@ export default function* sagas() :Saga<*> {
 
     // DataSagas
     fork(DataSagas.submitDataGraphWatcher),
+    fork(DataSagas.submitPartialReplaceWatcher),
 
     // EDMSagas
     fork(EDMSagas.getEntityDataModelTypesWatcher),
