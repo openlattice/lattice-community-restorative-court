@@ -5,9 +5,9 @@ import styled from 'styled-components';
 import { Button } from 'lattice-ui-kit';
 
 import ProfileCard from './ProfileCard';
-import { PERSON, PROFILE } from './reducers/constants';
 
 import ChooseFormTypeModal from '../../../components/forms/ChooseFormTypeModal';
+import { selectPerson } from '../../../core/redux/selectors';
 import { useSelector } from '../../app/AppProvider';
 
 const Centered = styled.div`
@@ -23,7 +23,7 @@ const ButtonWrapper = styled.div`
 
 const ProfileAside = () => {
   const [formChoiceModalIsVisible, setFormChoiceModalVisibility] = useState(false);
-  const person = useSelector((store) => store.getIn([PROFILE, PERSON]));
+  const person = useSelector(selectPerson);
   return (
     <Centered>
       <ProfileCard person={person} />

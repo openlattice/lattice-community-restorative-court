@@ -49,7 +49,7 @@ const PortraitSegment = styled(CardSegment)`
 
 type Props = {
   person :Map;
-  imageUrl ? :string;
+  imageUrl ?:string;
 };
 
 const ProfileCard = ({ imageUrl, person } :Props) => {

@@ -11,16 +11,17 @@ import { Models } from 'lattice';
 import { SearchApiActions, SearchApiSagas } from 'lattice-sagas';
 import { DataUtils, LangUtils, Logger } from 'lattice-utils';
 import type { Saga } from '@redux-saga/core';
+import type { UUID } from 'lattice';
 import type { SequenceAction } from 'redux-reqseq';
 
 import { getFormNeighborsWorker } from './getFormNeighbors';
 import { getPersonCaseNeighborsWorker } from './getPersonCaseNeighbors';
 
 import { AppTypes, PropertyTypes } from '../../../../core/edm/constants';
+import { APP_PATHS, NEIGHBOR_DIRECTIONS } from '../../../../core/redux/constants';
 import { selectEntitySetId } from '../../../../core/redux/selectors';
 import { NeighborUtils } from '../../../../utils/data';
 import { ERR_ACTION_VALUE_NOT_DEFINED } from '../../../../utils/error/constants';
-import { APP_PATHS, NEIGHBOR_DIRECTIONS } from '../../../app/constants';
 import {
   GET_PERSON_NEIGHBORS,
   getFormNeighbors,
@@ -41,7 +42,7 @@ const {
 const { FQN } = Models;
 const {
   APPEARS_IN,
-  CASE,
+  CRC_CASE,
   FORM,
   PEOPLE,
 } = AppTypes;
@@ -106,8 +107,8 @@ function* getPersonNeighborsWorker(action :SequenceAction) :Saga<*> {
         });
       });
     });
-    if (isDefined(personNeighborMap.get(CASE))) {
-      const personCaseEKIDs :UUID[] = personNeighborMap.get(CASE)
+    if (isDefined(personNeighborMap.get(CRC_CASE))) {
+      const personCaseEKIDs :UUID[] = personNeighborMap.get(CRC_CASE)
         .map((personCase :Map) => getEntityKeyId(personCase))
         .toJS();
       yield call(getPersonCaseNeighborsWorker, getPersonCaseNeighbors(personCaseEKIDs));

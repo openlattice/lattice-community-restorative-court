@@ -3,10 +3,10 @@ import { Map } from 'immutable';
 import { RequestStates } from 'redux-reqseq';
 import type { SequenceAction } from 'redux-reqseq';
 
-import { FORM_NEIGHBOR_MAP } from './constants';
-
-import { REQUEST_STATE } from '../../../../core/redux/constants';
+import { ProfileReduxConstants, REQUEST_STATE } from '../../../../core/redux/constants';
 import { GET_FORM_NEIGHBORS, getFormNeighbors } from '../actions';
+
+const { FORM_NEIGHBOR_MAP } = ProfileReduxConstants;
 
 export default function reducer(state :Map, action :SequenceAction) {
 

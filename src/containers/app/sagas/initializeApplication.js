@@ -21,10 +21,12 @@ import type { SequenceAction } from 'redux-reqseq';
 import { getEntityDataModelTypes } from '../../../core/edm/actions';
 import { AppTypes } from '../../../core/edm/constants';
 import { getEntityDataModelTypesWorker } from '../../../core/edm/sagas/getEntityDataModelTypes';
+import { APP_REDUX_CONSTANTS } from '../../../core/redux/constants';
 import { ERR_ACTION_VALUE_TYPE } from '../../../utils/error/constants';
 import { INITIALIZE_APPLICATION, initializeApplication } from '../actions';
-import { APP_NAME, ENTITY_SET_ID } from '../constants';
+import { APP_NAME } from '../constants';
 
+const { ENTITY_SET_ID } = APP_REDUX_CONSTANTS;
 const { isValidUUID } = ValidationUtils;
 const { isDefined } = LangUtils;
 const { FQN } = Models;
@@ -47,10 +49,8 @@ function* initializeApplicationWorker(action :SequenceAction) :Saga<*> {
     yield put(initializeApplication.request(action.id));
 
     const { value: { match, organizationId, root } } = action;
-    // if (!isValidUUID(organizationId)) throw ERR_ACTION_VALUE_TYPE;
-    // if (typeof root !== 'string') throw ERR_ACTION_VALUE_TYPE;
-    // if (!isDefined(match)) throw ERR_ACTION_VALUE_TYPE;
-    // yield put(initializeApplication.request(action.id));
+    if (!isValidUUID(organizationId) || typeof root !== 'string' || !isDefined(match)) throw ERR_ACTION_VALUE_TYPE;
+    yield put(initializeApplication.request(action.id));
 
     /*
      * 1. load App and EDM
@@ -90,8 +90,6 @@ function* initializeApplicationWorker(action :SequenceAction) :Saga<*> {
       appConfig,
       entitySetIdsByFqn,
       fqnsByESID,
-      root,
-      match,
     };
 
     yield put(initializeApplication.success(action.id, workerResponse.data));

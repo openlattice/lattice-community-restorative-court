@@ -4,14 +4,13 @@ import { DataUtils } from 'lattice-utils';
 import { RequestStates } from 'redux-reqseq';
 import type { SequenceAction } from 'redux-reqseq';
 
-import { PERSON_CASE_NEIGHBOR_MAP, STAFF_MEMBERS, STAFF_MEMBER_BY_STATUS_EKID } from './constants';
-
 import { AppTypes } from '../../../../core/edm/constants';
-import { REQUEST_STATE } from '../../../../core/redux/constants';
+import { ProfileReduxConstants, REQUEST_STATE } from '../../../../core/redux/constants';
 import { ADD_CASE_STATUS, addCaseStatus } from '../actions';
 
 const { getEntityKeyId } = DataUtils;
 const { STATUS } = AppTypes;
+const { PERSON_CASE_NEIGHBOR_MAP, STAFF_MEMBERS, STAFF_MEMBER_BY_STATUS_EKID } = ProfileReduxConstants;
 
 export default function reducer(state :Map, action :SequenceAction) {
 

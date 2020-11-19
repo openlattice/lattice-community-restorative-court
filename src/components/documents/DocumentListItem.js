@@ -4,7 +4,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { faFileAlt } from '@fortawesome/pro-light-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { CardSegment, Colors } from 'lattice-ui-kit';
+import { CardSegment, Colors, Typography } from 'lattice-ui-kit';
 
 const { NEUTRAL } = Colors;
 
@@ -40,11 +40,6 @@ const SubmittedBlock = styled(FormName)`
   display: flex;
 `;
 
-const CaseNumber = styled.div`
-  color: ${NEUTRAL.N600};
-  font-size: 16px;
-`;
-
 type Props = {
   caseIdentifier :?string;
   formName :string;
@@ -62,13 +57,13 @@ const DocumentListItem = ({
     <FormNameBlock>
       <FontAwesomeIcon color={NEUTRAL.N900} icon={faFileAlt} />
       <FormNameAndCaseNumber>
-        <FormName>{formName}</FormName>
-        <CaseNumber>{caseIdentifier}</CaseNumber>
+        <Typography variant="h5">{formName}</Typography>
+        <Typography color={NEUTRAL.N600} variant="h6">{caseIdentifier}</Typography>
       </FormNameAndCaseNumber>
     </FormNameBlock>
-    <SubmittedBlock>
+    <Typography variant="h5">
       {`Submitted on ${submittedDate} by ${staffMemberName}`}
-    </SubmittedBlock>
+    </Typography>
   </DocumentCardSegment>
 );
 
