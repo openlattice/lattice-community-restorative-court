@@ -45,7 +45,7 @@ const ProfileContainer = ({ personId } :Props) => {
   }, [appConfig, dispatch, personId]);
 
   const loadProfileRS :?RequestState = useSelector((store) => store.getIn([PROFILE, LOAD_PROFILE, REQUEST_STATE]));
-  const person :Map = useSelector(selectPerson);
+  const person :Map = useSelector(selectPerson());
   const personName :string = getPersonName(person);
 
   if (isPending(loadProfileRS)) {

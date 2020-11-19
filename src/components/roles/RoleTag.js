@@ -24,8 +24,6 @@ export const RoleTag = styled(Tag)`
   background-color: ${getBackgroundColor};
   border-radius: 31px;
   color: ${getFontColor};
-  font-size: 16px;
-  font-weight: 600;
   padding: 10.5px 16.25px;
   text-transform: capitalize;
 `;

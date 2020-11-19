@@ -74,7 +74,7 @@ const CaseDetailsModal = ({
     ['properties', getPageSectionKey(1, 1), 'properties', getEntityAddressKey(0, STAFF, OPENLATTICE_ID_FQN)]
   );
 
-  const person :Map = useSelector(selectPerson);
+  const person :Map = useSelector(selectPerson());
   const personEKID :?UUID = getEntityKeyId(person);
 
   const entitySetIds :Map = useSelector((store) => store.getIn([APP, ENTITY_SET_IDS]));

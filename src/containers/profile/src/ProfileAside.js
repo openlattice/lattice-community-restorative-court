@@ -13,7 +13,7 @@ const Centered = styled.div`
 `;
 
 const ProfileAside = () => {
-  const person = useSelector(selectPerson);
+  const person = useSelector(selectPerson());
   return (
     <Centered>
       <ProfileCard person={person} />
