@@ -6,12 +6,14 @@ import { AppTypes, PropertyTypes } from '../../../core/edm/constants';
 import { FormConstants } from '../../profile/src/constants';
 
 const { getEntityAddressKey, getPageSectionKey } = DataProcessingUtils;
-const { FORM, PERSON_DETAILS } = AppTypes;
+const { COMMUNICATION, FORM, PERSON_DETAILS } = AppTypes;
 const {
   DATETIME_ADMINISTERED,
+  LANGUAGE,
+  INTERESTS_AND_HOBBIES,
   NAME,
-  PREFERRED_PRONOUNS,
   RELIGION,
+  TEXT,
 } = PropertyTypes;
 const { PEACEMAKER_INFORMATION_FORM } = FormConstants;
 
@@ -23,15 +25,29 @@ const schema = {
       type: 'object',
       title: '',
       properties: {
-        [getEntityAddressKey(0, PERSON_DETAILS, PREFERRED_PRONOUNS)]: {
+        [getEntityAddressKey(0, COMMUNICATION, LANGUAGE)]: {
           type: 'string',
-          title: 'Preferred Pronouns',
+          title: 'Languages Spoken',
+        },
+        [getEntityAddressKey(0, PERSON_DETAILS, INTERESTS_AND_HOBBIES)]: {
+          type: 'string',
+          title: 'Interests and Hobbies',
         },
         [getEntityAddressKey(0, PERSON_DETAILS, RELIGION)]: {
           type: 'string',
           title: 'Faith Information',
         },
+        [getEntityAddressKey(0, FORM, TEXT)]: {
+          type: 'string',
+          title: 'Why would you like to be a peacemaker?',
+        },
       },
+      required: [
+        getEntityAddressKey(0, COMMUNICATION, LANGUAGE),
+        getEntityAddressKey(0, PERSON_DETAILS, INTERESTS_AND_HOBBIES),
+        getEntityAddressKey(0, PERSON_DETAILS, RELIGION),
+        getEntityAddressKey(0, FORM, TEXT),
+      ]
     },
     [getPageSectionKey(1, 2)]: {
       type: 'object',
@@ -48,6 +64,10 @@ const schema = {
           default: PEACEMAKER_INFORMATION_FORM
         },
       },
+      required: [
+        getEntityAddressKey(0, FORM, DATETIME_ADMINISTERED),
+        getEntityAddressKey(0, FORM, NAME),
+      ]
     },
   }
 };
@@ -55,12 +75,19 @@ const schema = {
 const uiSchema = {
   [getPageSectionKey(1, 1)]: {
     classNames: 'column-span-12 grid-container',
-    [getEntityAddressKey(0, PERSON_DETAILS, PREFERRED_PRONOUNS)]: {
+    'ui:options': { editable: true },
+    [getEntityAddressKey(0, COMMUNICATION, LANGUAGE)]: {
+      classNames: 'column-span-4',
+    },
+    [getEntityAddressKey(0, PERSON_DETAILS, INTERESTS_AND_HOBBIES)]: {
       classNames: 'column-span-4',
     },
     [getEntityAddressKey(0, PERSON_DETAILS, RELIGION)]: {
       classNames: 'column-span-4',
     },
+    [getEntityAddressKey(0, FORM, TEXT)]: {
+      classNames: 'column-span-12',
+    }
   },
   [getPageSectionKey(1, 2)]: {
     classNames: 'column-span-12 grid-container',
