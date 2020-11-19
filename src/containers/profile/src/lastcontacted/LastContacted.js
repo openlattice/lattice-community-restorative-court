@@ -5,14 +5,18 @@ import styled from 'styled-components';
 import { faPlus } from '@fortawesome/pro-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { List, Map } from 'immutable';
-import { Colors, IconButton, StyleUtils } from 'lattice-ui-kit';
+import {
+  Colors,
+  IconButton,
+  StyleUtils,
+  Typography,
+} from 'lattice-ui-kit';
 import { DataUtils, DateTimeUtils } from 'lattice-utils';
 
 import AddContactActivityModal from './AddContactActivityModal';
 
 import { AppTypes, PropertyTypes } from '../../../../core/edm/constants';
 import { useSelector } from '../../../app/AppProvider';
-import { Header } from '../../typography';
 import { ContactActivityConstants } from '../constants';
 import { PERSON_NEIGHBOR_MAP, PROFILE } from '../reducers/constants';
 
@@ -39,8 +43,6 @@ const ContactTag = styled.div`
   border-radius: 5px;
   color: ${getFontColor};
   display: flex;
-  font-size: 16px;
-  font-weight: 600;
   justify-content: center;
   padding: 8px;
 `;
@@ -52,7 +54,7 @@ const SectionWrapper = styled.div`
 const ContactGrid = styled.div`
   display: grid;
   grid-gap: 24px 16px;
-  grid-template-columns: repeat(auto-fit, minmax(98px, 1fr));
+  grid-template-columns: repeat(auto-fit, 98px);
   margin-bottom: 36px;
 `;
 
@@ -60,11 +62,12 @@ const HeaderRow = styled.div`
   align-items: center;
   display: flex;
   margin-bottom: 24px;
+`;
 
-  ${Header} {
-    margin-right: 14px;
-    margin-bottom: 0;
-  }
+const Header = styled(Typography)`
+  color: ${NEUTRAL.N800};
+  margin-right: 14px;
+  margin-bottom: 0;
 `;
 
 const LastContacted = () => {
@@ -76,7 +79,7 @@ const LastContacted = () => {
   return (
     <SectionWrapper>
       <HeaderRow>
-        <Header>Last Contacted</Header>
+        <Header variant="h3">Last Contacted</Header>
         <IconButton onClick={() => setModalVisibility(true)}>
           <FontAwesomeIcon color={NEUTRAL.N700} fixedWidth icon={faPlus} />
         </IconButton>
@@ -88,7 +91,9 @@ const LastContacted = () => {
             const date = formatAsDate(datetime);
             const outcome = getPropertyValue(contactMade, [OUTCOME, 0]);
             return (
-              <ContactTag outcome={outcome}>{date}</ContactTag>
+              <ContactTag outcome={outcome}>
+                <Typography color="inherit" variant="body2">{date}</Typography>
+              </ContactTag>
             );
           })
         }
