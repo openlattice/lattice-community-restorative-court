@@ -64,8 +64,8 @@ function* getPersonCaseNeighborsWorker(action :SequenceAction) :Saga<*> {
 
     let filter = {
       entityKeyIds: personCaseEKIDs,
-      destinationEntitySetIds: [referralRequestESID, statusESID],
-      sourceEntitySetIds: [formESID, peopleESID],
+      destinationEntitySetIds: [statusESID],
+      sourceEntitySetIds: [formESID, peopleESID, referralRequestESID],
     };
 
     let response :Object = yield call(
@@ -129,8 +129,8 @@ function* getPersonCaseNeighborsWorker(action :SequenceAction) :Saga<*> {
 
     filter = {
       entityKeyIds: statusEKIDs,
-      destinationEntitySetIds: [staffESID],
-      sourceEntitySetIds: [referralRequestESID],
+      destinationEntitySetIds: [referralRequestESID, staffESID],
+      sourceEntitySetIds: [],
     };
 
     response = yield call(
