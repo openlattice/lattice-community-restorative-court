@@ -1,26 +1,35 @@
 // @flow
 import { DataProcessingUtils } from 'lattice-fabricate';
+import { DateTime } from 'luxon';
 
 import { AppTypes, PropertyTypes } from '../../../core/edm/constants';
 import { ETHNICITIES, GENDERS, RACES } from '../../../utils/people/constants';
+import { FormConstants } from '../../profile/src/constants';
 
 const { getEntityAddressKey, getPageSectionKey } = DataProcessingUtils;
+const { REFERRAL_FORM } = FormConstants;
 const {
-  CASE,
+  DA_CASE,
+  FORM,
+  OFFENSE,
   OFFICERS,
   PEOPLE,
   PERSON_DETAILS,
   REFERRAL_REQUEST,
 } = AppTypes;
 const {
+  CASE_NUMBER,
+  DATETIME_ADMINISTERED,
   DATETIME_COMPLETED,
-  DATETIME_START,
+  DA_CASE_NUMBER,
+  DESCRIPTION,
   DOB,
   ETHNICITY,
   GENDER,
+  GENERAL_DATETIME,
   GIVEN_NAME,
-  ID,
   MIDDLE_NAME,
+  NAME,
   RACE,
   SOURCE,
   SURNAME,
@@ -51,14 +60,22 @@ const schema = {
           type: 'string',
           title: 'Referring Agency',
         },
-        [getEntityAddressKey(0, CASE, ID)]: {
+        [getEntityAddressKey(0, DA_CASE, DA_CASE_NUMBER)]: {
+          type: 'string',
+          title: 'DA Case Number',
+        },
+        [getEntityAddressKey(0, DA_CASE, CASE_NUMBER)]: {
           type: 'string',
           title: 'Case Number',
         },
-        [getEntityAddressKey(0, CASE, DATETIME_START)]: {
+        [getEntityAddressKey(0, DA_CASE, GENERAL_DATETIME)]: {
           type: 'string',
           title: 'Date of Incident',
           format: 'date'
+        },
+        [getEntityAddressKey(0, OFFENSE, DESCRIPTION)]: {
+          type: 'string',
+          title: 'Offense',
         },
       }
     },
@@ -110,6 +127,22 @@ const schema = {
         }
       }
     },
+    [getPageSectionKey(1, 3)]: {
+      type: 'object',
+      title: 'Hidden Form Info',
+      properties: {
+        [getEntityAddressKey(0, FORM, DATETIME_ADMINISTERED)]: {
+          type: 'string',
+          title: 'Datetime Administered',
+          default: DateTime.local().toISO()
+        },
+        [getEntityAddressKey(0, FORM, NAME)]: {
+          type: 'string',
+          title: 'Form Name',
+          default: REFERRAL_FORM
+        },
+      }
+    },
   },
 };
 
@@ -128,10 +161,16 @@ const uiSchema = {
     [getEntityAddressKey(0, REFERRAL_REQUEST, SOURCE)]: {
       classNames: 'column-span-4'
     },
-    [getEntityAddressKey(0, CASE, ID)]: {
+    [getEntityAddressKey(0, DA_CASE, DA_CASE_NUMBER)]: {
       classNames: 'column-span-4'
     },
-    [getEntityAddressKey(0, CASE, DATETIME_START)]: {
+    [getEntityAddressKey(0, DA_CASE, CASE_NUMBER)]: {
+      classNames: 'column-span-4'
+    },
+    [getEntityAddressKey(0, DA_CASE, GENERAL_DATETIME)]: {
+      classNames: 'column-span-4'
+    },
+    [getEntityAddressKey(0, OFFENSE, DESCRIPTION)]: {
       classNames: 'column-span-4'
     },
   },
@@ -161,7 +200,16 @@ const uiSchema = {
     [getEntityAddressKey(0, PEOPLE, ETHNICITY)]: {
       classNames: 'column-span-4'
     },
-  }
+  },
+  [getPageSectionKey(1, 3)]: {
+    classNames: 'column-span-12 grid-container',
+    [getEntityAddressKey(0, FORM, DATETIME_ADMINISTERED)]: {
+      'ui:widget': 'hidden',
+    },
+    [getEntityAddressKey(0, FORM, NAME)]: {
+      'ui:widget': 'hidden',
+    },
+  },
 };
 
 export {
