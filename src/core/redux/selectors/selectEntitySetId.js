@@ -2,9 +2,10 @@
 import { Map } from 'immutable';
 import { Models } from 'lattice';
 
-import { APP_PATHS, ENTITY_SET_ID } from '../../../containers/app/constants';
+import { APP_PATHS, APP_REDUX_CONSTANTS } from '../constants';
 
 const { FQN } = Models;
+const { ENTITY_SET_ID } = APP_REDUX_CONSTANTS;
 
 export default function selectEntitySetId(appType :FQN) {
 

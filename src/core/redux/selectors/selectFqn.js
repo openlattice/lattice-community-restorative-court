@@ -2,7 +2,7 @@
 import { Map } from 'immutable';
 import { Models } from 'lattice';
 
-import { APP_PATHS } from '../../../containers/app/constants';
+import { APP_PATHS } from '../constants';
 
 const { FQN } = Models;
 

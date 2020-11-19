@@ -27,6 +27,10 @@ export const {
 } = ReduxConstants;
 
 export const SEARCH_RESULTS :'searchResults' = 'searchResults';
+export const NEIGHBOR_DIRECTIONS = {
+  DST: 'dst',
+  SRC: 'src',
+};
 
 // TODO: does this belong here?
 export const INITIAL_SEARCH_RESULTS :Map = fromJS({ initial: true });
@@ -39,3 +43,22 @@ export const RS_INITIAL_STATE = {
 
 export const PROPERTY_TYPE_IDS :string = 'propertyTypeIds';
 export const PROPERTY_FQNS_BY_TYPE_ID :string = 'propertyFqnsByTypeId';
+
+// App
+
+export const APP_REDUX_CONSTANTS = {
+  APP: 'app',
+  APP_CONFIG: 'appConfig',
+  ENTITY_SET_ID: 'entitySetId',
+  ENTITY_SET_IDS: 'entitySetIds',
+  FQNS_BY_ESID: 'fqnsByESID',
+  MATCH: 'match',
+  ROOT: 'root',
+};
+
+export const APP_PATHS = {
+  APP_CONFIG: [APP, APP_REDUX_CONSTANTS.APP_CONFIG, 'config'],
+  FQNS_BY_ESID: [APP, APP_REDUX_CONSTANTS.FQNS_BY_ESID],
+  MATCH: [APP, APP_REDUX_CONSTANTS.MATCH],
+  ROOT: [APP, APP_REDUX_CONSTANTS.ROOT],
+};

@@ -6,15 +6,14 @@ import { Map, fromJS } from 'immutable';
 
 import initializeApplicationReducer from './initializeApplicationReducer';
 
-import { RS_INITIAL_STATE } from '../../../core/redux/constants';
+import { APP_REDUX_CONSTANTS, RS_INITIAL_STATE } from '../../../core/redux/constants';
 import { INITIALIZE_APPLICATION, initializeApplication } from '../actions';
-import {
+
+const {
   APP_CONFIG,
   ENTITY_SET_IDS,
   FQNS_BY_ESID,
-  MATCH,
-  ROOT,
-} from '../constants';
+} = APP_REDUX_CONSTANTS;
 
 const INITIAL_STATE :Map = fromJS({
   // actions
@@ -23,8 +22,6 @@ const INITIAL_STATE :Map = fromJS({
   [APP_CONFIG]: Map(),
   [ENTITY_SET_IDS]: Map(),
   [FQNS_BY_ESID]: Map(),
-  [MATCH]: '',
-  [ROOT]: '',
 });
 
 export default function reducer(state :Map<*, *> = INITIAL_STATE, action :Object) {

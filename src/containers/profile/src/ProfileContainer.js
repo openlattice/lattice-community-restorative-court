@@ -15,10 +15,9 @@ import { PERSON, PROFILE } from './reducers/constants';
 import { CenterWrapper } from './styled';
 
 import { CrumbItem, Crumbs } from '../../../components/crumbs';
-import { REQUEST_STATE } from '../../../core/redux/constants';
+import { APP_PATHS, REQUEST_STATE } from '../../../core/redux/constants';
 import { getPersonName } from '../../../utils/people';
 import { useDispatch, useSelector } from '../../app/AppProvider';
-import { APP_PATHS } from '../../app/constants';
 
 const { media } = StyleUtils;
 const { isPending } = ReduxUtils;

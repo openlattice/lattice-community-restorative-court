@@ -16,9 +16,9 @@ import { getPersonNeighborsWorker } from './getPersonNeighbors';
 import { getStaffWorker } from './getStaff';
 
 import { AppTypes } from '../../../../core/edm/constants';
+import { NEIGHBOR_DIRECTIONS } from '../../../../core/redux/constants';
 import { selectEntitySetId } from '../../../../core/redux/selectors';
 import { ERR_ACTION_VALUE_NOT_DEFINED } from '../../../../utils/error/constants';
-import { NEIGHBOR_DIRECTIONS } from '../../../app/constants';
 import {
   LOAD_PROFILE,
   getPerson,

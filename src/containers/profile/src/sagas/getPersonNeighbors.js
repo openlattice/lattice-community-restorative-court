@@ -17,10 +17,10 @@ import { getFormNeighborsWorker } from './getFormNeighbors';
 import { getPersonCaseNeighborsWorker } from './getPersonCaseNeighbors';
 
 import { AppTypes, PropertyTypes } from '../../../../core/edm/constants';
+import { APP_PATHS, NEIGHBOR_DIRECTIONS } from '../../../../core/redux/constants';
 import { selectEntitySetId } from '../../../../core/redux/selectors';
 import { NeighborUtils } from '../../../../utils/data';
 import { ERR_ACTION_VALUE_NOT_DEFINED } from '../../../../utils/error/constants';
-import { APP_PATHS, NEIGHBOR_DIRECTIONS } from '../../../app/constants';
 import {
   GET_PERSON_NEIGHBORS,
   getFormNeighbors,

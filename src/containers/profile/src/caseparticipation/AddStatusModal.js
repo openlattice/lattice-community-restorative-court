@@ -16,10 +16,15 @@ import { DateTime } from 'luxon';
 
 import { AppTypes, PropertyTypes } from '../../../../core/edm/constants';
 import { resetRequestState } from '../../../../core/redux/actions';
-import { EDM, PROPERTY_TYPE_IDS, REQUEST_STATE } from '../../../../core/redux/constants';
+import {
+  APP,
+  APP_REDUX_CONSTANTS,
+  EDM,
+  PROPERTY_TYPE_IDS,
+  REQUEST_STATE
+} from '../../../../core/redux/constants';
 import { hydrateSchema } from '../../../../utils/form';
 import { useDispatch, useSelector } from '../../../app/AppProvider';
-import { APP, ENTITY_SET_IDS } from '../../../app/constants';
 import { ADD_CASE_STATUS, addCaseStatus } from '../actions';
 import { PERSON, PROFILE, STAFF_MEMBERS } from '../reducers/constants';
 import { schema, uiSchema } from '../schemas/AddStatusSchemas';
@@ -42,6 +47,7 @@ const {
 } = AppTypes;
 const { EFFECTIVE_DATE, GIVEN_NAME, SURNAME } = PropertyTypes;
 const { OPENLATTICE_ID_FQN } = Constants;
+const { ENTITY_SET_IDS } = APP_REDUX_CONSTANTS;
 
 type Props = {
   caseEKID :?UUID;
