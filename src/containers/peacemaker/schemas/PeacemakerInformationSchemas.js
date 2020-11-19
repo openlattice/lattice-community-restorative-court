@@ -26,8 +26,13 @@ const schema = {
       title: '',
       properties: {
         [getEntityAddressKey(0, COMMUNICATION, LANGUAGE)]: {
-          type: 'string',
+          type: 'array',
           title: 'Languages Spoken',
+          items: {
+            type: 'string',
+            enum: [],
+          },
+          uniqueItems: true,
         },
         [getEntityAddressKey(0, PERSON_DETAILS, INTERESTS_AND_HOBBIES)]: {
           type: 'string',
