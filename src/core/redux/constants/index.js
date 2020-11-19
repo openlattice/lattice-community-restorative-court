@@ -6,6 +6,8 @@ import { Map, fromJS } from 'immutable';
 import { ReduxConstants } from 'lattice-utils';
 import { RequestStates } from 'redux-reqseq';
 
+import * as ProfileReduxConstants from './ProfileReduxConstants';
+
 export const {
   APP,
   AUTH,
@@ -26,27 +28,27 @@ export const {
   USERS,
 } = ReduxConstants;
 
-export const SEARCH_RESULTS :'searchResults' = 'searchResults';
-export const NEIGHBOR_DIRECTIONS = {
+const SEARCH_RESULTS :'searchResults' = 'searchResults';
+const NEIGHBOR_DIRECTIONS = {
   DST: 'dst',
   SRC: 'src',
 };
 
 // TODO: does this belong here?
-export const INITIAL_SEARCH_RESULTS :Map = fromJS({ initial: true });
+const INITIAL_SEARCH_RESULTS :Map = fromJS({ initial: true });
 
 // TODO: does this belong here?
-export const RS_INITIAL_STATE = {
+const RS_INITIAL_STATE = {
   [ERROR]: false,
   [REQUEST_STATE]: RequestStates.STANDBY,
 };
 
-export const PROPERTY_TYPE_IDS :string = 'propertyTypeIds';
-export const PROPERTY_FQNS_BY_TYPE_ID :string = 'propertyFqnsByTypeId';
+const PROPERTY_TYPE_IDS :string = 'propertyTypeIds';
+const PROPERTY_FQNS_BY_TYPE_ID :string = 'propertyFqnsByTypeId';
 
 // App
 
-export const APP_REDUX_CONSTANTS = {
+const APP_REDUX_CONSTANTS = {
   APP: 'app',
   APP_CONFIG: 'appConfig',
   ENTITY_SET_ID: 'entitySetId',
@@ -56,9 +58,21 @@ export const APP_REDUX_CONSTANTS = {
   ROOT: 'root',
 };
 
-export const APP_PATHS = {
+const APP_PATHS = {
   APP_CONFIG: [APP, APP_REDUX_CONSTANTS.APP_CONFIG, 'config'],
   FQNS_BY_ESID: [APP, APP_REDUX_CONSTANTS.FQNS_BY_ESID],
   MATCH: [APP, APP_REDUX_CONSTANTS.MATCH],
   ROOT: [APP, APP_REDUX_CONSTANTS.ROOT],
+};
+
+export {
+  APP_PATHS,
+  APP_REDUX_CONSTANTS,
+  INITIAL_SEARCH_RESULTS,
+  NEIGHBOR_DIRECTIONS,
+  PROPERTY_FQNS_BY_TYPE_ID,
+  PROPERTY_TYPE_IDS,
+  ProfileReduxConstants,
+  RS_INITIAL_STATE,
+  SEARCH_RESULTS,
 };
