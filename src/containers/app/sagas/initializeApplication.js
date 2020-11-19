@@ -43,14 +43,12 @@ const LOG = new Logger('AppSagas');
 
 function* initializeApplicationWorker(action :SequenceAction) :Saga<*> {
   const workerResponse :Object = {};
-  console.log('action ', action);
 
   try {
     yield put(initializeApplication.request(action.id));
 
     const { value: { match, organizationId, root } } = action;
     if (!isValidUUID(organizationId) || typeof root !== 'string' || !isDefined(match)) throw ERR_ACTION_VALUE_TYPE;
-    yield put(initializeApplication.request(action.id));
 
     /*
      * 1. load App and EDM
