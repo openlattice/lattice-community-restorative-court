@@ -28,7 +28,7 @@ const APP_TYPE_FQNS = {
   PERSON_DETAILS: FQN.of('app.persondetails'),
   RECORDED_BY: FQN.of('app.recordedby'),
   REFERRAL_REQUEST: FQN.of('app.referralrequest'),
-  REGISTERED_FOR: FQN.of('app.'),
+  REGISTERED_FOR: FQN.of('app.registeredfor'),
   RELATED_TO: FQN.of('app.relatedto'),
   RESULTS_IN: FQN.of('app.resultsin'),
   SCREENED_WITH: FQN.of('app.screenedwith'),
