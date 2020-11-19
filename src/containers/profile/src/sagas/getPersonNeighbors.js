@@ -42,7 +42,7 @@ const {
 const { FQN } = Models;
 const {
   APPEARS_IN,
-  CASE,
+  CRC_CASE,
   FORM,
   PEOPLE,
 } = AppTypes;
@@ -107,8 +107,8 @@ function* getPersonNeighborsWorker(action :SequenceAction) :Saga<*> {
         });
       });
     });
-    if (isDefined(personNeighborMap.get(CASE))) {
-      const personCaseEKIDs :UUID[] = personNeighborMap.get(CASE)
+    if (isDefined(personNeighborMap.get(CRC_CASE))) {
+      const personCaseEKIDs :UUID[] = personNeighborMap.get(CRC_CASE)
         .map((personCase :Map) => getEntityKeyId(personCase))
         .toJS();
       yield call(getPersonCaseNeighborsWorker, getPersonCaseNeighbors(personCaseEKIDs));

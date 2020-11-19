@@ -33,7 +33,7 @@ import { schema, uiSchema } from '../schemas/AddStatusSchemas';
 
 const { PROFILE, STAFF_MEMBERS } = ProfileReduxConstants;
 const {
-  CASE,
+  CRC_CASE,
   HAS,
   PEOPLE,
   RECORDED_BY,
@@ -93,7 +93,7 @@ const CaseDetailsModal = ({
     const associations = [
       [RECORDED_BY, 0, STATUS, selectedStaffEKID, STAFF, {}],
       [HAS, personEKID, PEOPLE, 0, STATUS, {}],
-      [HAS, caseEKID, CASE, 0, STATUS, {}],
+      [HAS, caseEKID, CRC_CASE, 0, STATUS, {}],
     ];
     const associationEntityData = processAssociationEntityData(associations, entitySetIds, propertyTypeIds);
     let updatedFormData = removeIn(formData, staffMemberPath);

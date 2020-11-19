@@ -29,7 +29,7 @@ import {
 } from '../actions';
 
 const { isDefined } = LangUtils;
-const { CASE, FORM, ROLE } = AppTypes;
+const { CRC_CASE, FORM } = AppTypes;
 const { DST } = NEIGHBOR_DIRECTIONS;
 
 const LOG = new Logger('ProfileSagas');
@@ -50,14 +50,12 @@ function* loadProfileWorker(action :SequenceAction) :Saga<*> {
 
     const personEKID :UUID = value;
 
-    const caseESID :UUID = yield select(selectEntitySetId(CASE));
+    const caseESID :UUID = yield select(selectEntitySetId(CRC_CASE));
     const formESID :UUID = yield select(selectEntitySetId(FORM));
-    const roleESID :UUID = yield select(selectEntitySetId(ROLE));
 
     const neighborESIDs = [
       { direction: DST, entitySetId: caseESID },
       { direction: DST, entitySetId: formESID },
-      { direction: DST, entitySetId: roleESID },
     ];
 
     const workerResponses :Object[] = yield all([

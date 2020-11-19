@@ -13,11 +13,11 @@ import { useSelector } from '../../../app/AppProvider';
 import { Header } from '../../typography';
 
 const { PERSON_NEIGHBOR_MAP, PROFILE } = ProfileReduxConstants;
-const { CASE } = AppTypes;
+const { CRC_CASE } = AppTypes;
 const { getEntityKeyId } = DataUtils;
 
 const CaseParticipation = () => {
-  const personCases :List = useSelector((store) => store.getIn([PROFILE, PERSON_NEIGHBOR_MAP, CASE], List()));
+  const personCases :List = useSelector((store) => store.getIn([PROFILE, PERSON_NEIGHBOR_MAP, CRC_CASE], List()));
   return (
     <div>
       <Header>Case Participation</Header>

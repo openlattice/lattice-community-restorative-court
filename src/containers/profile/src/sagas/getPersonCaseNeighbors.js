@@ -29,7 +29,7 @@ const { getAssociationDetails, getNeighborDetails, getNeighborESID } = NeighborU
 const { FQN } = Models;
 const { ROLE } = PropertyTypes;
 const {
-  CASE,
+  CRC_CASE,
   FORM,
   PEOPLE,
   REFERRAL_REQUEST,
@@ -56,7 +56,7 @@ function* getPersonCaseNeighborsWorker(action :SequenceAction) :Saga<*> {
 
     const personCaseEKIDs :UUID[] = value;
 
-    const caseESID :UUID = yield select(selectEntitySetId(CASE));
+    const caseESID :UUID = yield select(selectEntitySetId(CRC_CASE));
     const formESID :UUID = yield select(selectEntitySetId(FORM));
     const peopleESID :UUID = yield select(selectEntitySetId(PEOPLE));
     const referralRequestESID :UUID = yield select(selectEntitySetId(REFERRAL_REQUEST));
