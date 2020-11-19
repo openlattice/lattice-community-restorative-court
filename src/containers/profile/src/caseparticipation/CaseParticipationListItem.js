@@ -9,6 +9,7 @@ import {
   Colors,
 } from 'lattice-ui-kit';
 import { DataUtils, DateTimeUtils } from 'lattice-utils';
+import type { UUID } from 'lattice';
 
 import CaseDetailsModal from './CaseDetailsModal';
 

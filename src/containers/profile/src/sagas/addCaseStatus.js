@@ -10,6 +10,7 @@ import { List, Map, fromJS } from 'immutable';
 import { Constants } from 'lattice';
 import { LangUtils, Logger } from 'lattice-utils';
 import type { Saga } from '@redux-saga/core';
+import type { UUID } from 'lattice';
 import type { SequenceAction } from 'redux-reqseq';
 
 import { submitDataGraph } from '../../../../core/data/actions';

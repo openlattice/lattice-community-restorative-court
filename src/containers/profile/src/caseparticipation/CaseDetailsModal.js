@@ -12,6 +12,7 @@ import {
   Modal,
 } from 'lattice-ui-kit';
 import { DataUtils, LangUtils } from 'lattice-utils';
+import type { UUID } from 'lattice';
 
 import AddStatusModal from './AddStatusModal';
 import CaseDetailsModalHeader from './CaseDetailsModalHeader';

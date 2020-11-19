@@ -13,6 +13,7 @@ import { DataProcessingUtils, Form } from 'lattice-fabricate';
 import { Modal, ModalFooter } from 'lattice-ui-kit';
 import { DataUtils, ReduxUtils } from 'lattice-utils';
 import { DateTime } from 'luxon';
+import type { UUID } from 'lattice';
 
 import { AppTypes, PropertyTypes } from '../../../../core/edm/constants';
 import { resetRequestState } from '../../../../core/redux/actions';

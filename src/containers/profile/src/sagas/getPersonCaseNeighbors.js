@@ -11,6 +11,7 @@ import { Models } from 'lattice';
 import { SearchApiActions, SearchApiSagas } from 'lattice-sagas';
 import { DataUtils, LangUtils, Logger } from 'lattice-utils';
 import type { Saga } from '@redux-saga/core';
+import type { UUID } from 'lattice';
 import type { SequenceAction } from 'redux-reqseq';
 
 import { AppTypes, PropertyTypes } from '../../../../core/edm/constants';
