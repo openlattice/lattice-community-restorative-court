@@ -9,6 +9,7 @@ const { FQN } = Models;
 const PROPERTY_TYPE_FQNS = {
   CONTACT_DATETIME: FQN.of('ol.contactdatetime'),
   DATETIME_ADMINISTERED: FQN.of('ol.datetimeadministered'),
+  DATETIME_RECEIVED: FQN.of('datetime.received'),
   DATETIME_START: FQN.of('ol.datetimestart'),
   DESCRIPTION: FQN.of('ol.description'),
   DOB: FQN.of('nc.PersonBirthDate'),
@@ -17,6 +18,7 @@ const PROPERTY_TYPE_FQNS = {
   INTERESTS_AND_HOBBIES: FQN.of('ol.interestsandhobbies'),
   LANGUAGE: FQN.of('ol.language'),
   NAME: FQN.of('ol.name'),
+  NOTES: FQN.of('ol.notes'),
   OL_DATE_TIME: FQN.of('ol.datetime'),
   OL_ID: FQN.of('ol.id'),
   OUTCOME: FQN.of('ol.outcome'),

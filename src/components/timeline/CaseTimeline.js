@@ -4,13 +4,13 @@ import React from 'react';
 import styled from 'styled-components';
 import { List, Map } from 'immutable';
 import {
-  Colors,
   Timeline,
   TimelineConnector,
   TimelineContent,
   TimelineDot,
   TimelineItem,
   TimelineSeparator,
+  Typography,
 } from 'lattice-ui-kit';
 import { DataUtils, LangUtils } from 'lattice-utils';
 import { DateTime } from 'luxon';
@@ -21,7 +21,6 @@ import { PropertyTypes } from '../../core/edm/constants';
 import { MM_DD_YYYY } from '../../utils/datetime/constants';
 import { getPersonName } from '../../utils/people';
 
-const { NEUTRAL } = Colors;
 const {
   DESCRIPTION,
   EFFECTIVE_DATE,
@@ -34,28 +33,12 @@ const { getEntityKeyId, getPropertyValue } = DataUtils;
 
 const TimelineContentWrapper = styled.div`
   display: flex;
-`;
 
-const Date = styled.div`
-  font-size: 14px;
-  font-weight: 600;
-`;
-
-const StatusDetailsWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin-left: 16px;
-`;
-
-const Status = styled.div`
-  color: ${NEUTRAL.N900};
-  font-size: 14px;
-  font-weight: 600;
-  text-transform: uppercase;
-`;
-
-const StatusDescription = styled.div`
-  font-size: 16px;
+  div:nth-child(2) {
+    display: flex;
+    flex-direction: column;
+    margin-left: 16px;
+  }
 `;
 
 type Props = {
@@ -85,18 +68,18 @@ const CaseTimeline = ({ caseStatuses, referralRequest, staffMemberByStatusEKID }
             </TimelineSeparator>
             <TimelineContent>
               <TimelineContentWrapper>
-                <Date>{date}</Date>
-                <StatusDetailsWrapper>
-                  <Status subtle>{status}</Status>
-                  <StatusDescription>
+                <Typography variant="subtitle1">{date}</Typography>
+                <div>
+                  <Typography variant="overline">{status}</Typography>
+                  <Typography variant="body1">
                     {status === CLOSED && description}
                     {(status === REFERRAL && isDefined(referralRequest)) && referralSource}
                     {(status !== CLOSED
                         && status !== REFERRAL
                         && !staffMemberWhoRecordedStatus.isEmpty())
                         && `Case Manager: ${getPersonName(staffMemberWhoRecordedStatus)}`}
-                  </StatusDescription>
-                </StatusDetailsWrapper>
+                  </Typography>
+                </div>
               </TimelineContentWrapper>
             </TimelineContent>
           </TimelineItem>

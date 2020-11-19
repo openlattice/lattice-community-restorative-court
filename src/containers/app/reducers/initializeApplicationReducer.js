@@ -11,7 +11,7 @@ import { INITIALIZE_APPLICATION, initializeApplication } from '../actions';
 
 const { APP_CONFIG, ENTITY_SET_IDS, FQNS_BY_ESID } = APP_REDUX_CONSTANTS;
 
-export default function initializeApplicationReducer(state :Map, action :SequenceAction) {
+export default function reducer(state :Map, action :SequenceAction) {
 
   return initializeApplication.reducer(state, action, {
     REQUEST: () => state.setIn([INITIALIZE_APPLICATION, REQUEST_STATE], RequestStates.PENDING),
