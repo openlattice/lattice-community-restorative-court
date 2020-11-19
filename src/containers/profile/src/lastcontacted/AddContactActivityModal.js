@@ -6,12 +6,18 @@ import { DataProcessingUtils, Form } from 'lattice-fabricate';
 import { Modal, ModalFooter } from 'lattice-ui-kit';
 import { DataUtils, ReduxUtils } from 'lattice-utils';
 import { DateTime } from 'luxon';
+import type { UUID } from 'lattice';
 
 import { AppTypes, PropertyTypes } from '../../../../core/edm/constants';
 import { resetRequestState } from '../../../../core/redux/actions';
-import { EDM, PROPERTY_TYPE_IDS, REQUEST_STATE } from '../../../../core/redux/constants';
+import {
+  APP,
+  APP_REDUX_CONSTANTS,
+  EDM,
+  PROPERTY_TYPE_IDS,
+  REQUEST_STATE,
+} from '../../../../core/redux/constants';
 import { useDispatch, useSelector } from '../../../app/AppProvider';
-import { APP, ENTITY_SET_IDS } from '../../../app/constants';
 import { ADD_CONTACT_ACTIVITY, addContactActivity } from '../actions';
 import { PERSON, PROFILE } from '../reducers/constants';
 import { schema, uiSchema } from '../schemas/AddContactActivitySchemas';
@@ -40,7 +46,7 @@ const AddContactActivityModal = ({ isVisible, onClose } :Props) => {
     setFormData(updatedFormData);
   };
 
-  const entitySetIds :Map = useSelector((store) => store.getIn([APP, ENTITY_SET_IDS]));
+  const entitySetIds :Map = useSelector((store) => store.getIn([APP, APP_REDUX_CONSTANTS.ENTITY_SET_IDS]));
   const propertyTypeIds :Map = useSelector((store) => store.getIn([EDM, PROPERTY_TYPE_IDS]));
   const person :Map = useSelector((store) => store.getIn([PROFILE, PERSON]));
   const personEKID :?UUID = getEntityKeyId(person);

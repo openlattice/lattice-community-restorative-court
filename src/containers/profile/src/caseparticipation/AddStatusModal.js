@@ -13,27 +13,27 @@ import { DataProcessingUtils, Form } from 'lattice-fabricate';
 import { Modal, ModalFooter } from 'lattice-ui-kit';
 import { DataUtils, ReduxUtils } from 'lattice-utils';
 import { DateTime } from 'luxon';
+import type { UUID } from 'lattice';
 
 import { AppTypes, PropertyTypes } from '../../../../core/edm/constants';
 import { resetRequestState } from '../../../../core/redux/actions';
-import { EDM, PROPERTY_TYPE_IDS, REQUEST_STATE } from '../../../../core/redux/constants';
+import {
+  APP,
+  APP_REDUX_CONSTANTS,
+  EDM,
+  PROPERTY_TYPE_IDS,
+  ProfileReduxConstants,
+  REQUEST_STATE
+} from '../../../../core/redux/constants';
+import { selectPerson } from '../../../../core/redux/selectors';
 import { hydrateSchema } from '../../../../utils/form';
 import { useDispatch, useSelector } from '../../../app/AppProvider';
-import { APP, ENTITY_SET_IDS } from '../../../app/constants';
 import { ADD_CASE_STATUS, addCaseStatus } from '../actions';
-import { PERSON, PROFILE, STAFF_MEMBERS } from '../reducers/constants';
 import { schema, uiSchema } from '../schemas/AddStatusSchemas';
 
-const { getEntityKeyId } = DataUtils;
+const { PROFILE, STAFF_MEMBERS } = ProfileReduxConstants;
 const {
-  getEntityAddressKey,
-  getPageSectionKey,
-  processAssociationEntityData,
-  processEntityData,
-} = DataProcessingUtils;
-const { isPending, isSuccess } = ReduxUtils;
-const {
-  CASE,
+  CRC_CASE,
   HAS,
   PEOPLE,
   RECORDED_BY,
@@ -42,6 +42,15 @@ const {
 } = AppTypes;
 const { EFFECTIVE_DATE, GIVEN_NAME, SURNAME } = PropertyTypes;
 const { OPENLATTICE_ID_FQN } = Constants;
+const { ENTITY_SET_IDS } = APP_REDUX_CONSTANTS;
+const { getEntityKeyId } = DataUtils;
+const {
+  getEntityAddressKey,
+  getPageSectionKey,
+  processAssociationEntityData,
+  processEntityData,
+} = DataProcessingUtils;
+const { isPending, isSuccess } = ReduxUtils;
 
 type Props = {
   caseEKID :?UUID;
@@ -65,7 +74,7 @@ const CaseDetailsModal = ({
     ['properties', getPageSectionKey(1, 1), 'properties', getEntityAddressKey(0, STAFF, OPENLATTICE_ID_FQN)]
   );
 
-  const person :Map = useSelector((store) => store.getIn([PROFILE, PERSON]));
+  const person :Map = useSelector(selectPerson);
   const personEKID :?UUID = getEntityKeyId(person);
 
   const entitySetIds :Map = useSelector((store) => store.getIn([APP, ENTITY_SET_IDS]));
@@ -84,7 +93,7 @@ const CaseDetailsModal = ({
     const associations = [
       [RECORDED_BY, 0, STATUS, selectedStaffEKID, STAFF, {}],
       [HAS, personEKID, PEOPLE, 0, STATUS, {}],
-      [HAS, caseEKID, CASE, 0, STATUS, {}],
+      [HAS, caseEKID, CRC_CASE, 0, STATUS, {}],
     ];
     const associationEntityData = processAssociationEntityData(associations, entitySetIds, propertyTypeIds);
     let updatedFormData = removeIn(formData, staffMemberPath);

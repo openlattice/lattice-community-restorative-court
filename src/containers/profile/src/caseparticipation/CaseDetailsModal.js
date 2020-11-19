@@ -12,41 +12,37 @@ import {
   Modal,
 } from 'lattice-ui-kit';
 import { DataUtils, LangUtils } from 'lattice-utils';
+import type { UUID } from 'lattice';
 
 import AddStatusModal from './AddStatusModal';
 import CaseDetailsModalHeader from './CaseDetailsModalHeader';
 
-import { CaseTimeline, DocumentList, RoleTag } from '../../../../components';
+import {
+  CaseTimeline,
+  DocumentList,
+  ModalInnerWrapper,
+  RoleTag,
+} from '../../../../components';
 import { AppTypes, PropertyTypes } from '../../../../core/edm/constants';
+import { ProfileReduxConstants } from '../../../../core/redux/constants';
 import { getPersonName } from '../../../../utils/people';
 import { useSelector } from '../../../app/AppProvider';
 import { Header } from '../../typography';
 import { CaseStatusConstants, RoleConstants } from '../constants';
-import {
+
+const {
   FORM_NEIGHBOR_MAP,
   PERSON_CASE_NEIGHBOR_MAP,
   PROFILE,
   STAFF_MEMBER_BY_STATUS_EKID,
-} from '../reducers/constants';
-
-const { getEntityKeyId, getPropertyValue } = DataUtils;
-const { isDefined } = LangUtils;
+} = ProfileReduxConstants;
 const { NEUTRAL } = Colors;
 const { FORM, REFERRAL_REQUEST, STATUS } = AppTypes;
 const { DATETIME_ADMINISTERED, EFFECTIVE_DATE } = PropertyTypes;
 const { PEACEMAKER, RESPONDENT, VICTIM } = RoleConstants;
 const { CLOSED, RESOLUTION } = CaseStatusConstants;
-
-const ModalInnerWrapper = styled.div`
-  /* these responsive styles will need to be tested when the module is loaded into CARE */
-  @media only screen and (min-width: 584px) {
-    width: 584px;
-  }
-
-  @media only screen and (min-width: 900px) {
-    width: 900px;
-  }
-`;
+const { getEntityKeyId, getPropertyValue } = DataUtils;
+const { isDefined } = LangUtils;
 
 const CaseHeader = styled(Header)`
   padding-top: 24px;

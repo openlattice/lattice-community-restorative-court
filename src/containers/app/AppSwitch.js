@@ -4,16 +4,18 @@ import React, { useEffect } from 'react';
 import { Spinner } from 'lattice-ui-kit';
 import { ReduxUtils } from 'lattice-utils';
 import { Route, Switch } from 'react-router-dom';
+import type { UUID } from 'lattice';
 import type { Match } from 'react-router';
 import type { RequestState } from 'redux-reqseq';
 
 import { useDispatch, useSelector } from './AppProvider';
 import { INITIALIZE_APPLICATION, initializeApplication } from './actions';
 
+import PeacemakerInformationForm from '../peacemaker/PeacemakerInformationForm';
 import ProfileContainer from '../profile/src/ProfileContainer';
 import ReferralForm from '../referral/ReferralForm';
 import { APP, REQUEST_STATE } from '../../core/redux/constants';
-import { PERSON_ID, REFERRAL } from '../../core/router/Routes';
+import { PEACEMAKER_INFORMATION, PERSON_ID, REFERRAL } from '../../core/router/Routes';
 import { CenterWrapper } from '../profile/src/styled';
 
 const { isPending } = ReduxUtils;
@@ -47,6 +49,9 @@ const AppSwitch = ({
   return (
     <Switch>
       <Route path={`${root}/${PERSON_ID}/${REFERRAL}`} render={() => <ReferralForm />} />
+      <Route
+          path={`${root}/${PERSON_ID}/${PEACEMAKER_INFORMATION}`}
+          render={() => <PeacemakerInformationForm personId={personId} />} />
       <Route render={() => <ProfileContainer personId={personId} />} />
     </Switch>
   );

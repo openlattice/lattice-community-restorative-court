@@ -9,9 +9,9 @@ import { Button, Colors, Modal } from 'lattice-ui-kit';
 import { DataUtils } from 'lattice-utils';
 
 import { useDispatch, useSelector } from '../../containers/app/AppProvider';
-import { APP_PATHS } from '../../containers/app/constants';
-import { PERSON, PROFILE } from '../../containers/profile/src/reducers/constants';
-import { PERSON_ID, REFERRAL } from '../../core/router/Routes';
+import { APP_PATHS } from '../../core/redux/constants';
+import { selectPerson } from '../../core/redux/selectors';
+import { PEACEMAKER_INFORMATION, PERSON_ID, REFERRAL } from '../../core/router/Routes';
 import { goToRoute } from '../../core/router/RoutingActions';
 import { getPersonName } from '../../utils/people';
 
@@ -35,7 +35,7 @@ type Props = {
 };
 
 const ChooseFormTypeModal = ({ isVisible, onClose } :Props) => {
-  const person :Map = useSelector((store) => store.getIn([PROFILE, PERSON]));
+  const person :Map = useSelector(selectPerson);
   const personName :string = getPersonName(person);
   const personEKID = getEntityKeyId(person);
   const text = `For: ${personName}`;
@@ -45,6 +45,11 @@ const ChooseFormTypeModal = ({ isVisible, onClose } :Props) => {
   const root = useSelector((store) => store.getIn(APP_PATHS.ROOT));
   const goToReferral = () => {
     if (personEKID) dispatch(goToRoute(`${root}/${PERSON_ID}/${REFERRAL}`.replace(PERSON_ID, personEKID)));
+  };
+  const goToPeacemakerInformation = () => {
+    if (personEKID) {
+      dispatch(goToRoute(`${root}/${PERSON_ID}/${PEACEMAKER_INFORMATION}`.replace(PERSON_ID, personEKID)));
+    }
   };
   return (
     <Modal
@@ -70,7 +75,7 @@ const ChooseFormTypeModal = ({ isVisible, onClose } :Props) => {
           {Icon}
           Restitution Referral
         </Button>
-        <Button onClick={() => {}}>
+        <Button onClick={goToPeacemakerInformation}>
           {Icon}
           Peacemaker Information Form
         </Button>

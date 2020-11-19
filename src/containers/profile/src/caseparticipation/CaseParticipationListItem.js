@@ -9,15 +9,16 @@ import {
   Colors,
 } from 'lattice-ui-kit';
 import { DataUtils, DateTimeUtils } from 'lattice-utils';
+import type { UUID } from 'lattice';
 
 import CaseDetailsModal from './CaseDetailsModal';
 
 import { RoleTag } from '../../../../components';
 import { PropertyTypes } from '../../../../core/edm/constants';
+import { ProfileReduxConstants } from '../../../../core/redux/constants';
 import { getPersonName } from '../../../../utils/people';
 import { useSelector } from '../../../app/AppProvider';
 import { RoleConstants } from '../constants';
-import { PERSON_CASE_NEIGHBOR_MAP, PERSON_NEIGHBOR_MAP, PROFILE } from '../reducers/constants';
 
 const {
   DATETIME_START,
@@ -26,6 +27,7 @@ const {
 } = PropertyTypes;
 const { NEUTRAL } = Colors;
 const { RESPONDENT } = RoleConstants;
+const { PERSON_CASE_NEIGHBOR_MAP, PERSON_NEIGHBOR_MAP, PROFILE } = ProfileReduxConstants;
 const { formatAsDate } = DateTimeUtils;
 const { getEntityKeyId, getPropertyValue } = DataUtils;
 
