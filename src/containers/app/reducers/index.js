@@ -9,11 +9,7 @@ import initializeApplicationReducer from './initializeApplicationReducer';
 import { APP_REDUX_CONSTANTS, RS_INITIAL_STATE } from '../../../core/redux/constants';
 import { INITIALIZE_APPLICATION, initializeApplication } from '../actions';
 
-const {
-  APP_CONFIG,
-  ENTITY_SET_IDS,
-  FQNS_BY_ESID,
-} = APP_REDUX_CONSTANTS;
+const { APP_CONFIG, ENTITY_SET_IDS, FQNS_BY_ESID } = APP_REDUX_CONSTANTS;
 
 const INITIAL_STATE :Map = fromJS({
   // actions

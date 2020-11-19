@@ -6,15 +6,10 @@ import { Map } from 'immutable';
 import { RequestStates } from 'redux-reqseq';
 import type { SequenceAction } from 'redux-reqseq';
 
-import {
-  REQUEST_STATE,
-} from '../../../core/redux/constants';
+import { APP_REDUX_CONSTANTS, REQUEST_STATE } from '../../../core/redux/constants';
 import { INITIALIZE_APPLICATION, initializeApplication } from '../actions';
-import {
-  APP_CONFIG,
-  ENTITY_SET_IDS,
-  FQNS_BY_ESID,
-} from '../constants';
+
+const { APP_CONFIG, ENTITY_SET_IDS, FQNS_BY_ESID } = APP_REDUX_CONSTANTS;
 
 export default function reducer(state :Map, action :SequenceAction) {
 
