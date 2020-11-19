@@ -9,17 +9,9 @@ import getPersonNeighborsReducer from './getPersonNeighborsReducer';
 import getPersonReducer from './getPersonReducer';
 import getStaffReducer from './getStaffReducer';
 import loadProfileReducer from './loadProfileReducer';
-import {
-  FORM_NEIGHBOR_MAP,
-  PERSON,
-  PERSON_CASE_NEIGHBOR_MAP,
-  PERSON_NEIGHBOR_MAP,
-  STAFF_MEMBERS,
-  STAFF_MEMBER_BY_STATUS_EKID,
-} from './constants';
 
 import { RESET_REQUEST_STATE } from '../../../../core/redux/actions';
-import { RS_INITIAL_STATE } from '../../../../core/redux/constants';
+import { ProfileReduxConstants, RS_INITIAL_STATE } from '../../../../core/redux/constants';
 import { resetRequestStateReducer } from '../../../../core/redux/reducers';
 import {
   ADD_CASE_STATUS,
@@ -37,6 +29,15 @@ import {
   getStaff,
   loadProfile,
 } from '../actions';
+
+const {
+  FORM_NEIGHBOR_MAP,
+  PERSON,
+  PERSON_CASE_NEIGHBOR_MAP,
+  PERSON_NEIGHBOR_MAP,
+  STAFF_MEMBERS,
+  STAFF_MEMBER_BY_STATUS_EKID,
+} = ProfileReduxConstants;
 
 const INITIAL_STATE :Map = fromJS({
   // actions

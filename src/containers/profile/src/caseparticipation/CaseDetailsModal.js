@@ -23,24 +23,25 @@ import {
   RoleTag,
 } from '../../../../components';
 import { AppTypes, PropertyTypes } from '../../../../core/edm/constants';
+import { ProfileReduxConstants } from '../../../../core/redux/constants';
 import { getPersonName } from '../../../../utils/people';
 import { useSelector } from '../../../app/AppProvider';
 import { Header } from '../../typography';
 import { CaseStatusConstants, RoleConstants } from '../constants';
-import {
+
+const {
   FORM_NEIGHBOR_MAP,
   PERSON_CASE_NEIGHBOR_MAP,
   PROFILE,
   STAFF_MEMBER_BY_STATUS_EKID,
-} from '../reducers/constants';
-
-const { getEntityKeyId, getPropertyValue } = DataUtils;
-const { isDefined } = LangUtils;
+} = ProfileReduxConstants;
 const { NEUTRAL } = Colors;
 const { FORM, REFERRAL_REQUEST, STATUS } = AppTypes;
 const { DATETIME_ADMINISTERED, EFFECTIVE_DATE } = PropertyTypes;
 const { PEACEMAKER, RESPONDENT, VICTIM } = RoleConstants;
 const { CLOSED, RESOLUTION } = CaseStatusConstants;
+const { getEntityKeyId, getPropertyValue } = DataUtils;
+const { isDefined } = LangUtils;
 
 const CaseHeader = styled(Header)`
   padding-top: 24px;

@@ -3,10 +3,10 @@ import { Map } from 'immutable';
 import { RequestStates } from 'redux-reqseq';
 import type { SequenceAction } from 'redux-reqseq';
 
-import { STAFF_MEMBERS } from './constants';
-
-import { REQUEST_STATE } from '../../../../core/redux/constants';
+import { ProfileReduxConstants, REQUEST_STATE } from '../../../../core/redux/constants';
 import { GET_STAFF, getStaff } from '../actions';
+
+const { STAFF_MEMBERS } = ProfileReduxConstants;
 
 export default function reducer(state :Map, action :SequenceAction) {
 

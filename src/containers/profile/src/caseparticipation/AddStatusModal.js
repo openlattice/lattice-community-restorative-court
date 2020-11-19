@@ -21,23 +21,16 @@ import {
   APP_REDUX_CONSTANTS,
   EDM,
   PROPERTY_TYPE_IDS,
+  ProfileReduxConstants,
   REQUEST_STATE
 } from '../../../../core/redux/constants';
 import { selectPerson } from '../../../../core/redux/selectors';
 import { hydrateSchema } from '../../../../utils/form';
 import { useDispatch, useSelector } from '../../../app/AppProvider';
 import { ADD_CASE_STATUS, addCaseStatus } from '../actions';
-import { PERSON, PROFILE, STAFF_MEMBERS } from '../reducers/constants';
 import { schema, uiSchema } from '../schemas/AddStatusSchemas';
 
-const { getEntityKeyId } = DataUtils;
-const {
-  getEntityAddressKey,
-  getPageSectionKey,
-  processAssociationEntityData,
-  processEntityData,
-} = DataProcessingUtils;
-const { isPending, isSuccess } = ReduxUtils;
+const { PROFILE, STAFF_MEMBERS } = ProfileReduxConstants;
 const {
   CASE,
   HAS,
@@ -49,6 +42,14 @@ const {
 const { EFFECTIVE_DATE, GIVEN_NAME, SURNAME } = PropertyTypes;
 const { OPENLATTICE_ID_FQN } = Constants;
 const { ENTITY_SET_IDS } = APP_REDUX_CONSTANTS;
+const { getEntityKeyId } = DataUtils;
+const {
+  getEntityAddressKey,
+  getPageSectionKey,
+  processAssociationEntityData,
+  processEntityData,
+} = DataProcessingUtils;
+const { isPending, isSuccess } = ReduxUtils;
 
 type Props = {
   caseEKID :?UUID;

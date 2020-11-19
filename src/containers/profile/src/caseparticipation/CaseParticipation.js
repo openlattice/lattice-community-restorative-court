@@ -8,12 +8,13 @@ import { DataUtils } from 'lattice-utils';
 import CaseParticipationListItem from './CaseParticipationListItem';
 
 import { AppTypes } from '../../../../core/edm/constants';
+import { ProfileReduxConstants } from '../../../../core/redux/constants';
 import { useSelector } from '../../../app/AppProvider';
 import { Header } from '../../typography';
-import { PERSON_NEIGHBOR_MAP, PROFILE } from '../reducers/constants';
 
-const { getEntityKeyId } = DataUtils;
+const { PERSON_NEIGHBOR_MAP, PROFILE } = ProfileReduxConstants;
 const { CASE } = AppTypes;
+const { getEntityKeyId } = DataUtils;
 
 const CaseParticipation = () => {
   const personCases :List = useSelector((store) => store.getIn([PROFILE, PERSON_NEIGHBOR_MAP, CASE], List()));
