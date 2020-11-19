@@ -10,12 +10,14 @@ import {
   APP,
   AUTH,
   EDM,
+  ProfileReduxConstants,
 } from './constants';
 
 import profileReducer from '../../containers/profile/src/reducers';
 import { AppReducer } from '../../containers/app';
-import { PROFILE } from '../../containers/profile/src/reducers/constants';
 import { EDMReducer } from '../edm';
+
+const { PROFILE } = ProfileReduxConstants;
 
 export default function reducer(routerHistory :any) {
 

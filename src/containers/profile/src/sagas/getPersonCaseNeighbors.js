@@ -11,13 +11,14 @@ import { Models } from 'lattice';
 import { SearchApiActions, SearchApiSagas } from 'lattice-sagas';
 import { DataUtils, LangUtils, Logger } from 'lattice-utils';
 import type { Saga } from '@redux-saga/core';
+import type { UUID } from 'lattice';
 import type { SequenceAction } from 'redux-reqseq';
 
 import { AppTypes, PropertyTypes } from '../../../../core/edm/constants';
+import { APP_PATHS } from '../../../../core/redux/constants';
 import { selectEntitySetId } from '../../../../core/redux/selectors';
 import { NeighborUtils } from '../../../../utils/data';
 import { ERR_ACTION_VALUE_NOT_DEFINED } from '../../../../utils/error/constants';
-import { APP_PATHS } from '../../../app/constants';
 import { GET_PERSON_CASE_NEIGHBORS, getPersonCaseNeighbors } from '../actions';
 
 const { isDefined } = LangUtils;
@@ -28,7 +29,7 @@ const { getAssociationDetails, getNeighborDetails, getNeighborESID } = NeighborU
 const { FQN } = Models;
 const { ROLE } = PropertyTypes;
 const {
-  CASE,
+  CRC_CASE,
   FORM,
   PEOPLE,
   REFERRAL_REQUEST,
@@ -55,7 +56,7 @@ function* getPersonCaseNeighborsWorker(action :SequenceAction) :Saga<*> {
 
     const personCaseEKIDs :UUID[] = value;
 
-    const caseESID :UUID = yield select(selectEntitySetId(CASE));
+    const caseESID :UUID = yield select(selectEntitySetId(CRC_CASE));
     const formESID :UUID = yield select(selectEntitySetId(FORM));
     const peopleESID :UUID = yield select(selectEntitySetId(PEOPLE));
     const referralRequestESID :UUID = yield select(selectEntitySetId(REFERRAL_REQUEST));
@@ -63,8 +64,8 @@ function* getPersonCaseNeighborsWorker(action :SequenceAction) :Saga<*> {
 
     let filter = {
       entityKeyIds: personCaseEKIDs,
-      destinationEntitySetIds: [referralRequestESID, statusESID],
-      sourceEntitySetIds: [formESID, peopleESID],
+      destinationEntitySetIds: [statusESID],
+      sourceEntitySetIds: [formESID, peopleESID, referralRequestESID],
     };
 
     let response :Object = yield call(
@@ -128,8 +129,8 @@ function* getPersonCaseNeighborsWorker(action :SequenceAction) :Saga<*> {
 
     filter = {
       entityKeyIds: statusEKIDs,
-      destinationEntitySetIds: [staffESID],
-      sourceEntitySetIds: [referralRequestESID],
+      destinationEntitySetIds: [referralRequestESID, staffESID],
+      sourceEntitySetIds: [],
     };
 
     response = yield call(

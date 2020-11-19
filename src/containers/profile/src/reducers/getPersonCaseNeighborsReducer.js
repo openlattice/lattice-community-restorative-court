@@ -3,10 +3,10 @@ import { Map } from 'immutable';
 import { RequestStates } from 'redux-reqseq';
 import type { SequenceAction } from 'redux-reqseq';
 
-import { PERSON_CASE_NEIGHBOR_MAP, STAFF_MEMBER_BY_STATUS_EKID } from './constants';
-
-import { REQUEST_STATE } from '../../../../core/redux/constants';
+import { ProfileReduxConstants, REQUEST_STATE } from '../../../../core/redux/constants';
 import { GET_PERSON_CASE_NEIGHBORS, getPersonCaseNeighbors } from '../actions';
+
+const { PERSON_CASE_NEIGHBOR_MAP, STAFF_MEMBER_BY_STATUS_EKID } = ProfileReduxConstants;
 
 export default function reducer(state :Map, action :SequenceAction) {
 

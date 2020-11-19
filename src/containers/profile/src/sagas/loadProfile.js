@@ -9,6 +9,7 @@ import {
 } from '@redux-saga/core/effects';
 import { LangUtils, Logger } from 'lattice-utils';
 import type { Saga } from '@redux-saga/core';
+import type { UUID } from 'lattice';
 import type { SequenceAction } from 'redux-reqseq';
 
 import { getPersonWorker } from './getPerson';
@@ -16,9 +17,9 @@ import { getPersonNeighborsWorker } from './getPersonNeighbors';
 import { getStaffWorker } from './getStaff';
 
 import { AppTypes } from '../../../../core/edm/constants';
+import { NEIGHBOR_DIRECTIONS } from '../../../../core/redux/constants';
 import { selectEntitySetId } from '../../../../core/redux/selectors';
 import { ERR_ACTION_VALUE_NOT_DEFINED } from '../../../../utils/error/constants';
-import { NEIGHBOR_DIRECTIONS } from '../../../app/constants';
 import {
   LOAD_PROFILE,
   getPerson,
@@ -29,10 +30,9 @@ import {
 
 const { isDefined } = LangUtils;
 const {
-  CASE,
+  CRC_CASE,
   CONTACT_ACTIVITY,
   FORM,
-  ROLE,
 } = AppTypes;
 const { DST, SRC } = NEIGHBOR_DIRECTIONS;
 
@@ -54,16 +54,14 @@ function* loadProfileWorker(action :SequenceAction) :Saga<*> {
 
     const personEKID :UUID = value;
 
-    const caseESID :UUID = yield select(selectEntitySetId(CASE));
     const contactActivityESID :UUID = yield select(selectEntitySetId(CONTACT_ACTIVITY));
+    const caseESID :UUID = yield select(selectEntitySetId(CRC_CASE));
     const formESID :UUID = yield select(selectEntitySetId(FORM));
-    const roleESID :UUID = yield select(selectEntitySetId(ROLE));
 
     const neighborESIDs = [
       { direction: DST, entitySetId: caseESID },
       { direction: SRC, entitySetId: contactActivityESID },
       { direction: DST, entitySetId: formESID },
-      { direction: DST, entitySetId: roleESID },
     ];
 
     const workerResponses :Object[] = yield all([
