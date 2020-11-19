@@ -88,6 +88,8 @@ function* initializeApplicationWorker(action :SequenceAction) :Saga<*> {
       appConfig,
       entitySetIdsByFqn,
       fqnsByESID,
+      match,
+      root,
     };
 
     yield put(initializeApplication.success(action.id, workerResponse.data));
