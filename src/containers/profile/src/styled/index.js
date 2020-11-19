@@ -1,5 +1,8 @@
 // @flow
 import styled from 'styled-components';
+import { Colors } from 'lattice-ui-kit';
+
+const { NEUTRAL } = Colors;
 
 const Body = styled.div`
   display: grid;
@@ -14,7 +17,13 @@ const CenterWrapper = styled.div`
   justify-content: center;
 `;
 
+const SectionHeaderWithColor = styled.div`
+  color: ${NEUTRAL.N800};
+  margin: ${(props) => props.margin || '0'};
+`;
+
 export {
   Body,
-  CenterWrapper
+  CenterWrapper,
+  SectionHeaderWithColor,
 };

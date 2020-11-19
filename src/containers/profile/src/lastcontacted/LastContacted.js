@@ -19,6 +19,7 @@ import { AppTypes, PropertyTypes } from '../../../../core/edm/constants';
 import { useSelector } from '../../../app/AppProvider';
 import { ContactActivityConstants } from '../constants';
 import { PERSON_NEIGHBOR_MAP, PROFILE } from '../reducers/constants';
+import { SectionHeaderWithColor } from '../styled';
 
 const { CONTACT_ACTIVITY } = AppTypes;
 const { CONTACT_DATETIME, OUTCOME } = PropertyTypes;
@@ -64,12 +65,6 @@ const HeaderRow = styled.div`
   margin-bottom: 24px;
 `;
 
-const Header = styled(Typography)`
-  color: ${NEUTRAL.N800};
-  margin-right: 14px;
-  margin-bottom: 0;
-`;
-
 const LastContacted = () => {
 
   const [modalIsVisible, setModalVisibility] = useState(false);
@@ -79,7 +74,9 @@ const LastContacted = () => {
   return (
     <SectionWrapper>
       <HeaderRow>
-        <Header variant="h3">Last Contacted</Header>
+        <SectionHeaderWithColor margin="0 14px 0 0">
+          <Typography color="inherit" variant="h3">Last Contacted</Typography>
+        </SectionHeaderWithColor>
         <IconButton onClick={() => setModalVisibility(true)}>
           <FontAwesomeIcon color={NEUTRAL.N700} fixedWidth icon={faPlus} />
         </IconButton>
