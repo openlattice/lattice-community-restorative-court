@@ -21,8 +21,8 @@ import { useSelector } from '../../../app/AppProvider';
 import { RoleConstants } from '../constants';
 
 const {
-  DATETIME_START,
-  DESCRIPTION,
+  DATETIME_RECEIVED,
+  NOTES,
   ROLE,
 } = PropertyTypes;
 const { NEUTRAL } = Colors;
@@ -65,9 +65,9 @@ const CaseParticipationListItem = ({ personCase } :Props) => {
   const respondentPerson = caseRoleMap.getIn([RESPONDENT, 0], Map());
   const respondentPersonName = getPersonName(respondentPerson);
 
-  const dateTimeStart = getPropertyValue(personCase, [DATETIME_START, 0]);
-  const caseNumber = getPropertyValue(personCase, [DESCRIPTION, 0]);
-  const caseDate :string = formatAsDate(dateTimeStart);
+  const dateTimeReceived = getPropertyValue(personCase, [DATETIME_RECEIVED, 0]);
+  const caseNumber = getPropertyValue(personCase, [NOTES, 0]);
+  const caseDate :string = formatAsDate(dateTimeReceived);
 
   const personRoleInCase = useSelector((store) => store.getIn([PROFILE, PERSON_NEIGHBOR_MAP, ROLE, caseEKID], ''));
 
