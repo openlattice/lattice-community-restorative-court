@@ -4,8 +4,8 @@ import React from 'react';
 import styled from 'styled-components';
 
 import ProfileCard from './ProfileCard';
-import { PERSON, PROFILE } from './reducers/constants';
 
+import { selectPerson } from '../../../core/redux/selectors';
 import { useSelector } from '../../app/AppProvider';
 
 const Centered = styled.div`
@@ -13,8 +13,7 @@ const Centered = styled.div`
 `;
 
 const ProfileAside = () => {
-  const person = useSelector((store) => store.getIn([PROFILE, PERSON]));
-
+  const person = useSelector(selectPerson);
   return (
     <Centered>
       <ProfileCard person={person} />

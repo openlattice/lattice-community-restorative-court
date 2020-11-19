@@ -11,16 +11,17 @@ import type { RequestState } from 'redux-reqseq';
 import ProfileAside from './ProfileAside';
 import ProfileBody from './ProfileBody';
 import { LOAD_PROFILE, loadProfile } from './actions';
-import { PERSON, PROFILE } from './reducers/constants';
 import { CenterWrapper } from './styled';
 
 import { CrumbItem, Crumbs } from '../../../components/crumbs';
-import { APP_PATHS, REQUEST_STATE } from '../../../core/redux/constants';
+import { APP_PATHS, ProfileReduxConstants, REQUEST_STATE } from '../../../core/redux/constants';
+import { selectPerson } from '../../../core/redux/selectors';
 import { getPersonName } from '../../../utils/people';
 import { useDispatch, useSelector } from '../../app/AppProvider';
 
 const { media } = StyleUtils;
 const { isPending } = ReduxUtils;
+const { PROFILE } = ProfileReduxConstants;
 
 const ProfileGrid = styled.div`
   display: grid;
@@ -44,7 +45,7 @@ const ProfileContainer = ({ personId } :Props) => {
   }, [appConfig, dispatch, personId]);
 
   const loadProfileRS :?RequestState = useSelector((store) => store.getIn([PROFILE, LOAD_PROFILE, REQUEST_STATE]));
-  const person :Map = useSelector((store :Map) => store.getIn([PROFILE, PERSON]));
+  const person :Map = useSelector(selectPerson);
   const personName :string = getPersonName(person);
 
   if (isPending(loadProfileRS)) {
