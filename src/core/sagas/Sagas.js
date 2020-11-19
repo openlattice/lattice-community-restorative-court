@@ -35,6 +35,7 @@ export default function* sagas() :Saga<*> {
 
     // PeacemakerSagas
     fork(PeacemakerSagas.addPeacemakerInformationWatcher),
+    fork(PeacemakerSagas.editPeacemakerInformationWatcher),
 
     // ProfileSagas
     fork(ProfileSagas.addCaseStatusWatcher),
