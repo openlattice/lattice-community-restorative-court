@@ -21,10 +21,12 @@ import type { SequenceAction } from 'redux-reqseq';
 import { getEntityDataModelTypes } from '../../../core/edm/actions';
 import { AppTypes } from '../../../core/edm/constants';
 import { getEntityDataModelTypesWorker } from '../../../core/edm/sagas/getEntityDataModelTypes';
+import { APP_REDUX_CONSTANTS } from '../../../core/redux/constants';
 import { ERR_ACTION_VALUE_TYPE } from '../../../utils/error/constants';
 import { INITIALIZE_APPLICATION, initializeApplication } from '../actions';
-import { APP_NAME, ENTITY_SET_ID } from '../constants';
+import { APP_NAME } from '../constants';
 
+const { ENTITY_SET_ID } = APP_REDUX_CONSTANTS;
 const { isValidUUID } = ValidationUtils;
 const { isDefined } = LangUtils;
 const { FQN } = Models;
