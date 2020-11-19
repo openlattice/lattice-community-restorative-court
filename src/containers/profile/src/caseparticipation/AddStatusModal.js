@@ -23,6 +23,7 @@ import {
   PROPERTY_TYPE_IDS,
   REQUEST_STATE
 } from '../../../../core/redux/constants';
+import { selectPerson } from '../../../../core/redux/selectors';
 import { hydrateSchema } from '../../../../utils/form';
 import { useDispatch, useSelector } from '../../../app/AppProvider';
 import { ADD_CASE_STATUS, addCaseStatus } from '../actions';
@@ -71,7 +72,7 @@ const CaseDetailsModal = ({
     ['properties', getPageSectionKey(1, 1), 'properties', getEntityAddressKey(0, STAFF, OPENLATTICE_ID_FQN)]
   );
 
-  const person :Map = useSelector((store) => store.getIn([PROFILE, PERSON]));
+  const person :Map = useSelector(selectPerson);
   const personEKID :?UUID = getEntityKeyId(person);
 
   const entitySetIds :Map = useSelector((store) => store.getIn([APP, ENTITY_SET_IDS]));
