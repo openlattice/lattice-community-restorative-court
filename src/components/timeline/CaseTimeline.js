@@ -14,6 +14,7 @@ import {
 } from 'lattice-ui-kit';
 import { DataUtils, LangUtils } from 'lattice-utils';
 import { DateTime } from 'luxon';
+import type { UUID } from 'lattice';
 
 import { CaseStatusConstants } from '../../containers/profile/src/constants';
 import { PropertyTypes } from '../../core/edm/constants';

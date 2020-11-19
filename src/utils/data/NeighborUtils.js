@@ -1,5 +1,6 @@
 // @flow
 import { Map, get, getIn } from 'immutable';
+import type { UUID } from 'lattice';
 
 const getNeighborDetails = (neighbor :Map | Object) :Map | Object => get(neighbor, 'neighborDetails');
 
