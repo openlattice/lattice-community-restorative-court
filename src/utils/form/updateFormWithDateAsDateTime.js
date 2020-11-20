@@ -13,8 +13,8 @@ const updateFormWithDateAsDateTime = (formData :Object | Map, path :string[]) =>
   const updatedFormData = setIn(
     formData,
     path,
-    DateTime.fromSQL(date.concat(' ', now.toISOTime()))
-  ).toISO();
+    DateTime.fromSQL(date.concat(' ', now.toISOTime())).toISO()
+  );
   return updatedFormData;
 };
 
