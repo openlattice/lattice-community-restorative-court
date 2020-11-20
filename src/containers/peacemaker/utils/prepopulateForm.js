@@ -28,7 +28,7 @@ export default function prepopulateForm(personNeighborMap :Map) :Object {
   const text = getPropertyValue(personInformationForm, [TEXT, 0]);
 
   const communication :Map = personNeighborMap.getIn([COMMUNICATION, 0], Map());
-  const language = getPropertyValue(communication, [LANGUAGE, 0]);
+  const language = getPropertyValue(communication.toJS(), LANGUAGE);
 
   const personDetails :Map = personNeighborMap.getIn([PERSON_DETAILS, 0], Map());
   const interestsAndHobbies = getPropertyValue(personDetails, [INTERESTS_AND_HOBBIES, 0]);
