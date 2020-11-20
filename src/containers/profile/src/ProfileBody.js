@@ -25,7 +25,7 @@ const BodyWrapper = styled.div`
 
 const ProfileBody = () => {
   const personRoleMap :Map = useSelector((store) => store.getIn([PROFILE, PERSON_NEIGHBOR_MAP, ROLE], Map()));
-  const personIsPeacemaker = personRoleMap.valueSeq().toList().includes(PEACEMAKER);
+  const personIsPeacemaker = personRoleMap.includes(PEACEMAKER);
   return (
     <BodyWrapper>
       <CaseParticipation />
