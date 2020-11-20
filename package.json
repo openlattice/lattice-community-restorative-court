@@ -22,7 +22,7 @@
     "url": "https://github.com/lattice-works/lattice-community-restorative-court/issues"
   },
   "dependencies": {
-    "@babel/polyfill": "~7.11.5",
+    "@babel/polyfill": "~7.12.1",
     "@babel/runtime": "~7.11.2",
     "@fortawesome/fontawesome-svg-core": "~1.2.0",
     "@fortawesome/pro-duotone-svg-icons": "~5.14.0",
