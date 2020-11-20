@@ -169,7 +169,7 @@ const ReferralForm = ({ personId } :Props) => {
             </CrumbLink>
           </CrumbItem>
           <CrumbItem>
-            <Typography color="inherit" variant="body2">Peacemaker Information</Typography>
+            <Typography color="inherit" variant="body2">Referral Information</Typography>
           </CrumbItem>
         </Crumbs>
         <Typography variant="h1">Referral Information</Typography>
@@ -183,10 +183,12 @@ const ReferralForm = ({ personId } :Props) => {
           onSubmit={onSubmit}
           schema={hydratedSchema}
           uiSchema={uiSchema} />
-      <CardSegment>
-        <Typography gutterBottom variant="body1">Submitted!</Typography>
-        { submitSuccessful && <Button color="success" onClick={goToProfile} variant="outlined">Back to Profile</Button>}
-      </CardSegment>
+      {submitSuccessful && (
+        <CardSegment>
+          <Typography gutterBottom variant="body1">Submitted!</Typography>
+          <Button color="success" onClick={goToProfile} variant="outlined">Back to Profile</Button>
+        </CardSegment>
+      )}
     </>
   );
 };
