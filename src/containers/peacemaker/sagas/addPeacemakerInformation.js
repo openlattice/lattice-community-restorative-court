@@ -9,7 +9,6 @@ import {
 import { Map, getIn } from 'immutable';
 import { LangUtils, Logger } from 'lattice-utils';
 import type { Saga } from '@redux-saga/core';
-import type { UUID } from 'lattice';
 import type { SequenceAction } from 'redux-reqseq';
 
 import { submitDataGraph } from '../../../core/data/actions';
@@ -65,7 +64,7 @@ function* addPeacemakerInformationWorker(action :SequenceAction) :Saga<*> {
     const newCommunication :Map = formatNewEntityData(communicationData, propertyFqnsByTypeId, communicationEKID);
     const newForm :Map = formatNewEntityData(formData, propertyFqnsByTypeId, formEKID);
     const newPersonDetails :Map = formatNewEntityData(personDetailsData, propertyFqnsByTypeId, personDetailsEKID);
-    console.log('{ newCommunication, newForm, newPersonDetails } ', { newCommunication, newForm, newPersonDetails });
+
     yield put(addPeacemakerInformation.success(id, { newCommunication, newForm, newPersonDetails }));
   }
   catch (error) {
