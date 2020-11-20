@@ -129,6 +129,7 @@ const ReferralForm = ({ personId } :Props) => {
       [REGISTERED_FOR, 0, STATUS, 0, REFERRAL_REQUEST, {}],
       [SCREENED_WITH, personId, PEOPLE, 0, FORM, {}],
       [RELATED_TO, 0, FORM, 0, REFERRAL_REQUEST, {}],
+      [RELATED_TO, 0, FORM, 0, CRC_CASE, {}],
       [RECORDED_BY, 0, FORM, selectedStaffEKID, STAFF, {}],
       [RECORDED_BY, 0, STATUS, selectedStaffEKID, STAFF, {}],
       [HAS, personId, PEOPLE, 0, STATUS, {}],
