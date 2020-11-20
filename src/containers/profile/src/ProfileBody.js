@@ -2,18 +2,23 @@
 import React from 'react';
 
 import styled from 'styled-components';
-import { Map } from 'immutable';
+import { List, Map } from 'immutable';
+import { DataUtils, LangUtils } from 'lattice-utils';
 
 import CaseParticipation from './caseparticipation/CaseParticipation';
 import LastContacted from './lastcontacted/LastContacted';
-import { RoleConstants } from './constants';
+import { FormConstants, RoleConstants } from './constants';
 import { PERSON_NEIGHBOR_MAP, PROFILE } from './reducers/constants';
 
-import { PropertyTypes } from '../../../core/edm/constants';
+import { AppTypes, PropertyTypes } from '../../../core/edm/constants';
 import { useSelector } from '../../app/AppProvider';
 
 const { PEACEMAKER } = RoleConstants;
-const { ROLE } = PropertyTypes;
+const { PEACEMAKER_INFORMATION_FORM } = FormConstants;
+const { FORM } = AppTypes;
+const { NAME, ROLE } = PropertyTypes;
+const { isDefined } = LangUtils;
+const { getPropertyValue } = DataUtils;
 
 const BodyWrapper = styled.div`
   padding: 0 16px;
@@ -26,10 +31,14 @@ const BodyWrapper = styled.div`
 const ProfileBody = () => {
   const personRoleMap :Map = useSelector((store) => store.getIn([PROFILE, PERSON_NEIGHBOR_MAP, ROLE], Map()));
   const personIsPeacemaker = personRoleMap.includes(PEACEMAKER);
+  const personForms :List = useSelector((store) => store.getIn([PROFILE, PERSON_NEIGHBOR_MAP, FORM], List()));
+  const formsIncludePeacemakerInfo = isDefined(
+    personForms.find((form :Map) => getPropertyValue(form, [NAME, 0]) === PEACEMAKER_INFORMATION_FORM)
+  );
   return (
     <BodyWrapper>
       <CaseParticipation />
-      {personIsPeacemaker && <LastContacted />}
+      {(personIsPeacemaker || formsIncludePeacemakerInfo) && <LastContacted />}
     </BodyWrapper>
   );
 };
