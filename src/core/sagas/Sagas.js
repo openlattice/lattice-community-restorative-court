@@ -50,6 +50,7 @@ export default function* sagas() :Saga<*> {
 
     // ReferralSagas
     fork(ReferralSagas.getCRCPeopleWatcher),
+    fork(ReferralSagas.submitReferralFormWatcher),
 
     // RoutingSagas
     fork(RoutingSagas.goToRootWatcher),

@@ -2,8 +2,11 @@
 import { List, Map, fromJS } from 'immutable';
 
 import getCRCPeopleReducer from './getCRCPeopleReducer';
+import submitReferralFormReducer from './submitReferralFormReducer';
 
+import { RESET_REQUEST_STATE } from '../../../core/redux/actions';
 import { RS_INITIAL_STATE, ReferralReduxConstants } from '../../../core/redux/constants';
+import { resetRequestStateReducer } from '../../../core/redux/reducers';
 import {
   GET_CRC_PEOPLE,
   SUBMIT_REFERRAL_FORM,
@@ -25,8 +28,15 @@ export default function profileReducer(state :Map = INITIAL_STATE, action :Objec
 
   switch (action.type) {
 
+    case RESET_REQUEST_STATE: {
+      return resetRequestStateReducer(state, action);
+    }
+
     case getCRCPeople.case(action.type):
       return getCRCPeopleReducer(state, action);
+
+    case submitReferralForm.case(action.type):
+      return submitReferralFormReducer(state, action);
 
     default:
       return state;
