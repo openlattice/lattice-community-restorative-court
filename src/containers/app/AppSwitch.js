@@ -48,7 +48,7 @@ const AppSwitch = ({
 
   return (
     <Switch>
-      <Route path={`${root}/${PERSON_ID}/${REFERRAL}`} render={() => <ReferralForm />} />
+      <Route path={`${root}/${PERSON_ID}/${REFERRAL}`} render={() => <ReferralForm personId={personId} />} />
       <Route
           path={`${root}/${PERSON_ID}/${PEACEMAKER_INFORMATION}`}
           render={() => <PeacemakerInformationForm personId={personId} />} />
