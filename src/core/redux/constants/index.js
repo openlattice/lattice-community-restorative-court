@@ -7,6 +7,7 @@ import { ReduxConstants } from 'lattice-utils';
 import { RequestStates } from 'redux-reqseq';
 
 import * as ProfileReduxConstants from './ProfileReduxConstants';
+import * as ReferralReduxConstants from './ReferralReduxConstants';
 
 export const {
   APP,
@@ -73,6 +74,7 @@ export {
   PROPERTY_FQNS_BY_TYPE_ID,
   PROPERTY_TYPE_IDS,
   ProfileReduxConstants,
+  ReferralReduxConstants,
   RS_INITIAL_STATE,
   SEARCH_RESULTS,
 };
