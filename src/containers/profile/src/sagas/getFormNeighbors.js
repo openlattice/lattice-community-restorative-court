@@ -26,7 +26,12 @@ const { searchEntityNeighborsWithFilter } = SearchApiActions;
 const { searchEntityNeighborsWithFilterWorker } = SearchApiSagas;
 const { getNeighborDetails, getNeighborESID } = NeighborUtils;
 const { FQN } = Models;
-const { FORM, STAFF } = AppTypes;
+const {
+  CRC_CASE,
+  FORM,
+  REFERRAL_REQUEST,
+  STAFF,
+} = AppTypes;
 
 const LOG = new Logger('ProfileSagas');
 
@@ -47,12 +52,14 @@ function* getFormNeighborsWorker(action :SequenceAction) :Saga<*> {
 
     const formEKIDs :UUID[] = value;
 
+    const crcCaseESID :UUID = yield select(selectEntitySetId(CRC_CASE));
     const formESID :UUID = yield select(selectEntitySetId(FORM));
+    const referralRequestESID :UUID = yield select(selectEntitySetId(REFERRAL_REQUEST));
     const staffESID :UUID = yield select(selectEntitySetId(STAFF));
 
     const filter = {
       entityKeyIds: formEKIDs,
-      destinationEntitySetIds: [staffESID],
+      destinationEntitySetIds: [crcCaseESID, referralRequestESID, staffESID],
       sourceEntitySetIds: [],
     };
 
