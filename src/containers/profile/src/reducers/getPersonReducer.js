@@ -18,5 +18,6 @@ export default function reducer(state :Map, action :SequenceAction) {
       .set(PERSON, action.value)
       .setIn([GET_PERSON, REQUEST_STATE], RequestStates.SUCCESS),
     FAILURE: () => state.setIn([GET_PERSON, REQUEST_STATE], RequestStates.FAILURE),
+    FINALLY: () => state.deleteIn([GET_PERSON, action.id], action),
   });
 }
