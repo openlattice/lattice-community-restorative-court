@@ -7,6 +7,7 @@ import { Models } from 'lattice';
 const { FQN } = Models;
 
 const PROPERTY_TYPE_FQNS = {
+  CONTACT_DATETIME: FQN.of('ol.contactdatetime'),
   DATETIME_ADMINISTERED: FQN.of('ol.datetimeadministered'),
   DATETIME_RECEIVED: FQN.of('datetime.received'),
   DATETIME_START: FQN.of('ol.datetimestart'),
@@ -18,6 +19,7 @@ const PROPERTY_TYPE_FQNS = {
   NOTES: FQN.of('ol.notes'),
   OL_DATE_TIME: FQN.of('ol.datetime'),
   OL_ID: FQN.of('ol.id'),
+  OUTCOME: FQN.of('ol.outcome'),
   ROLE: FQN.of('ol.role'),
   SOURCE: FQN.of('ol.source'),
   STATUS: FQN.of('ol.status'),

@@ -9,7 +9,7 @@ import {
   lightTheme
 } from 'lattice-ui-kit';
 
-addDecorator((storyFn) => (
+addDecorator(storyFn => (
   <ThemeProvider theme={lightTheme}>
     <MuiPickersUtilsProvider utils={LatticeLuxonUtils}>
       <StylesProvider injectFirst>{storyFn()}</StylesProvider>
