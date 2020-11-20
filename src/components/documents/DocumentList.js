@@ -34,9 +34,9 @@ const DocumentList = ({ caseIdentifier, forms, formNeighborMap } :Props) => (
         const staffMemberName = getPersonName(staffMembers.get(0, Map()));
         return (
           <DocumentListItem
-              key={formEKID}
               caseIdentifier={caseIdentifier}
               formName={formName}
+              key={formEKID}
               staffMemberName={staffMemberName}
               submittedDate={submittedDate} />
         );

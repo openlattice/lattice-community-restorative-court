@@ -34,5 +34,6 @@ export default function reducer(state :Map, action :SequenceAction) {
         .setIn([ADD_CASE_STATUS, REQUEST_STATE], RequestStates.SUCCESS);
     },
     FAILURE: () => state.setIn([ADD_CASE_STATUS, REQUEST_STATE], RequestStates.FAILURE),
+    FINALLY: () => state.deleteIn([ADD_CASE_STATUS, action.id], action),
   });
 }
