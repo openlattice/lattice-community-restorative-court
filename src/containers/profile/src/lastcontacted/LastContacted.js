@@ -8,45 +8,23 @@ import { List, Map } from 'immutable';
 import {
   Colors,
   IconButton,
-  StyleUtils,
   Typography,
 } from 'lattice-ui-kit';
 import { DataUtils, DateTimeUtils } from 'lattice-utils';
 
 import AddContactActivityModal from './AddContactActivityModal';
 
+import { CRCTag } from '../../../../components';
 import { AppTypes, PropertyTypes } from '../../../../core/edm/constants';
 import { useSelector } from '../../../app/AppProvider';
-import { ContactActivityConstants } from '../constants';
 import { PERSON_NEIGHBOR_MAP, PROFILE } from '../reducers/constants';
 import { SectionHeaderWithColor } from '../styled';
 
 const { CONTACT_ACTIVITY } = AppTypes;
 const { CONTACT_DATETIME, OUTCOME } = PropertyTypes;
-const { GREEN, NEUTRAL, RED } = Colors;
-const { DID_NOT_ATTEND, ATTENDED } = ContactActivityConstants;
+const { NEUTRAL } = Colors;
 const { getPropertyValue } = DataUtils;
 const { formatAsDate } = DateTimeUtils;
-const { getStyleVariation } = StyleUtils;
-
-const getBackgroundColor = getStyleVariation('outcome', {
-  [ATTENDED]: GREEN.G00,
-  [DID_NOT_ATTEND]: RED.R00,
-}, RED.R00);
-
-const getFontColor = getStyleVariation('outcome', {
-  [ATTENDED]: GREEN.G400,
-  [DID_NOT_ATTEND]: RED.R400,
-}, RED.R400);
-
-const ContactTag = styled.div`
-  background-color: ${getBackgroundColor};
-  border-radius: 5px;
-  color: ${getFontColor};
-  display: flex;
-  justify-content: center;
-  padding: 8px;
-`;
 
 const SectionWrapper = styled.div`
   margin-top: 36px;
@@ -55,7 +33,7 @@ const SectionWrapper = styled.div`
 const ContactGrid = styled.div`
   display: grid;
   grid-gap: 24px 16px;
-  grid-template-columns: repeat(auto-fit, 98px);
+  grid-template-columns: repeat(auto-fit, minmax(98px, max-content));
   margin-bottom: 36px;
 `;
 
@@ -88,9 +66,9 @@ const LastContacted = () => {
             const date = formatAsDate(datetime);
             const outcome = getPropertyValue(contactMade, [OUTCOME, 0]);
             return (
-              <ContactTag outcome={outcome}>
+              <CRCTag background={outcome} borderRadius="5px" color={outcome} padding="8px">
                 <Typography color="inherit" variant="body2">{date}</Typography>
-              </ContactTag>
+              </CRCTag>
             );
           })
         }

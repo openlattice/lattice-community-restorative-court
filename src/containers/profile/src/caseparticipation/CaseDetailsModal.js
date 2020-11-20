@@ -19,10 +19,10 @@ import AddStatusModal from './AddStatusModal';
 import CaseDetailsModalHeader from './CaseDetailsModalHeader';
 
 import {
+  CRCTag,
   CaseTimeline,
   DocumentList,
   ModalInnerWrapper,
-  RoleTag,
 } from '../../../../components';
 import { AppTypes, PropertyTypes } from '../../../../core/edm/constants';
 import { ProfileReduxConstants } from '../../../../core/redux/constants';
@@ -116,9 +116,9 @@ const CaseDetailsModal = ({
     <ParticipantTile key={getEntityKeyId(person)}>
       <Label subtle>Name</Label>
       <Typography>{getPersonName(person)}</Typography>
-      <RoleTag roleName={role}>
+      <CRCTag background={role} borderRadius="31px" color={role} padding="10px 16px">
         <Typography color="inherit" variant="body2">{role}</Typography>
-      </RoleTag>
+      </CRCTag>
     </ParticipantTile>
   );
 
