@@ -7,13 +7,14 @@ import {
   Card,
   CardSegment,
   Colors,
+  Typography,
 } from 'lattice-ui-kit';
 import { DataUtils, DateTimeUtils } from 'lattice-utils';
 import type { UUID } from 'lattice';
 
 import CaseDetailsModal from './CaseDetailsModal';
 
-import { RoleTag } from '../../../../components';
+import { CRCTag } from '../../../../components';
 import { PropertyTypes } from '../../../../core/edm/constants';
 import { ProfileReduxConstants } from '../../../../core/redux/constants';
 import { getPersonName } from '../../../../utils/people';
@@ -21,8 +22,8 @@ import { useSelector } from '../../../app/AppProvider';
 import { RoleConstants } from '../constants';
 
 const {
-  DATETIME_START,
-  DESCRIPTION,
+  DATETIME_RECEIVED,
+  NOTES,
   ROLE,
 } = PropertyTypes;
 const { NEUTRAL } = Colors;
@@ -37,16 +38,12 @@ const ListItemCardSegment = styled(CardSegment)`
   justify-content: space-between;
 `;
 
-const Date = styled.div`
+const Date = styled(Typography)`
   color: ${NEUTRAL.N600};
-  font-size: 14px;
-  font-weight: 600;
 `;
 
-const CaseNumberAndName = styled.div`
+const CaseNumberAndName = styled(Typography)`
   color: ${NEUTRAL.N800};
-  font-size: 16px;
-  font-weight: 600;
   margin-top: 8px;
 `;
 
@@ -65,9 +62,9 @@ const CaseParticipationListItem = ({ personCase } :Props) => {
   const respondentPerson = caseRoleMap.getIn([RESPONDENT, 0], Map());
   const respondentPersonName = getPersonName(respondentPerson);
 
-  const dateTimeStart = getPropertyValue(personCase, [DATETIME_START, 0]);
-  const caseNumber = getPropertyValue(personCase, [DESCRIPTION, 0]);
-  const caseDate :string = formatAsDate(dateTimeStart);
+  const dateTimeReceived = getPropertyValue(personCase, [DATETIME_RECEIVED, 0]);
+  const caseNumber = getPropertyValue(personCase, [NOTES, 0]);
+  const caseDate :string = formatAsDate(dateTimeReceived);
 
   const personRoleInCase = useSelector((store) => store.getIn([PROFILE, PERSON_NEIGHBOR_MAP, ROLE, caseEKID], ''));
 
@@ -78,10 +75,12 @@ const CaseParticipationListItem = ({ personCase } :Props) => {
       <Card onClick={() => setModalVisibility(true)}>
         <ListItemCardSegment padding="20px 30px">
           <div>
-            <Date>{caseDate}</Date>
-            <CaseNumberAndName>{caseIdentifier}</CaseNumberAndName>
+            <Date variant="subtitle2">{caseDate}</Date>
+            <CaseNumberAndName variant="body2">{caseIdentifier}</CaseNumberAndName>
           </div>
-          <RoleTag roleName={personRoleInCase}>{personRoleInCase}</RoleTag>
+          <CRCTag background={personRoleInCase} borderRadius="31px" color={personRoleInCase} padding="10px 16px">
+            <Typography color="inherit" variant="body2">{personRoleInCase}</Typography>
+          </CRCTag>
         </ListItemCardSegment>
       </Card>
       <CaseDetailsModal

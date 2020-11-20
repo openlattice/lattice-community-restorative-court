@@ -5,45 +5,26 @@ import styled from 'styled-components';
 import { faPlus } from '@fortawesome/pro-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { List, Map } from 'immutable';
-import { Colors, IconButton, StyleUtils } from 'lattice-ui-kit';
+import {
+  Colors,
+  IconButton,
+  Typography,
+} from 'lattice-ui-kit';
 import { DataUtils, DateTimeUtils } from 'lattice-utils';
 
 import AddContactActivityModal from './AddContactActivityModal';
 
+import { CRCTag } from '../../../../components';
 import { AppTypes, PropertyTypes } from '../../../../core/edm/constants';
 import { useSelector } from '../../../app/AppProvider';
-import { Header } from '../../typography';
-import { ContactActivityConstants } from '../constants';
 import { PERSON_NEIGHBOR_MAP, PROFILE } from '../reducers/constants';
+import { SectionHeaderWithColor } from '../styled';
 
 const { CONTACT_ACTIVITY } = AppTypes;
 const { CONTACT_DATETIME, OUTCOME } = PropertyTypes;
-const { GREEN, NEUTRAL, RED } = Colors;
-const { DID_NOT_ATTEND, ATTENDED } = ContactActivityConstants;
+const { NEUTRAL } = Colors;
 const { getPropertyValue } = DataUtils;
 const { formatAsDate } = DateTimeUtils;
-const { getStyleVariation } = StyleUtils;
-
-const getBackgroundColor = getStyleVariation('outcome', {
-  [ATTENDED]: GREEN.G00,
-  [DID_NOT_ATTEND]: RED.R00,
-}, RED.R00);
-
-const getFontColor = getStyleVariation('outcome', {
-  [ATTENDED]: GREEN.G400,
-  [DID_NOT_ATTEND]: RED.R400,
-}, RED.R400);
-
-const ContactTag = styled.div`
-  background-color: ${getBackgroundColor};
-  border-radius: 5px;
-  color: ${getFontColor};
-  display: flex;
-  font-size: 16px;
-  font-weight: 600;
-  justify-content: center;
-  padding: 8px;
-`;
 
 const SectionWrapper = styled.div`
   margin-top: 36px;
@@ -52,7 +33,7 @@ const SectionWrapper = styled.div`
 const ContactGrid = styled.div`
   display: grid;
   grid-gap: 24px 16px;
-  grid-template-columns: repeat(auto-fit, minmax(98px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(98px, max-content));
   margin-bottom: 36px;
 `;
 
@@ -60,11 +41,6 @@ const HeaderRow = styled.div`
   align-items: center;
   display: flex;
   margin-bottom: 24px;
-
-  ${Header} {
-    margin-right: 14px;
-    margin-bottom: 0;
-  }
 `;
 
 const LastContacted = () => {
@@ -76,7 +52,9 @@ const LastContacted = () => {
   return (
     <SectionWrapper>
       <HeaderRow>
-        <Header>Last Contacted</Header>
+        <SectionHeaderWithColor margin="0 14px 0 0">
+          <Typography color="inherit" variant="h3">Last Contacted</Typography>
+        </SectionHeaderWithColor>
         <IconButton onClick={() => setModalVisibility(true)}>
           <FontAwesomeIcon color={NEUTRAL.N700} fixedWidth icon={faPlus} />
         </IconButton>
@@ -88,7 +66,9 @@ const LastContacted = () => {
             const date = formatAsDate(datetime);
             const outcome = getPropertyValue(contactMade, [OUTCOME, 0]);
             return (
-              <ContactTag outcome={outcome}>{date}</ContactTag>
+              <CRCTag background={outcome} borderRadius="5px" color={outcome} padding="8px">
+                <Typography color="inherit" variant="body2">{date}</Typography>
+              </CRCTag>
             );
           })
         }

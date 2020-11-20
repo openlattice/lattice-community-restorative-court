@@ -15,5 +15,6 @@ export default function reducer(state :Map, action :SequenceAction) {
     SUCCESS: () => state
       .setIn([LOAD_PROFILE, REQUEST_STATE], RequestStates.SUCCESS),
     FAILURE: () => state.setIn([LOAD_PROFILE, REQUEST_STATE], RequestStates.FAILURE),
+    FINALLY: () => state.deleteIn([LOAD_PROFILE, action.id], action),
   });
 }

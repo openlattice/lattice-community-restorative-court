@@ -25,7 +25,7 @@ const ButtonWrapper = styled.div`
 
 const ProfileAside = () => {
   const [formChoiceModalIsVisible, setFormChoiceModalVisibility] = useState(false);
-  const person = useSelector(selectPerson);
+  const person = useSelector(selectPerson());
   return (
     <Centered>
       <ProfileCard person={person} />

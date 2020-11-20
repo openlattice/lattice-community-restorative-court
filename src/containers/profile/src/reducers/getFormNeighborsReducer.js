@@ -18,5 +18,6 @@ export default function reducer(state :Map, action :SequenceAction) {
       .set(FORM_NEIGHBOR_MAP, action.value)
       .setIn([GET_FORM_NEIGHBORS, REQUEST_STATE], RequestStates.SUCCESS),
     FAILURE: () => state.setIn([GET_FORM_NEIGHBORS, REQUEST_STATE], RequestStates.FAILURE),
+    FINALLY: () => state.deleteIn([GET_FORM_NEIGHBORS, action.id], action),
   });
 }

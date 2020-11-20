@@ -11,6 +11,7 @@ import { Constants } from 'lattice';
 import { LangUtils, Logger } from 'lattice-utils';
 import type { Saga } from '@redux-saga/core';
 import type { UUID } from 'lattice';
+import type { WorkerResponse } from 'lattice-sagas';
 import type { SequenceAction } from 'redux-reqseq';
 
 import { submitDataGraph } from '../../../../core/data/actions';
@@ -32,7 +33,7 @@ const LOG = new Logger('ProfileSagas');
  *
  */
 
-function* addContactActivityWorker(action :SequenceAction) :Saga<*> {
+function* addContactActivityWorker(action :SequenceAction) :Saga<WorkerResponse> {
 
   const { id } = action;
   const workerResponse = {};

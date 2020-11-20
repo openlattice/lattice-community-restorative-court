@@ -26,5 +26,6 @@ export default function reducer(state :Map, action :SequenceAction) {
         .setIn([ADD_CONTACT_ACTIVITY, REQUEST_STATE], RequestStates.SUCCESS);
     },
     FAILURE: () => state.setIn([ADD_CONTACT_ACTIVITY, REQUEST_STATE], RequestStates.FAILURE),
+    FINALLY: () => state.deleteIn([ADD_CONTACT_ACTIVITY, action.id], action),
   });
 }

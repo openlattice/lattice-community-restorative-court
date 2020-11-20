@@ -35,7 +35,7 @@ type Props = {
 };
 
 const ChooseFormTypeModal = ({ isVisible, onClose } :Props) => {
-  const person :Map = useSelector(selectPerson);
+  const person :Map = useSelector(selectPerson());
   const personName :string = getPersonName(person);
   const personEKID = getEntityKeyId(person);
   const text = `For: ${personName}`;

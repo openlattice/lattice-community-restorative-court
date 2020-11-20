@@ -10,6 +10,7 @@ import {
   IconButton,
   Label,
   Modal,
+  Typography,
 } from 'lattice-ui-kit';
 import { DataUtils, LangUtils } from 'lattice-utils';
 import type { UUID } from 'lattice';
@@ -18,16 +19,15 @@ import AddStatusModal from './AddStatusModal';
 import CaseDetailsModalHeader from './CaseDetailsModalHeader';
 
 import {
+  CRCTag,
   CaseTimeline,
   DocumentList,
   ModalInnerWrapper,
-  RoleTag,
 } from '../../../../components';
 import { AppTypes, PropertyTypes } from '../../../../core/edm/constants';
 import { ProfileReduxConstants } from '../../../../core/redux/constants';
 import { getPersonName } from '../../../../utils/people';
 import { useSelector } from '../../../app/AppProvider';
-import { Header } from '../../typography';
 import { CaseStatusConstants, RoleConstants } from '../constants';
 
 const {
@@ -44,27 +44,13 @@ const { CLOSED, RESOLUTION } = CaseStatusConstants;
 const { getEntityKeyId, getPropertyValue } = DataUtils;
 const { isDefined } = LangUtils;
 
-const CaseHeader = styled(Header)`
-  padding-top: 24px;
-`;
+const ModalSection = styled.div`
+  margin-bottom: 36px;
 
-const HeaderAndButtonWrapper = styled.div`
-  display: flex;
-  margin-bottom: 24px;
-`;
-
-const SmallHeader = styled(Header)`
-  font-size: 22px;
-  margin-right: 12px;
-  margin-bottom: 0;
-`;
-
-const SmallHeaderWithExtraMargin = styled(SmallHeader)`
-  margin-bottom: 24px;
-`;
-
-const Name = styled.div`
-  margin-bottom: 16px;
+  header:first-child {
+    display: flex;
+    margin-bottom: 24px;
+  }
 `;
 
 const ParticipantTile = styled.div`
@@ -72,6 +58,8 @@ const ParticipantTile = styled.div`
   border: 1px solid ${NEUTRAL.N200};
   border-radius: 3px;
   display: grid;
+  grid-template-rows: 1fr 1fr 1fr;
+  grid-gap: 5px 0;
   justify-items: start;
   max-width: 280px;
   padding: 24px 32px;
@@ -81,7 +69,6 @@ const ParticipantsTileGrid = styled.div`
   display: grid;
   grid-gap: 24px;
   grid-template-columns: repeat(auto-fit, 280px);
-  margin-bottom: 36px;
 `;
 
 type Props = {
@@ -128,8 +115,10 @@ const CaseDetailsModal = ({
   const renderParticipantTile = (person :Map, role :string) => (
     <ParticipantTile key={getEntityKeyId(person)}>
       <Label subtle>Name</Label>
-      <Name>{getPersonName(person)}</Name>
-      <RoleTag roleName={role}>{role}</RoleTag>
+      <Typography>{getPersonName(person)}</Typography>
+      <CRCTag background={role} borderRadius="31px" color={role} padding="10px 16px">
+        <Typography color="inherit" variant="body2">{role}</Typography>
+      </CRCTag>
     </ParticipantTile>
   );
 
@@ -140,29 +129,35 @@ const CaseDetailsModal = ({
         viewportScrolling
         withHeader={modalHeader}>
       <ModalInnerWrapper>
-        <CaseHeader>{caseIdentifier}</CaseHeader>
-        <HeaderAndButtonWrapper>
-          <SmallHeader>Status</SmallHeader>
-          <IconButton
-              aria-label="Small Status Icon Button"
-              color="success"
-              size="small"
-              onClick={() => setStatusModalVisibility(true)}>
-            <FontAwesomeIcon fixedWidth icon={faPlus} />
-          </IconButton>
-        </HeaderAndButtonWrapper>
-        <CaseTimeline
-            caseStatuses={relevantStatuses}
-            referralRequest={referralRequest}
-            staffMemberByStatusEKID={staffMemberByStatusEKID} />
-        <SmallHeaderWithExtraMargin>Participants</SmallHeaderWithExtraMargin>
-        <ParticipantsTileGrid>
-          { respondentList.map((respondent :Map) => renderParticipantTile(respondent, RESPONDENT)) }
-          { victimList.map((victim :Map) => renderParticipantTile(victim, VICTIM)) }
-          { peacemakerList.map((peacemaker :Map) => renderParticipantTile(peacemaker, PEACEMAKER)) }
-        </ParticipantsTileGrid>
-        <SmallHeaderWithExtraMargin>Documents</SmallHeaderWithExtraMargin>
-        <DocumentList caseIdentifier={caseIdentifier} forms={relevantForms} formNeighborMap={formNeighborMap} />
+        <Typography color={NEUTRAL.N800} variant="h2">{caseIdentifier}</Typography>
+        <ModalSection>
+          <header>
+            <Typography color={NEUTRAL.N700} variant="h3">Status</Typography>
+            <IconButton
+                aria-label="Small Status Icon Button"
+                color="success"
+                size="small"
+                onClick={() => setStatusModalVisibility(true)}>
+              <FontAwesomeIcon fixedWidth icon={faPlus} />
+            </IconButton>
+          </header>
+          <CaseTimeline
+              caseStatuses={relevantStatuses}
+              referralRequest={referralRequest}
+              staffMemberByStatusEKID={staffMemberByStatusEKID} />
+        </ModalSection>
+        <ModalSection>
+          <header><Typography color={NEUTRAL.N700} variant="h3">Participants</Typography></header>
+          <ParticipantsTileGrid>
+            { respondentList.map((respondent :Map) => renderParticipantTile(respondent, RESPONDENT)) }
+            { victimList.map((victim :Map) => renderParticipantTile(victim, VICTIM)) }
+            { peacemakerList.map((peacemaker :Map) => renderParticipantTile(peacemaker, PEACEMAKER)) }
+          </ParticipantsTileGrid>
+        </ModalSection>
+        <ModalSection>
+          <header><Typography color={NEUTRAL.N700} variant="h3">Documents</Typography></header>
+          <DocumentList caseIdentifier={caseIdentifier} forms={relevantForms} formNeighborMap={formNeighborMap} />
+        </ModalSection>
       </ModalInnerWrapper>
       <AddStatusModal
           caseEKID={caseEKID}
