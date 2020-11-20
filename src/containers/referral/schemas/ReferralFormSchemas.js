@@ -1,4 +1,5 @@
 // @flow
+import { Constants } from 'lattice';
 import { DataProcessingUtils } from 'lattice-fabricate';
 import { DateTime } from 'luxon';
 
@@ -7,6 +8,7 @@ import { ETHNICITIES, GENDERS, RACES } from '../../../utils/people/constants';
 import { FormConstants } from '../../profile/src/constants';
 
 const { getEntityAddressKey, getPageSectionKey } = DataProcessingUtils;
+const { OPENLATTICE_ID_FQN } = Constants;
 const { REFERRAL_FORM } = FormConstants;
 const {
   DA_CASE,
@@ -80,8 +82,24 @@ const schema = {
       }
     },
     [getPageSectionKey(1, 2)]: {
-      type: 'array',
+      type: 'object',
       title: 'Victim Information',
+      properties: {
+        [getEntityAddressKey(0, PEOPLE, OPENLATTICE_ID_FQN)]: {
+          type: 'array',
+          title: 'People Already in Database',
+          items: {
+            enum: [],
+            enumNames: [],
+            type: 'string',
+          },
+          uniqueItems: true,
+        },
+      }
+    },
+    [getPageSectionKey(1, 3)]: {
+      type: 'array',
+      title: '',
       items: {
         type: 'object',
         properties: {
@@ -124,9 +142,9 @@ const schema = {
         }
       }
     },
-    [getPageSectionKey(1, 3)]: {
+    [getPageSectionKey(1, 4)]: {
       type: 'object',
-      title: 'Form Info',
+      title: '',
       properties: {
         [getEntityAddressKey(0, FORM, DATETIME_ADMINISTERED)]: {
           type: 'string',
@@ -173,10 +191,17 @@ const uiSchema = {
   },
   [getPageSectionKey(1, 2)]: {
     classNames: 'column-span-12 grid-container',
+    [getEntityAddressKey(0, PEOPLE, OPENLATTICE_ID_FQN)]: {
+      classNames: 'column-span-4',
+      'ui:options': { multiple: true }
+    }
+  },
+  [getPageSectionKey(1, 3)]: {
+    classNames: 'column-span-12',
     'ui:options': {
-      addButtonText: '+ Add Court Hearing',
+      addButtonText: '+ Add New Person',
       orderable: false,
-      addActionKey: 'addCourtHearing'
+      addActionKey: 'addVictim'
     },
     items: {
       classNames: 'grid-container',
@@ -206,7 +231,7 @@ const uiSchema = {
       },
     }
   },
-  [getPageSectionKey(1, 3)]: {
+  [getPageSectionKey(1, 4)]: {
     classNames: 'column-span-12 grid-container',
     [getEntityAddressKey(0, FORM, DATETIME_ADMINISTERED)]: {
       'ui:widget': 'hidden',
