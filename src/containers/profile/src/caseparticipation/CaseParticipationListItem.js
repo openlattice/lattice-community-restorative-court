@@ -14,7 +14,7 @@ import type { UUID } from 'lattice';
 
 import CaseDetailsModal from './CaseDetailsModal';
 
-import { RoleTag } from '../../../../components';
+import { CRCTag } from '../../../../components';
 import { PropertyTypes } from '../../../../core/edm/constants';
 import { ProfileReduxConstants } from '../../../../core/redux/constants';
 import { getPersonName } from '../../../../utils/people';
@@ -78,9 +78,9 @@ const CaseParticipationListItem = ({ personCase } :Props) => {
             <Date variant="subtitle2">{caseDate}</Date>
             <CaseNumberAndName variant="body2">{caseIdentifier}</CaseNumberAndName>
           </div>
-          <RoleTag roleName={personRoleInCase}>
+          <CRCTag background={personRoleInCase} borderRadius="31px" color={personRoleInCase} padding="10px 16px">
             <Typography color="inherit" variant="body2">{personRoleInCase}</Typography>
-          </RoleTag>
+          </CRCTag>
         </ListItemCardSegment>
       </Card>
       <CaseDetailsModal
