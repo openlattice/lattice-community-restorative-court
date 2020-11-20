@@ -9,7 +9,7 @@ import { ProfileReduxConstants, REQUEST_STATE } from '../../../../core/redux/con
 import { EDIT_PEACEMAKER_INFORMATION, editPeacemakerInformation } from '../../../peacemaker/actions';
 import { FormConstants } from '../constants';
 
-const { PERSON_NEIGHBOR_MAP, PROFILE } = ProfileReduxConstants;
+const { PERSON_NEIGHBOR_MAP } = ProfileReduxConstants;
 const { COMMUNICATION, FORM, PERSON_DETAILS } = AppTypes;
 const { NAME } = PropertyTypes;
 const { PEACEMAKER_INFORMATION_FORM } = FormConstants;
@@ -24,7 +24,7 @@ export default function reducer(state :Map, action :SequenceAction) {
     SUCCESS: () => {
       const { newCommunication, newForm, newPersonDetails } = action.value;
 
-      let personNeighborMap :Map = state.getIn([PROFILE, PERSON_NEIGHBOR_MAP]);
+      let personNeighborMap :Map = state.get(PERSON_NEIGHBOR_MAP);
       const forms :List = personNeighborMap.get(FORM, List());
       const formIndex :number = forms
         .findIndex((form :Map) => getPropertyValue(form, [NAME, 0]) === PEACEMAKER_INFORMATION_FORM);
