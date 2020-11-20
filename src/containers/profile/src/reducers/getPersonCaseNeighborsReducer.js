@@ -19,5 +19,6 @@ export default function reducer(state :Map, action :SequenceAction) {
       .set(STAFF_MEMBER_BY_STATUS_EKID, action.value.staffMemberByStatusEKID)
       .setIn([GET_PERSON_CASE_NEIGHBORS, REQUEST_STATE], RequestStates.SUCCESS),
     FAILURE: () => state.setIn([GET_PERSON_CASE_NEIGHBORS, REQUEST_STATE], RequestStates.FAILURE),
+    FINALLY: () => state.deleteIn([GET_PERSON_CASE_NEIGHBORS, action.id], action),
   });
 }
