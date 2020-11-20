@@ -3,6 +3,7 @@ import { DataProcessingUtils } from 'lattice-fabricate';
 import { DateTime } from 'luxon';
 
 import { AppTypes, PropertyTypes } from '../../../core/edm/constants';
+import { LANGUAGES } from '../../../utils/people/constants';
 import { FormConstants } from '../../profile/src/constants';
 
 const { getEntityAddressKey, getPageSectionKey } = DataProcessingUtils;
@@ -30,7 +31,7 @@ const schema = {
           title: 'Languages Spoken',
           items: {
             type: 'string',
-            enum: [],
+            enum: LANGUAGES,
           },
           uniqueItems: true,
         },
@@ -83,6 +84,7 @@ const uiSchema = {
     'ui:options': { editable: true },
     [getEntityAddressKey(0, COMMUNICATION, LANGUAGE)]: {
       classNames: 'column-span-4',
+      'ui:options': { multiple: true }
     },
     [getEntityAddressKey(0, PERSON_DETAILS, INTERESTS_AND_HOBBIES)]: {
       classNames: 'column-span-4',
