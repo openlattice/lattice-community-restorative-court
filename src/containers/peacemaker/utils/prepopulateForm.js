@@ -19,16 +19,14 @@ const {
 const { PEACEMAKER_INFORMATION_FORM } = FormConstants;
 const { getPropertyValue } = DataUtils;
 
-export default function prepopulateForm(personNeighborMap :Map) :Object {
+export default function prepopulateForm(personInformationForm :Map, personNeighborMap :Map) :Object {
 
-  const forms :List = personNeighborMap.get(FORM, List());
-  const personInformationForm :?Map = forms
-    .find((form :Map) => getPropertyValue(form, [NAME, 0]) === PEACEMAKER_INFORMATION_FORM);
   const datetimeAdministered = getPropertyValue(personInformationForm, [DATETIME_ADMINISTERED, 0]);
   const text = getPropertyValue(personInformationForm, [TEXT, 0]);
 
   const communication :Map = personNeighborMap.getIn([COMMUNICATION, 0], Map());
-  const language = getPropertyValue(communication.toJS(), LANGUAGE);
+  const language :List = getPropertyValue(communication, LANGUAGE);
+  const languageAsJSArray = List.isList(language) ? language.toJS() : language;
 
   const personDetails :Map = personNeighborMap.getIn([PERSON_DETAILS, 0], Map());
   const interestsAndHobbies = getPropertyValue(personDetails, [INTERESTS_AND_HOBBIES, 0]);
@@ -36,7 +34,7 @@ export default function prepopulateForm(personNeighborMap :Map) :Object {
 
   const formData = {
     [getPageSectionKey(1, 1)]: {
-      [getEntityAddressKey(0, COMMUNICATION, LANGUAGE)]: language,
+      [getEntityAddressKey(0, COMMUNICATION, LANGUAGE)]: languageAsJSArray,
       [getEntityAddressKey(0, PERSON_DETAILS, INTERESTS_AND_HOBBIES)]: interestsAndHobbies,
       [getEntityAddressKey(0, PERSON_DETAILS, RELIGION)]: religion,
       [getEntityAddressKey(0, FORM, TEXT)]: text,

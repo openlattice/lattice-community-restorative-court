@@ -59,7 +59,7 @@ const PeacemakerInformationForm = ({ personId } :Props) => {
   const formEKID :?UUID = isDefined(personInformationForm) ? getEntityKeyId(personInformationForm) : undefined;
 
   const prepopulatedFormData = useMemo(() => (
-    isDefined(personInformationForm) ? prepopulateForm(personNeighborMap) : {}
+    isDefined(personInformationForm) ? prepopulateForm(personInformationForm, personNeighborMap) : {}
   ), [personInformationForm, personNeighborMap]);
 
   const [formData, setFormData] = useState(prepopulatedFormData);

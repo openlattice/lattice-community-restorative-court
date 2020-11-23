@@ -63,15 +63,15 @@ const ChooseFormTypeModal = ({ isVisible, onClose } :Props) => {
           {Icon}
           Referral
         </Button>
-        <Button onClick={() => {}}>
+        <Button>
           {Icon}
           Intake
         </Button>
-        <Button onClick={() => {}}>
+        <Button>
           {Icon}
           Repair Harm Agreement
         </Button>
-        <Button onClick={() => {}}>
+        <Button>
           {Icon}
           Restitution Referral
         </Button>
