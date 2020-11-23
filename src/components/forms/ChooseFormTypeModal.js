@@ -56,19 +56,19 @@ const ChooseFormTypeModal = ({ isVisible, onClose } :Props) => {
         viewportScrolling>
       <div>{text}</div>
       <ButtonsWrapper>
-        <Button onClick={() => {}}>
+        <Button>
           {Icon}
           Referral
         </Button>
-        <Button onClick={() => {}}>
+        <Button>
           {Icon}
           Intake
         </Button>
-        <Button onClick={() => {}}>
+        <Button>
           {Icon}
           Repair Harm Agreement
         </Button>
-        <Button onClick={() => {}}>
+        <Button>
           {Icon}
           Restitution Referral
         </Button>
