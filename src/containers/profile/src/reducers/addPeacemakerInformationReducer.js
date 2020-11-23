@@ -18,12 +18,9 @@ export default function reducer(state :Map, action :SequenceAction) {
       .setIn([ADD_PEACEMAKER_INFORMATION, action.id], action),
     SUCCESS: () => {
       const { newCommunication, newForm, newPersonDetails } = action.value;
-
-      let personNeighborMap :Map = state.get(PERSON_NEIGHBOR_MAP)
-        .update(FORM, List(), (forms :List) => forms.push(newForm));
-      personNeighborMap = personNeighborMap
-        .update(COMMUNICATION, List(), (communication :List) => communication.push(newCommunication));
-      personNeighborMap = personNeighborMap
+      const personNeighborMap :Map = state.get(PERSON_NEIGHBOR_MAP)
+        .update(FORM, List(), (forms :List) => forms.push(newForm))
+        .update(COMMUNICATION, List(), (communication :List) => communication.push(newCommunication))
         .update(PERSON_DETAILS, List(), (personDetails :List) => personDetails.push(newPersonDetails));
       return state
         .set(PERSON_NEIGHBOR_MAP, personNeighborMap)
