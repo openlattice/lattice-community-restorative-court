@@ -15,6 +15,6 @@ export default function reducer(state :Map, action :SequenceAction) {
     SUCCESS: () => state
       .setIn([ADD_PEACEMAKER_INFORMATION, REQUEST_STATE], RequestStates.SUCCESS),
     FAILURE: () => state.setIn([ADD_PEACEMAKER_INFORMATION, REQUEST_STATE], RequestStates.FAILURE),
-    FINALLY: () => state.deleteIn([ADD_PEACEMAKER_INFORMATION, action.id], action),
+    FINALLY: () => state.deleteIn([ADD_PEACEMAKER_INFORMATION, action.id]),
   });
 }

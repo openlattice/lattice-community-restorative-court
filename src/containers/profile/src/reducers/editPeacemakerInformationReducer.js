@@ -43,5 +43,6 @@ export default function reducer(state :Map, action :SequenceAction) {
         .setIn([EDIT_PEACEMAKER_INFORMATION, REQUEST_STATE], RequestStates.SUCCESS);
     },
     FAILURE: () => state.setIn([EDIT_PEACEMAKER_INFORMATION, REQUEST_STATE], RequestStates.FAILURE),
+    FINALLY: () => state.deleteIn([EDIT_PEACEMAKER_INFORMATION, action.id]),
   });
 }
