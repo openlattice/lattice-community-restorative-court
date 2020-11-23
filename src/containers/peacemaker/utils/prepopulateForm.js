@@ -1,5 +1,5 @@
 // @flow
-import { List, Map } from 'immutable';
+import { Map } from 'immutable';
 import { DataProcessingUtils } from 'lattice-fabricate';
 import { DataUtils } from 'lattice-utils';
 
@@ -19,11 +19,8 @@ const {
 const { PEACEMAKER_INFORMATION_FORM } = FormConstants;
 const { getPropertyValue } = DataUtils;
 
-export default function prepopulateForm(personNeighborMap :Map) :Object {
+export default function prepopulateForm(personInformationForm :Map, personNeighborMap :Map) :Object {
 
-  const forms :List = personNeighborMap.get(FORM, List());
-  const personInformationForm :?Map = forms
-    .find((form :Map) => getPropertyValue(form, [NAME, 0]) === PEACEMAKER_INFORMATION_FORM);
   const datetimeAdministered = getPropertyValue(personInformationForm, [DATETIME_ADMINISTERED, 0]);
   const text = getPropertyValue(personInformationForm, [TEXT, 0]);
 
