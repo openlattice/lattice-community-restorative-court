@@ -29,7 +29,7 @@ const ProfileAside = () => {
       <ProfileCard person={person} />
       <div>
         <ButtonWrapper>
-          <Button onClick={() => {}}>Edit Profile</Button>
+          <Button>Edit Profile</Button>
           <Button color="primary" onClick={() => setFormChoiceModalVisibility(true)}>Add Form</Button>
         </ButtonWrapper>
       </div>
