@@ -12,7 +12,6 @@ import { schema, uiSchema } from './schemas/CompletedReferralSchemas';
 import { populateFormData } from './utils';
 
 import { CrumbItem, CrumbLink, Crumbs } from '../../components/crumbs';
-import { PropertyTypes } from '../../core/edm/constants';
 import { APP_PATHS, ProfileReduxConstants, ReferralReduxConstants } from '../../core/redux/constants';
 import { selectPerson } from '../../core/redux/selectors';
 import { getPersonName } from '../../utils/people';
@@ -44,11 +43,9 @@ const CompletedReferralForm = ({ personId } :Props) => {
     <>
       <CardSegment>
         <Crumbs>
-          <CrumbItem>
-            <CrumbLink to={`${root}/${personId}`}>
-              <Typography color="inherit" variant="body2">{ personName }</Typography>
-            </CrumbLink>
-          </CrumbItem>
+          <CrumbLink to={`${root}/${personId}`}>
+            <Typography color="inherit" variant="body2">{ personName }</Typography>
+          </CrumbLink>
           <CrumbItem>
             <Typography color="inherit" variant="body2">Referral Information</Typography>
           </CrumbItem>
