@@ -1,8 +1,8 @@
 // @flow
-const CRC_PEOPLE :string = 'crcPeople';
-const REFERRAL :string = 'referral';
-const REFERRAL_REQUEST_NEIGHBOR_MAP :string = 'referralRequestNeighborMap';
-const SELECTED_REFERRAL_FORM :string = 'selectedReferralForm';
+const CRC_PEOPLE :'crcPeople' = 'crcPeople';
+const REFERRAL :'referral' = 'referral';
+const REFERRAL_REQUEST_NEIGHBOR_MAP :'referralRequestNeighborMap' = 'referralRequestNeighborMap';
+const SELECTED_REFERRAL_FORM :'selectedReferralForm' = 'selectedReferralForm';
 
 export {
   CRC_PEOPLE,
