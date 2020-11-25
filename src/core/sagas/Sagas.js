@@ -7,6 +7,7 @@ import { AuthSagas } from 'lattice-auth';
 import type { Saga } from '@redux-saga/core';
 
 import * as DataSagas from '../data/sagas';
+import * as IntakeSagas from '../../containers/intake/sagas';
 import * as PeacemakerSagas from '../../containers/peacemaker/sagas';
 import * as ProfileSagas from '../../containers/profile/src/sagas';
 import * as ReferralSagas from '../../containers/referral/sagas';
@@ -35,6 +36,9 @@ export default function* sagas() :Saga<*> {
 
     // EDMSagas
     fork(EDMSagas.getEntityDataModelTypesWatcher),
+
+    // IntakeSagas
+    fork(IntakeSagas.submitIntakeWatcher),
 
     // PeacemakerSagas
     fork(PeacemakerSagas.addPeacemakerInformationWatcher),
