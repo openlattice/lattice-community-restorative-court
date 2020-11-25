@@ -44,7 +44,7 @@ const {
 
 const currentDateTime = DateTime.local().toISO();
 
-const schema = {
+const dataSchema = {
   type: 'object',
   title: '',
   properties: {
@@ -320,6 +320,6 @@ const uiSchema = {
 };
 
 export {
-  schema,
+  dataSchema,
   uiSchema,
 };
