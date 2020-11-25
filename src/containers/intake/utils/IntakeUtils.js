@@ -1,30 +1,23 @@
 // @flow
 import { List, Map } from 'immutable';
-import { Constants } from 'lattice';
 import { DataProcessingUtils } from 'lattice-fabricate';
 import { DataUtils } from 'lattice-utils';
 import { DateTime } from 'luxon';
 import type { UUID } from 'lattice';
 
 import { AppTypes, PropertyTypes } from '../../../core/edm/constants';
-import { getPersonName } from '../../../utils/people';
 import { EMPTY_VALUE, RoleConstants } from '../../profile/src/constants';
 
-const { OPENLATTICE_ID_FQN } = Constants;
 const { VICTIM } = RoleConstants;
 const {
-  CRC_CASE,
   DA_CASE,
-  FORM,
   OFFENSE,
   OFFICERS,
   PEOPLE,
   REFERRAL_REQUEST,
-  STAFF,
 } = AppTypes;
 const {
   CASE_NUMBER,
-  DATETIME_ADMINISTERED,
   DATETIME_COMPLETED,
   DA_CASE_NUMBER,
   DESCRIPTION,
@@ -43,7 +36,7 @@ const { getEntityKeyId, getPropertyValue } = DataUtils;
 
 const populateFormData = (
   person :Map,
-  selectedCaseEKID :UUID,
+  selectedCaseEKID :?UUID,
   referralRequest :Map,
   personCaseNeighborMap :Map,
   referralRequestNeighborMap :Map
