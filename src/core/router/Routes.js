@@ -4,8 +4,8 @@
 
 const ROOT :'/' = '/';
 
-const PERSON_ID :string = ':personId';
-const PEACEMAKER_INFORMATION :string = 'peacemakerinformation';
+const PERSON_ID :':personId' = ':personId';
+const PEACEMAKER_INFORMATION :'peacemakerinformation' = 'peacemakerinformation';
 
 export {
   PERSON_ID,
