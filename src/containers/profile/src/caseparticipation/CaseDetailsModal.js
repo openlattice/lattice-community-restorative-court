@@ -147,7 +147,16 @@ const CaseDetailsModal = ({
               staffMemberByStatusEKID={staffMemberByStatusEKID} />
         </ModalSection>
         <ModalSection>
-          <header><Typography color={NEUTRAL.N700} variant="h3">Participants</Typography></header>
+          <header>
+            <Typography color={NEUTRAL.N700} variant="h3">Participants</Typography>
+            <IconButton
+                aria-label="Small Status Icon Button"
+                color="success"
+                size="small"
+                onClick={() => setStatusModalVisibility(true)}>
+              <FontAwesomeIcon fixedWidth icon={faPlus} />
+            </IconButton>
+          </header>
           <ParticipantsTileGrid>
             { respondentList.map((respondent :Map) => renderParticipantTile(respondent, RESPONDENT)) }
             { victimList.map((victim :Map) => renderParticipantTile(victim, VICTIM)) }
