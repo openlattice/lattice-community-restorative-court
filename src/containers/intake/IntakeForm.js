@@ -26,7 +26,7 @@ import { DataUtils, LangUtils, ReduxUtils } from 'lattice-utils';
 import type { UUID } from 'lattice';
 
 import { SUBMIT_INTAKE, submitIntake } from './actions';
-import { schema, uiSchema } from './schemas/IntakeSchemas';
+import { schema, uiSchema } from './schemas/IntakeFormSchemas';
 import { populateFormData } from './utils/IntakeUtils';
 
 import { CrumbItem, CrumbLink, Crumbs } from '../../components/crumbs';
