@@ -18,6 +18,6 @@ export default function reducer(state :Map, action :SequenceAction) {
       .set(CRC_PEOPLE, action.value)
       .setIn([GET_CRC_PEOPLE, REQUEST_STATE], RequestStates.SUCCESS),
     FAILURE: () => state.setIn([GET_CRC_PEOPLE, REQUEST_STATE], RequestStates.FAILURE),
-    FINALLY: () => state.deleteIn([GET_CRC_PEOPLE, action.id], action),
+    FINALLY: () => state.deleteIn([GET_CRC_PEOPLE, action.id]),
   });
 }

@@ -18,12 +18,11 @@ import ProfileContainer from '../profile/src/ProfileContainer';
 import ReferralForm from '../referral/ReferralForm';
 import { APP, REQUEST_STATE } from '../../core/redux/constants';
 import {
-  COMPLETED_REFERRAL,
-  FORM_ID,
+  COMPLETED_REFERRAL_ROUTE_END,
   INTAKE,
-  PEACEMAKER_INFORMATION,
+  PEACEMAKER_INFORMATION_ROUTE_END,
   PERSON_ID,
-  REFERRAL,
+  REFERRAL_ROUTE_END,
 } from '../../core/router/Routes';
 import { CenterWrapper } from '../profile/src/styled';
 
@@ -59,11 +58,11 @@ const AppSwitch = ({
     <Switch>
       <Route path={`${root}/${PERSON_ID}/${INTAKE}`} render={() => <IntakeForm personId={personId} />} />
       <Route
-          path={`${root}/${PERSON_ID}/${COMPLETED_REFERRAL}/${FORM_ID}`}
+          path={`${root}/${COMPLETED_REFERRAL_ROUTE_END}`}
           render={() => <CompletedReferralForm personId={personId} />} />
-      <Route path={`${root}/${PERSON_ID}/${REFERRAL}`} render={() => <ReferralForm personId={personId} />} />
+      <Route path={`${root}/${REFERRAL_ROUTE_END}`} render={() => <ReferralForm personId={personId} />} />
       <Route
-          path={`${root}/${PERSON_ID}/${PEACEMAKER_INFORMATION}`}
+          path={`${root}/${PEACEMAKER_INFORMATION_ROUTE_END}`}
           render={() => <PeacemakerInformationForm personId={personId} />} />
       <Route render={() => <ProfileContainer personId={personId} />} />
     </Switch>

@@ -59,23 +59,23 @@ const ChooseFormTypeModal = ({ isVisible, onClose } :Props) => {
         viewportScrolling>
       <div>{text}</div>
       <ButtonsWrapper>
-        <Button onClick={goToReferral}>
+        <Button aria-label="Form Button" onClick={goToReferral}>
           {Icon}
           Referral
         </Button>
-        <Button onClick={() => {}}>
+        <Button aria-label="Form Button">
           {Icon}
           Intake
         </Button>
-        <Button onClick={() => {}}>
+        <Button aria-label="Form Button">
           {Icon}
           Repair Harm Agreement
         </Button>
-        <Button onClick={() => {}}>
+        <Button aria-label="Form Button">
           {Icon}
           Restitution Referral
         </Button>
-        <Button onClick={goToPeacemakerInformation}>
+        <Button aria-label="Form Button" onClick={goToPeacemakerInformation}>
           {Icon}
           Peacemaker Information Form
         </Button>

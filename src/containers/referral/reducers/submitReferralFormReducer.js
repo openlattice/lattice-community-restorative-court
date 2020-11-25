@@ -15,6 +15,6 @@ export default function reducer(state :Map, action :SequenceAction) {
     SUCCESS: () => state
       .setIn([SUBMIT_REFERRAL_FORM, REQUEST_STATE], RequestStates.SUCCESS),
     FAILURE: () => state.setIn([SUBMIT_REFERRAL_FORM, REQUEST_STATE], RequestStates.FAILURE),
-    FINALLY: () => state.deleteIn([SUBMIT_REFERRAL_FORM, action.id], action),
+    FINALLY: () => state.deleteIn([SUBMIT_REFERRAL_FORM, action.id]),
   });
 }

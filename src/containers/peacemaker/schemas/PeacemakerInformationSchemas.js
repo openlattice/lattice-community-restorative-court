@@ -1,9 +1,9 @@
 // @flow
+import ISO6391 from 'iso-639-1';
 import { DataProcessingUtils } from 'lattice-fabricate';
 import { DateTime } from 'luxon';
 
 import { AppTypes, PropertyTypes } from '../../../core/edm/constants';
-import { LANGUAGES } from '../../../utils/people/constants';
 import { FormConstants } from '../../profile/src/constants';
 
 const { getEntityAddressKey, getPageSectionKey } = DataProcessingUtils;
@@ -31,7 +31,7 @@ const schema = {
           title: 'Languages Spoken',
           items: {
             type: 'string',
-            enum: LANGUAGES,
+            enum: ISO6391.getAllNames(),
           },
           uniqueItems: true,
         },

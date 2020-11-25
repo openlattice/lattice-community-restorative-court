@@ -1,5 +1,4 @@
 // @flow
-export * from './LanguagesConstants';
 
 const GENDERS :string[] = [
   'Female',

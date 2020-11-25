@@ -8,7 +8,7 @@ import {
 import { List, Map, fromJS } from 'immutable';
 import { Models } from 'lattice';
 import { SearchApiActions, SearchApiSagas } from 'lattice-sagas';
-import { LangUtils, Logger } from 'lattice-utils';
+import { Logger } from 'lattice-utils';
 import type { Saga } from '@redux-saga/core';
 import type { UUID } from 'lattice';
 import type { SequenceAction } from 'redux-reqseq';
@@ -17,7 +17,6 @@ import { AppTypes } from '../../../core/edm/constants';
 import { APP_PATHS } from '../../../core/redux/constants';
 import { selectEntitySetId } from '../../../core/redux/selectors';
 import { NeighborUtils } from '../../../utils/data';
-import { ERR_ACTION_VALUE_NOT_DEFINED } from '../../../utils/error/constants';
 import { GET_REFERRAL_REQUEST_NEIGHBORS, getReferralRequestNeighbors } from '../actions';
 
 const { FQN } = Models;
@@ -29,7 +28,6 @@ const {
 } = AppTypes;
 const { searchEntityNeighborsWithFilter } = SearchApiActions;
 const { searchEntityNeighborsWithFilterWorker } = SearchApiSagas;
-const { isDefined } = LangUtils;
 const { getNeighborDetails, getNeighborESID } = NeighborUtils;
 
 const LOG = new Logger('ReferralSagas');
@@ -41,8 +39,6 @@ function* getReferralRequestNeighborsWorker(action :SequenceAction) :Saga<*> {
   try {
     yield put(getReferralRequestNeighbors.request(action.id));
     const { value } = action;
-    if (!isDefined(value)) throw ERR_ACTION_VALUE_NOT_DEFINED;
-
     const referralRequestEKIDs :UUID[] = value;
 
     const daCaseESID :UUID = yield select(selectEntitySetId(DA_CASE));
@@ -103,4 +99,4 @@ function* getReferralRequestNeighborsWatcher() :Saga<*> {
 export {
   getReferralRequestNeighborsWatcher,
   getReferralRequestNeighborsWorker,
-}
+};

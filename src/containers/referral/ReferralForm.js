@@ -163,17 +163,15 @@ const ReferralForm = ({ personId } :Props) => {
     <>
       <CardSegment>
         <Crumbs>
-          <CrumbItem>
-            <CrumbLink to={`${root}/${personId}`}>
-              <Typography color="inherit" variant="body2">{ personName }</Typography>
-            </CrumbLink>
-          </CrumbItem>
+          <CrumbLink to={`${root}/${personId}`}>
+            <Typography color="inherit" variant="body2">{ personName }</Typography>
+          </CrumbLink>
           <CrumbItem>
             <Typography color="inherit" variant="body2">Referral Information</Typography>
           </CrumbItem>
         </Crumbs>
         <Typography variant="h1">Referral Information</Typography>
-        <Typography variant="body1">
+        <Typography>
           Enter the respondent and victim information below to add a new referral for this person.
         </Typography>
       </CardSegment>
@@ -185,7 +183,7 @@ const ReferralForm = ({ personId } :Props) => {
           uiSchema={uiSchema} />
       {submitSuccessful && (
         <CardSegment>
-          <Typography gutterBottom variant="body1">Submitted!</Typography>
+          <Typography gutterBottom>Submitted!</Typography>
           <Button color="success" onClick={goToProfile} variant="outlined">Back to Profile</Button>
         </CardSegment>
       )}

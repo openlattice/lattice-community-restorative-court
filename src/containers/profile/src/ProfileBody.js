@@ -30,7 +30,7 @@ const BodyWrapper = styled.div`
 
 const ProfileBody = () => {
   const personRoleMap :Map = useSelector((store) => store.getIn([PROFILE, PERSON_NEIGHBOR_MAP, ROLE], Map()));
-  const personIsPeacemaker = personRoleMap.includes(PEACEMAKER);
+  const isPersonPeacemaker = personRoleMap.includes(PEACEMAKER);
   const personForms :List = useSelector((store) => store.getIn([PROFILE, PERSON_NEIGHBOR_MAP, FORM], List()));
   const formsIncludePeacemakerInfo = isDefined(
     personForms.find((form :Map) => getPropertyValue(form, [NAME, 0]) === PEACEMAKER_INFORMATION_FORM)
@@ -38,7 +38,7 @@ const ProfileBody = () => {
   return (
     <BodyWrapper>
       <CaseParticipation />
-      {(personIsPeacemaker || formsIncludePeacemakerInfo) && <LastContacted />}
+      {(isPersonPeacemaker || formsIncludePeacemakerInfo) && <LastContacted />}
     </BodyWrapper>
   );
 };

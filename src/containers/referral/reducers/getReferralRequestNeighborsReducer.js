@@ -18,6 +18,6 @@ export default function reducer(state :Map, action :SequenceAction) {
       .set(REFERRAL_REQUEST_NEIGHBOR_MAP, action.value)
       .setIn([GET_REFERRAL_REQUEST_NEIGHBORS, REQUEST_STATE], RequestStates.SUCCESS),
     FAILURE: () => state.setIn([GET_REFERRAL_REQUEST_NEIGHBORS, REQUEST_STATE], RequestStates.FAILURE),
-    FINALLY: () => state.deleteIn([GET_REFERRAL_REQUEST_NEIGHBORS, action.id], action),
+    FINALLY: () => state.deleteIn([GET_REFERRAL_REQUEST_NEIGHBORS, action.id]),
   });
 }

@@ -13,9 +13,11 @@ const { DATETIME_ADMINISTERED, GENDER, PRONOUN } = PropertyTypes;
 const data = JSON.parse(JSON.stringify(dataSchema));
 const ui = JSON.parse(JSON.stringify(uiSchema));
 
+// remove existing person dropdown from form since all victim people will be grouped together in next section
 delete data.properties[getPageSectionKey(1, 2)];
 delete ui[getPageSectionKey(1, 2)];
 
+// remove properties not stored on person entity
 delete data.properties[getPageSectionKey(1, 3)]
   .items.properties[getEntityAddressKey(-1, PERSON_DETAILS, GENDER)];
 delete data.properties[getPageSectionKey(1, 3)]
