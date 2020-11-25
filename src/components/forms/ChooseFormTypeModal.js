@@ -29,6 +29,8 @@ const IconWrapper = styled.div`
   margin-right: 10px;
 `;
 
+const Icon = <IconWrapper><FontAwesomeIcon color={NEUTRAL.N700} icon={faFileAlt} /></IconWrapper>;
+
 type Props = {
   isVisible :boolean;
   onClose :() => void;
@@ -39,7 +41,6 @@ const ChooseFormTypeModal = ({ isVisible, onClose } :Props) => {
   const personName :string = getPersonName(person);
   const personEKID = getEntityKeyId(person);
   const text = `For: ${personName}`;
-  const Icon = <IconWrapper><FontAwesomeIcon color={NEUTRAL.N700} icon={faFileAlt} /></IconWrapper>;
 
   const dispatch = useDispatch();
   const root = useSelector((store) => store.getIn(APP_PATHS.ROOT));
