@@ -25,9 +25,8 @@ import {
   COMPLETED_REFERRAL_ROUTE_END,
   COMPLETED_REPAIR_HARM_AGREEMENT_ROUTE_END,
   COMPLETED_RESTITUTION_REFERRAL_ROUTE_END,
-  INTAKE,
+  INTAKE_ROUTE_END,
   PEACEMAKER_INFORMATION_ROUTE_END,
-  PERSON_ID,
   REFERRAL_ROUTE_END,
   REPAIR_HARM_AGREEMENT_ROUTE_END,
   RESTITUTION_REFERRAL_ROUTE_END,
@@ -64,7 +63,7 @@ const AppSwitch = ({
 
   return (
     <Switch>
-      <Route path={`${root}/${PERSON_ID}/${INTAKE}`} render={() => <IntakeForm personId={personId} />} />
+      <Route path={`${root}/${INTAKE_ROUTE_END}`} render={() => <IntakeForm personId={personId} />} />
       <Route
           path={`${root}/${COMPLETED_RESTITUTION_REFERRAL_ROUTE_END}`}
           render={() => <CompletedRestitutionReferral personId={personId} />} />
