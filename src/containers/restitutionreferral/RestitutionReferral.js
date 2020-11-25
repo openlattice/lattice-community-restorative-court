@@ -168,7 +168,6 @@ const RestitutionReferral = ({ personId } :Props) => {
       [getPageSectionKey(1, 3), getEntityAddressKey(1, PEOPLE, OPENLATTICE_ID_FQN)]
     );
     formDataForSubmit = remove(formDataForSubmit, getPageSectionKey(1, 3));
-    console.log('formDataForSubmit ', formDataForSubmit);
 
     const entityData = processEntityData(formDataForSubmit, entitySetIds, propertyTypeIds);
     const associations = [
@@ -178,9 +177,6 @@ const RestitutionReferral = ({ personId } :Props) => {
       [SUBJECT_OF, victimEKID, PEOPLE, 0, FORM, {}],
     ];
     const associationEntityData = processAssociationEntityData(associations, entitySetIds, propertyTypeIds);
-    console.log('entityData ', entityData);
-    console.log('associationEntityData ', associationEntityData);
-
     dispatch(submitRestitutionReferral({ associationEntityData, entityData }));
   };
 
