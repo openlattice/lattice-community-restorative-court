@@ -10,18 +10,16 @@ import { DataUtils } from 'lattice-utils';
 import type { UUID } from 'lattice';
 
 import { useDispatch, useSelector } from '../../containers/app/AppProvider';
+import { FormConstants } from '../../containers/profile/src/constants';
 import { selectReferralForm } from '../../containers/referral/actions';
 import { APP_PATHS } from '../../core/redux/constants';
 import { selectPerson } from '../../core/redux/selectors';
-import {
-  COMPLETED_REFERRAL,
-  FORM_ID,
-  PERSON_ID,
-} from '../../core/router/Routes';
+import { FORM_ID, PERSON_ID, ROUTES_FOR_COMPLETED_FORMS } from '../../core/router/Routes';
 import { goToRoute } from '../../core/router/RoutingActions';
 
 const { getEntityKeyId } = DataUtils;
 const { NEUTRAL } = Colors;
+const { SELECT_FORM_ACTIONS_BY_FORM } = FormConstants;
 
 const DocumentCardSegment = styled(CardSegment)`
   display: flex;
@@ -74,17 +72,20 @@ const DocumentListItem = ({
 
   const dispatch = useDispatch();
 
-  const goToCompletedReferral = () => {
-    if (personEKID) {
-      dispatch(selectReferralForm(form));
-      dispatch(goToRoute(`${root}/${PERSON_ID}/${COMPLETED_REFERRAL}/${FORM_ID}`
+  const goToCompletedForm = () => {
+    if (personEKID && formEKID) {
+      const selectForm = SELECT_FORM_ACTIONS_BY_FORM[formName];
+      if (selectForm) {
+        dispatch(selectForm(form));
+      }
+      dispatch(goToRoute(`${root}/${ROUTES_FOR_COMPLETED_FORMS[formName]}`
         .replace(PERSON_ID, personEKID)
         .replace(FORM_ID, formEKID)));
     }
   };
 
   return (
-    <DocumentCardSegment noBleed onClick={goToCompletedReferral}>
+    <DocumentCardSegment noBleed onClick={goToCompletedForm}>
       <div>
         <FontAwesomeIcon color={NEUTRAL.N900} icon={faFileAlt} />
         <span>

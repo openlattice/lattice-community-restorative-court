@@ -10,6 +10,8 @@ import * as DataSagas from '../data/sagas';
 import * as PeacemakerSagas from '../../containers/peacemaker/sagas';
 import * as ProfileSagas from '../../containers/profile/src/sagas';
 import * as ReferralSagas from '../../containers/referral/sagas';
+import * as RepairHarmSagas from '../../containers/repairharm/sagas';
+import * as RestitutionReferralSagas from '../../containers/restitutionreferral/sagas';
 import { AppSagas } from '../../containers/app';
 import { EDMSagas } from '../edm';
 import { RoutingSagas } from '../router';
@@ -52,6 +54,12 @@ export default function* sagas() :Saga<*> {
     fork(ReferralSagas.getCRCPeopleWatcher),
     fork(ReferralSagas.getReferralRequestNeighborsWatcher),
     fork(ReferralSagas.submitReferralFormWatcher),
+
+    // RepairHarmSagas
+    fork(RepairHarmSagas.submitRepairHarmAgreementWatcher),
+
+    // RestitutionReferralSagas
+    fork(RestitutionReferralSagas.submitRestitutionReferralWatcher),
 
     // RoutingSagas
     fork(RoutingSagas.goToRootWatcher),
