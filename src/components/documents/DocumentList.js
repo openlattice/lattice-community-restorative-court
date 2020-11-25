@@ -35,6 +35,7 @@ const DocumentList = ({ caseIdentifier, forms, formNeighborMap } :Props) => (
         return (
           <DocumentListItem
               caseIdentifier={caseIdentifier}
+              form={form}
               formName={formName}
               key={formEKID}
               staffMemberName={staffMemberName}
