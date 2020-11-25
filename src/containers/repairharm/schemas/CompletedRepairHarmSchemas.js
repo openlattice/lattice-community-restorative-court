@@ -27,11 +27,11 @@ ui[getPageSectionKey(1, 2)][getEntityAddressKey(0, FORM, DATETIME_ADMINISTERED)]
   classNames: 'column-span-4'
 };
 
-// Add Victim Information
+// Add Peacemakers
 
 data.properties[getPageSectionKey(1, 3)] = {
   type: 'array',
-  title: 'Victim Information',
+  title: 'Peacemakers',
   items: {
     type: 'object',
     properties: {

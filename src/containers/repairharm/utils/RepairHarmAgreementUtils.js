@@ -27,7 +27,7 @@ const {
   TEXT,
 } = PropertyTypes;
 const { OPENLATTICE_ID_FQN } = Constants;
-const { RESPONDENT, VICTIM } = RoleConstants;
+const { PEACEMAKER, RESPONDENT } = RoleConstants;
 const { isDefined } = LangUtils;
 const { getEntityKeyId, getPropertyValue } = DataUtils;
 const { getEntityAddressKey, getPageSectionKey } = DataProcessingUtils;
@@ -52,7 +52,7 @@ const populateCompletedForm = (selectedForm :Map, formNeighborMap :Map, person :
   const personFirstName :string = getPropertyValue(person, [GIVEN_NAME, 0], EMPTY_VALUE);
   const personMiddleName :string = getPropertyValue(person, [MIDDLE_NAME, 0], EMPTY_VALUE);
   const personLastName :string = getPropertyValue(person, [SURNAME, 0], EMPTY_VALUE);
-  console.log('selectedForm ', selectedForm);
+
   const conditions :List = getPropertyValue(selectedForm, TEXT);
   const dueDate :string = getPropertyValue(selectedForm, [DUE_DATE, 0], EMPTY_VALUE);
   const datetimeAdministered :string = getPropertyValue(selectedForm, [DATETIME_ADMINISTERED, 0]);
@@ -72,11 +72,11 @@ const populateCompletedForm = (selectedForm :Map, formNeighborMap :Map, person :
   const respondentName = getPersonName(respondent);
   const caseIdentifier = `${crcCaseNumber} - ${respondentName}`;
 
-  const victims :List = personCaseNeighborMap.getIn([ROLE, crcCaseEKID, VICTIM], List());
-  const victimFormData = victims.toJS().map((victim :Object) => {
-    const lastName = getPropertyValue(victim, [SURNAME, 0], EMPTY_VALUE);
-    const firstName = getPropertyValue(victim, [GIVEN_NAME, 0], EMPTY_VALUE);
-    const middleName = getPropertyValue(victim, [MIDDLE_NAME, 0], EMPTY_VALUE);
+  const peacemakers :List = personCaseNeighborMap.getIn([ROLE, crcCaseEKID, PEACEMAKER], List());
+  const peacemakerFormData = peacemakers.toJS().map((peacemaker :Object) => {
+    const lastName = getPropertyValue(peacemaker, [SURNAME, 0], EMPTY_VALUE);
+    const firstName = getPropertyValue(peacemaker, [GIVEN_NAME, 0], EMPTY_VALUE);
+    const middleName = getPropertyValue(peacemaker, [MIDDLE_NAME, 0], EMPTY_VALUE);
     return {
       [getEntityAddressKey(-1, PEOPLE, GIVEN_NAME)]: firstName,
       [getEntityAddressKey(-1, PEOPLE, MIDDLE_NAME)]: middleName,
@@ -97,7 +97,7 @@ const populateCompletedForm = (selectedForm :Map, formNeighborMap :Map, person :
       [getEntityAddressKey(0, STAFF, OPENLATTICE_ID_FQN)]: staffMemberName,
       [getEntityAddressKey(0, FORM, DATETIME_ADMINISTERED)]: dateAdministered,
     },
-    [getPageSectionKey(1, 3)]: victimFormData,
+    [getPageSectionKey(1, 3)]: peacemakerFormData,
   };
 };
 
