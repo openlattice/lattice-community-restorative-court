@@ -87,7 +87,7 @@ const PeacemakerInformationForm = ({ personId } :Props) => {
   };
 
   const handleEdit = (params) => {
-    dispatch(editPeacemakerInformation({ ...params }));
+    dispatch(editPeacemakerInformation(params));
   };
 
   const communication :List = useSelector((store) => store
