@@ -9,6 +9,7 @@ import { RequestStates } from 'redux-reqseq';
 import * as ProfileReduxConstants from './ProfileReduxConstants';
 import * as ReferralReduxConstants from './ReferralReduxConstants';
 import * as RepairHarmReduxConstants from './RepairHarmReduxConstants';
+import * as RestitutionReferralReduxConstants from './RestitutionReferralReduxConstants';
 
 export const {
   APP,
@@ -77,6 +78,7 @@ export {
   ProfileReduxConstants,
   ReferralReduxConstants,
   RepairHarmReduxConstants,
+  RestitutionReferralReduxConstants,
   RS_INITIAL_STATE,
   SEARCH_RESULTS,
 };
