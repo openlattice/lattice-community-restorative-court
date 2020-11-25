@@ -121,6 +121,13 @@ function* getPersonCaseNeighborsWorker(action :SequenceAction) :Saga<*> {
             mutator.set(ROLE, roleMap);
           }
           else if (neighborESID === referralRequestESID) {
+            const referralRequestMap = mutator.get(REFERRAL_REQUEST, Map())
+              .update(
+                caseEKID,
+                List(),
+                (existingReferralRequests :List) => existingReferralRequests.push(entity)
+              );
+            mutator.set(REFERRAL_REQUEST, referralRequestMap);
             referralRequestEKIDs.push(entityEKID);
           }
           else {
