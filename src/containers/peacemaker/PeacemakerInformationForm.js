@@ -64,9 +64,9 @@ const PeacemakerInformationForm = ({ personId } :Props) => {
 
   const [formData, setFormData] = useState(prepopulatedFormData);
 
-  useEffect(() => {
-    setFormData(prepopulatedFormData);
-  }, [prepopulatedFormData]);
+  // useEffect(() => {
+  //   setFormData(prepopulatedFormData);
+  // }, [prepopulatedFormData]);
 
   const onChange = ({ formData: updatedFormData } :Object) => {
     setFormData(updatedFormData);
