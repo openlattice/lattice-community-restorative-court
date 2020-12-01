@@ -75,7 +75,6 @@ const DocumentListItem = ({
   const goToCompletedForm = () => {
     if (personEKID && formEKID) {
       const selectForm = SELECT_FORM_ACTIONS_BY_FORM[formName];
-      console.log('selectForm ', selectForm);
       if (selectForm) {
         dispatch(selectForm(form));
       }
