@@ -11,10 +11,16 @@ import type { RequestState } from 'redux-reqseq';
 import { useDispatch, useSelector } from './AppProvider';
 import { INITIALIZE_APPLICATION, initializeApplication } from './actions';
 
+import CompletedReferralForm from '../referral/CompletedReferralForm';
 import PeacemakerInformationForm from '../peacemaker/PeacemakerInformationForm';
 import ProfileContainer from '../profile/src/ProfileContainer';
+import ReferralForm from '../referral/ReferralForm';
 import { APP, REQUEST_STATE } from '../../core/redux/constants';
-import { PEACEMAKER_INFORMATION, PERSON_ID } from '../../core/router/Routes';
+import {
+  COMPLETED_REFERRAL_ROUTE_END,
+  PEACEMAKER_INFORMATION_ROUTE_END,
+  REFERRAL_ROUTE_END,
+} from '../../core/router/Routes';
 import { CenterWrapper } from '../profile/src/styled';
 
 const { isPending } = ReduxUtils;
@@ -48,7 +54,11 @@ const AppSwitch = ({
   return (
     <Switch>
       <Route
-          path={`${root}/${PERSON_ID}/${PEACEMAKER_INFORMATION}`}
+          path={`${root}/${COMPLETED_REFERRAL_ROUTE_END}`}
+          render={() => <CompletedReferralForm personId={personId} />} />
+      <Route path={`${root}/${REFERRAL_ROUTE_END}`} render={() => <ReferralForm personId={personId} />} />
+      <Route
+          path={`${root}/${PEACEMAKER_INFORMATION_ROUTE_END}`}
           render={() => <PeacemakerInformationForm personId={personId} />} />
       <Route render={() => <ProfileContainer personId={personId} />} />
     </Switch>

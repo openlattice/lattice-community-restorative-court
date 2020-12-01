@@ -12,6 +12,8 @@ import { useSelector } from '../../app/AppProvider';
 
 const Centered = styled.div`
   align-items: center;
+  display: flex;
+  flex-direction: column;
 `;
 
 const ButtonWrapper = styled.div`

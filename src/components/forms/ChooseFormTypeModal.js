@@ -11,7 +11,7 @@ import { DataUtils } from 'lattice-utils';
 import { useDispatch, useSelector } from '../../containers/app/AppProvider';
 import { APP_PATHS } from '../../core/redux/constants';
 import { selectPerson } from '../../core/redux/selectors';
-import { PEACEMAKER_INFORMATION, PERSON_ID } from '../../core/router/Routes';
+import { PEACEMAKER_INFORMATION, PERSON_ID, REFERRAL } from '../../core/router/Routes';
 import { goToRoute } from '../../core/router/RoutingActions';
 import { getPersonName } from '../../utils/people';
 
@@ -44,6 +44,9 @@ const ChooseFormTypeModal = ({ isVisible, onClose } :Props) => {
 
   const dispatch = useDispatch();
   const root = useSelector((store) => store.getIn(APP_PATHS.ROOT));
+  const goToReferral = () => {
+    if (personEKID) dispatch(goToRoute(`${root}/${PERSON_ID}/${REFERRAL}`.replace(PERSON_ID, personEKID)));
+  };
   const goToPeacemakerInformation = () => {
     if (personEKID) {
       dispatch(goToRoute(`${root}/${PERSON_ID}/${PEACEMAKER_INFORMATION}`.replace(PERSON_ID, personEKID)));
@@ -57,23 +60,23 @@ const ChooseFormTypeModal = ({ isVisible, onClose } :Props) => {
         viewportScrolling>
       <div>{text}</div>
       <ButtonsWrapper>
-        <Button>
+        <Button aria-label="Form Button" onClick={goToReferral}>
           {Icon}
           Referral
         </Button>
-        <Button>
+        <Button aria-label="Form Button">
           {Icon}
           Intake
         </Button>
-        <Button>
+        <Button aria-label="Form Button">
           {Icon}
           Repair Harm Agreement
         </Button>
-        <Button>
+        <Button aria-label="Form Button">
           {Icon}
           Restitution Referral
         </Button>
-        <Button onClick={goToPeacemakerInformation}>
+        <Button aria-label="Form Button" onClick={goToPeacemakerInformation}>
           {Icon}
           Peacemaker Information Form
         </Button>
