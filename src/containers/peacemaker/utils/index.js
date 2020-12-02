@@ -1,2 +1,2 @@
 // @flow
-export { default as prepopulateForm } from './prepopulateForm';
+export { default as populateForm } from './populateForm';

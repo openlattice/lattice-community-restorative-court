@@ -2,7 +2,6 @@
 import React, {
   useCallback,
   useEffect,
-  useMemo,
   useState,
 } from 'react';
 
@@ -109,24 +108,22 @@ const RepairHarmAgreement = ({ personId } :Props) => {
   );
 
   const person :Map = useSelector(selectPerson());
-  const prepopulatedFormData = useMemo(() => {
+
+  const [formData, setFormData] = useState({});
+
+  useEffect(() => {
     const personFirstName :string = getPropertyValue(person, [GIVEN_NAME, 0], EMPTY_VALUE);
     const personMiddleName :string = getPropertyValue(person, [MIDDLE_NAME, 0], EMPTY_VALUE);
     const personLastName :string = getPropertyValue(person, [SURNAME, 0], EMPTY_VALUE);
-    return {
+    const populatedFormData = {
       [getPageSectionKey(1, 1)]: {
         [getEntityAddressKey(0, PEOPLE, GIVEN_NAME)]: personFirstName,
         [getEntityAddressKey(0, PEOPLE, MIDDLE_NAME)]: personMiddleName,
         [getEntityAddressKey(0, PEOPLE, SURNAME)]: personLastName,
       }
     };
+    setFormData(populatedFormData);
   }, [person]);
-
-  const [formData, setFormData] = useState({});
-
-  useEffect(() => {
-    setFormData(prepopulatedFormData);
-  }, [prepopulatedFormData]);
 
   const onChange = ({ formData: updatedFormData } :Object) => {
     setFormData(updatedFormData);
