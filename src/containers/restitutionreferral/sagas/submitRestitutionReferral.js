@@ -7,6 +7,7 @@ import {
 } from '@redux-saga/core/effects';
 import { Logger } from 'lattice-utils';
 import type { Saga } from '@redux-saga/core';
+import type { WorkerResponse } from 'lattice-sagas';
 import type { SequenceAction } from 'redux-reqseq';
 
 import { submitDataGraph } from '../../../core/data/actions';
@@ -15,10 +16,10 @@ import { SUBMIT_RESTITUTION_REFERRAL, submitRestitutionReferral } from '../actio
 
 const LOG = new Logger('RestitutionReferralSagas');
 
-function* submitRestitutionReferralWorker(action :SequenceAction) :Saga<*> {
+function* submitRestitutionReferralWorker(action :SequenceAction) :Saga<WorkerResponse> {
 
   const { id } = action;
-  const workerResponse = {};
+  let workerResponse :WorkerResponse;
 
   try {
     yield put(submitRestitutionReferral.request(id));
@@ -26,11 +27,11 @@ function* submitRestitutionReferralWorker(action :SequenceAction) :Saga<*> {
 
     const response :Object = yield call(submitDataGraphWorker, submitDataGraph(value));
     if (response.error) throw response.error;
-
+    workerResponse = { data: response.data };
     yield put(submitRestitutionReferral.success(id));
   }
   catch (error) {
-    workerResponse.error = error;
+    workerResponse = { error };
     LOG.error(action.type, error);
     yield put(submitRestitutionReferral.failure(id, error));
   }
