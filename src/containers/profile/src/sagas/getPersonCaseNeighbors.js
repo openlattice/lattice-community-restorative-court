@@ -17,7 +17,7 @@ import type { SequenceAction } from 'redux-reqseq';
 import { AppTypes, PropertyTypes } from '../../../../core/edm/constants';
 import { APP_PATHS } from '../../../../core/redux/constants';
 import { selectEntitySetId } from '../../../../core/redux/selectors';
-import { NeighborUtils } from '../../../../utils/data';
+import { getAssociationDetails, getNeighborDetails, getNeighborESID } from '../../../../utils/data';
 import { ERR_ACTION_VALUE_NOT_DEFINED } from '../../../../utils/error/constants';
 import { getReferralRequestNeighbors } from '../../../referral/actions';
 import { getReferralRequestNeighborsWorker } from '../../../referral/sagas';
@@ -27,7 +27,6 @@ const { isDefined } = LangUtils;
 const { getEntityKeyId, getPropertyValue } = DataUtils;
 const { searchEntityNeighborsWithFilter } = SearchApiActions;
 const { searchEntityNeighborsWithFilterWorker } = SearchApiSagas;
-const { getAssociationDetails, getNeighborDetails, getNeighborESID } = NeighborUtils;
 const { FQN } = Models;
 const { ROLE } = PropertyTypes;
 const {

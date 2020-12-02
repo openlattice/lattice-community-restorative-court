@@ -64,9 +64,9 @@ const PeacemakerInformationForm = ({ personId } :Props) => {
 
   const [formData, setFormData] = useState(prepopulatedFormData);
 
-  useEffect(() => {
-    setFormData(prepopulatedFormData);
-  }, [prepopulatedFormData]);
+  // useEffect(() => {
+  //   setFormData(prepopulatedFormData);
+  // }, [prepopulatedFormData]);
 
   const onChange = ({ formData: updatedFormData } :Object) => {
     setFormData(updatedFormData);
@@ -87,7 +87,7 @@ const PeacemakerInformationForm = ({ personId } :Props) => {
   };
 
   const handleEdit = (params) => {
-    dispatch(editPeacemakerInformation({ ...params }));
+    dispatch(editPeacemakerInformation(params));
   };
 
   const communication :List = useSelector((store) => store
