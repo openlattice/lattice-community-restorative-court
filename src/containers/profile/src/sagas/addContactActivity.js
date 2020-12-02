@@ -6,11 +6,11 @@ import {
   select,
   takeEvery,
 } from '@redux-saga/core/effects';
-import { List, Map, fromJS } from 'immutable';
-import { Constants } from 'lattice';
+import { Map } from 'immutable';
 import { LangUtils, Logger } from 'lattice-utils';
 import type { Saga } from '@redux-saga/core';
 import type { UUID } from 'lattice';
+import type { WorkerResponse } from 'lattice-sagas';
 import type { SequenceAction } from 'redux-reqseq';
 
 import { submitDataGraph } from '../../../../core/data/actions';
@@ -18,12 +18,12 @@ import { submitDataGraphWorker } from '../../../../core/data/sagas';
 import { AppTypes } from '../../../../core/edm/constants';
 import { EDM, PROPERTY_FQNS_BY_TYPE_ID } from '../../../../core/redux/constants';
 import { selectEntitySetId } from '../../../../core/redux/selectors';
+import { formatNewEntityData } from '../../../../utils/data';
 import { ERR_ACTION_VALUE_NOT_DEFINED } from '../../../../utils/error/constants';
 import { ADD_CONTACT_ACTIVITY, addContactActivity } from '../actions';
 
 const { isDefined } = LangUtils;
 const { CONTACT_ACTIVITY } = AppTypes;
-const { OPENLATTICE_ID_FQN } = Constants;
 
 const LOG = new Logger('ProfileSagas');
 /*
@@ -32,7 +32,7 @@ const LOG = new Logger('ProfileSagas');
  *
  */
 
-function* addContactActivityWorker(action :SequenceAction) :Saga<*> {
+function* addContactActivityWorker(action :SequenceAction) :Saga<WorkerResponse> {
 
   const { id } = action;
   const workerResponse = {};
@@ -53,13 +53,11 @@ function* addContactActivityWorker(action :SequenceAction) :Saga<*> {
 
     const propertyFqnsByTypeId = yield select((store :Map) => store.getIn([EDM, PROPERTY_FQNS_BY_TYPE_ID]));
 
-    const newContactActivity :Map = Map().withMutations((mutator :Map) => {
-      mutator.set(OPENLATTICE_ID_FQN, contactActivityEKID);
-      fromJS(entityData[contactActivityESID][0]).forEach((entityValue :List, propertyTypeId :UUID) => {
-        const propertyFqn = propertyFqnsByTypeId.get(propertyTypeId);
-        mutator.set(propertyFqn, entityValue);
-      });
-    });
+    const newContactActivity :Map = formatNewEntityData(
+      entityData[contactActivityESID][0],
+      propertyFqnsByTypeId,
+      contactActivityEKID
+    );
 
     yield put(addContactActivity.success(id, newContactActivity));
   }

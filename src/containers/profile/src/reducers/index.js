@@ -4,6 +4,8 @@ import { List, Map, fromJS } from 'immutable';
 
 import addCaseStatusReducer from './addCaseStatusReducer';
 import addContactActivityReducer from './addContactActivityReducer';
+import addPeacemakerInformationReducer from './addPeacemakerInformationReducer';
+import editPeacemakerInformationReducer from './editPeacemakerInformationReducer';
 import getFormNeighborsReducer from './getFormNeighborsReducer';
 import getPersonCaseNeighborsReducer from './getPersonCaseNeighborsReducer';
 import getPersonNeighborsReducer from './getPersonNeighborsReducer';
@@ -14,6 +16,12 @@ import loadProfileReducer from './loadProfileReducer';
 import { RESET_REQUEST_STATE } from '../../../../core/redux/actions';
 import { ProfileReduxConstants, RS_INITIAL_STATE } from '../../../../core/redux/constants';
 import { resetRequestStateReducer } from '../../../../core/redux/reducers';
+import {
+  ADD_PEACEMAKER_INFORMATION,
+  EDIT_PEACEMAKER_INFORMATION,
+  addPeacemakerInformation,
+  editPeacemakerInformation,
+} from '../../../peacemaker/actions';
 import {
   ADD_CASE_STATUS,
   ADD_CONTACT_ACTIVITY,
@@ -46,6 +54,8 @@ const INITIAL_STATE :Map = fromJS({
   // actions
   [ADD_CASE_STATUS]: RS_INITIAL_STATE,
   [ADD_CONTACT_ACTIVITY]: RS_INITIAL_STATE,
+  [ADD_PEACEMAKER_INFORMATION]: RS_INITIAL_STATE,
+  [EDIT_PEACEMAKER_INFORMATION]: RS_INITIAL_STATE,
   [GET_FORM_NEIGHBORS]: RS_INITIAL_STATE,
   [GET_PERSON]: RS_INITIAL_STATE,
   [GET_PERSON_CASE_NEIGHBORS]: RS_INITIAL_STATE,
@@ -74,6 +84,12 @@ export default function profileReducer(state :Map = INITIAL_STATE, action :Objec
 
     case addContactActivity.case(action.type):
       return addContactActivityReducer(state, action);
+
+    case addPeacemakerInformation.case(action.type):
+      return addPeacemakerInformationReducer(state, action);
+
+    case editPeacemakerInformation.case(action.type):
+      return editPeacemakerInformationReducer(state, action);
 
     case getFormNeighbors.case(action.type):
       return getFormNeighborsReducer(state, action);

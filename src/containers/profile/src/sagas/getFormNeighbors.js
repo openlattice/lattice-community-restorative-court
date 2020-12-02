@@ -17,16 +17,20 @@ import type { SequenceAction } from 'redux-reqseq';
 import { AppTypes } from '../../../../core/edm/constants';
 import { APP_PATHS } from '../../../../core/redux/constants';
 import { selectEntitySetId } from '../../../../core/redux/selectors';
-import { NeighborUtils } from '../../../../utils/data';
+import { getNeighborDetails, getNeighborESID } from '../../../../utils/data';
 import { ERR_ACTION_VALUE_NOT_DEFINED } from '../../../../utils/error/constants';
 import { GET_FORM_NEIGHBORS, getFormNeighbors } from '../actions';
 
 const { isDefined } = LangUtils;
 const { searchEntityNeighborsWithFilter } = SearchApiActions;
 const { searchEntityNeighborsWithFilterWorker } = SearchApiSagas;
-const { getNeighborDetails, getNeighborESID } = NeighborUtils;
 const { FQN } = Models;
-const { FORM, STAFF } = AppTypes;
+const {
+  CRC_CASE,
+  FORM,
+  REFERRAL_REQUEST,
+  STAFF,
+} = AppTypes;
 
 const LOG = new Logger('ProfileSagas');
 
@@ -47,12 +51,14 @@ function* getFormNeighborsWorker(action :SequenceAction) :Saga<*> {
 
     const formEKIDs :UUID[] = value;
 
+    const crcCaseESID :UUID = yield select(selectEntitySetId(CRC_CASE));
     const formESID :UUID = yield select(selectEntitySetId(FORM));
+    const referralRequestESID :UUID = yield select(selectEntitySetId(REFERRAL_REQUEST));
     const staffESID :UUID = yield select(selectEntitySetId(STAFF));
 
     const filter = {
       entityKeyIds: formEKIDs,
-      destinationEntitySetIds: [staffESID],
+      destinationEntitySetIds: [crcCaseESID, referralRequestESID, staffESID],
       sourceEntitySetIds: [],
     };
 

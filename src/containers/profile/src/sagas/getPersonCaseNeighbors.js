@@ -17,15 +17,16 @@ import type { SequenceAction } from 'redux-reqseq';
 import { AppTypes, PropertyTypes } from '../../../../core/edm/constants';
 import { APP_PATHS } from '../../../../core/redux/constants';
 import { selectEntitySetId } from '../../../../core/redux/selectors';
-import { NeighborUtils } from '../../../../utils/data';
+import { getAssociationDetails, getNeighborDetails, getNeighborESID } from '../../../../utils/data';
 import { ERR_ACTION_VALUE_NOT_DEFINED } from '../../../../utils/error/constants';
+import { getReferralRequestNeighbors } from '../../../referral/actions';
+import { getReferralRequestNeighborsWorker } from '../../../referral/sagas';
 import { GET_PERSON_CASE_NEIGHBORS, getPersonCaseNeighbors } from '../actions';
 
 const { isDefined } = LangUtils;
 const { getEntityKeyId, getPropertyValue } = DataUtils;
 const { searchEntityNeighborsWithFilter } = SearchApiActions;
 const { searchEntityNeighborsWithFilterWorker } = SearchApiSagas;
-const { getAssociationDetails, getNeighborDetails, getNeighborESID } = NeighborUtils;
 const { FQN } = Models;
 const { ROLE } = PropertyTypes;
 const {
@@ -75,6 +76,7 @@ function* getPersonCaseNeighborsWorker(action :SequenceAction) :Saga<*> {
     if (response.error) throw response.error;
 
     const statusEKIDs = [];
+    const referralRequestEKIDs = [];
 
     const fqnsByESID :Map = yield select((store) => store.getIn(APP_PATHS.FQNS_BY_ESID));
 
@@ -117,6 +119,9 @@ function* getPersonCaseNeighborsWorker(action :SequenceAction) :Saga<*> {
               );
             mutator.set(ROLE, roleMap);
           }
+          else if (neighborESID === referralRequestESID) {
+            referralRequestEKIDs.push(entityEKID);
+          }
           else {
             const entityList = mutator.get(neighborFqn, List()).push(entity);
             mutator.set(neighborFqn, entityList);
@@ -124,6 +129,10 @@ function* getPersonCaseNeighborsWorker(action :SequenceAction) :Saga<*> {
         });
       });
     });
+
+    if (referralRequestEKIDs.length) {
+      yield call(getReferralRequestNeighborsWorker, getReferralRequestNeighbors(referralRequestEKIDs));
+    }
 
     const staffESID :UUID = yield select(selectEntitySetId(STAFF));
 

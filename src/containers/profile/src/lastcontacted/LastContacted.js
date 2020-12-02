@@ -23,7 +23,7 @@ import { SectionHeaderWithColor } from '../styled';
 const { CONTACT_ACTIVITY } = AppTypes;
 const { CONTACT_DATETIME, OUTCOME } = PropertyTypes;
 const { NEUTRAL } = Colors;
-const { getPropertyValue } = DataUtils;
+const { getEntityKeyId, getPropertyValue } = DataUtils;
 const { formatAsDate } = DateTimeUtils;
 
 const SectionWrapper = styled.div`
@@ -66,7 +66,12 @@ const LastContacted = () => {
             const date = formatAsDate(datetime);
             const outcome = getPropertyValue(contactMade, [OUTCOME, 0]);
             return (
-              <CRCTag background={outcome} borderRadius="5px" color={outcome} padding="8px">
+              <CRCTag
+                  background={outcome}
+                  borderRadius="5px"
+                  color={outcome}
+                  key={getEntityKeyId(contactMade)}
+                  padding="8px">
                 <Typography color="inherit" variant="body2">{date}</Typography>
               </CRCTag>
             );
