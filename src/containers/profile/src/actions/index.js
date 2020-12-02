@@ -27,6 +27,15 @@ const getStaff :RequestSequence = newRequestSequence(GET_STAFF);
 const LOAD_PROFILE :'LOAD_PROFILE' = 'LOAD_PROFILE';
 const loadProfile :RequestSequence = newRequestSequence(LOAD_PROFILE);
 
+const SEARCH_PEOPLE :'SEARCH_PEOPLE' = 'SEARCH_PEOPLE';
+const searchPeople :RequestSequence = newRequestSequence(SEARCH_PEOPLE);
+
+const SELECT_CASE :'SELECT_CASE' = 'SELECT_CASE';
+const selectCase = (value :any) => ({
+  type: SELECT_CASE,
+  value
+});
+
 export {
   ADD_CASE_STATUS,
   ADD_CONTACT_ACTIVITY,
@@ -36,6 +45,8 @@ export {
   GET_PERSON_NEIGHBORS,
   GET_STAFF,
   LOAD_PROFILE,
+  SEARCH_PEOPLE,
+  SELECT_CASE,
   addCaseStatus,
   addContactActivity,
   getFormNeighbors,
@@ -44,4 +55,6 @@ export {
   getPersonNeighbors,
   getStaff,
   loadProfile,
+  searchPeople,
+  selectCase,
 };
