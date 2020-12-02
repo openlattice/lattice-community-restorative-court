@@ -12,6 +12,7 @@ import getPersonNeighborsReducer from './getPersonNeighborsReducer';
 import getPersonReducer from './getPersonReducer';
 import getStaffReducer from './getStaffReducer';
 import loadProfileReducer from './loadProfileReducer';
+import selectCaseReducer from './selectCaseReducer';
 
 import { RESET_REQUEST_STATE } from '../../../../core/redux/actions';
 import { ProfileReduxConstants, RS_INITIAL_STATE } from '../../../../core/redux/constants';
@@ -31,6 +32,7 @@ import {
   GET_PERSON_NEIGHBORS,
   GET_STAFF,
   LOAD_PROFILE,
+  SELECT_CASE,
   addCaseStatus,
   addContactActivity,
   getFormNeighbors,
@@ -46,6 +48,7 @@ const {
   PERSON,
   PERSON_CASE_NEIGHBOR_MAP,
   PERSON_NEIGHBOR_MAP,
+  SELECTED_CASE,
   STAFF_MEMBERS,
   STAFF_MEMBER_BY_STATUS_EKID,
 } = ProfileReduxConstants;
@@ -67,6 +70,7 @@ const INITIAL_STATE :Map = fromJS({
   [PERSON]: Map(),
   [PERSON_CASE_NEIGHBOR_MAP]: Map(),
   [PERSON_NEIGHBOR_MAP]: Map(),
+  [SELECTED_CASE]: Map(),
   [STAFF_MEMBERS]: List(),
   [STAFF_MEMBER_BY_STATUS_EKID]: Map(),
 });
@@ -77,6 +81,10 @@ export default function profileReducer(state :Map = INITIAL_STATE, action :Objec
 
     case RESET_REQUEST_STATE: {
       return resetRequestStateReducer(state, action);
+    }
+
+    case SELECT_CASE: {
+      return selectCaseReducer(state, action);
     }
 
     case addCaseStatus.case(action.type):
