@@ -10,7 +10,7 @@ import type { UUID } from 'lattice';
 import { ADD_PEACEMAKER_INFORMATION, addPeacemakerInformation, editPeacemakerInformation } from './actions';
 import { PEACEMAKER } from './reducers/constants';
 import { schema, uiSchema } from './schemas/PeacemakerInformationSchemas';
-import { prepopulateForm } from './utils';
+import { populateForm } from './utils';
 
 import { CrumbItem, CrumbLink, Crumbs } from '../../components/crumbs';
 import { AppTypes, PropertyTypes } from '../../core/edm/constants';
@@ -58,15 +58,15 @@ const PeacemakerInformationForm = ({ personId } :Props) => {
     .find((form :Map) => getPropertyValue(form, [NAME, 0]) === PEACEMAKER_INFORMATION_FORM);
   const formEKID :?UUID = isDefined(personInformationForm) ? getEntityKeyId(personInformationForm) : undefined;
 
-  const prepopulatedFormData = useMemo(() => (
-    isDefined(personInformationForm) ? prepopulateForm(personInformationForm, personNeighborMap) : {}
+  const populatedFormData = useMemo(() => (
+    isDefined(personInformationForm) ? populateForm(personInformationForm, personNeighborMap) : {}
   ), [personInformationForm, personNeighborMap]);
 
-  const [formData, setFormData] = useState(prepopulatedFormData);
+  const [formData, setFormData] = useState(populatedFormData);
 
   useEffect(() => {
-    setFormData(prepopulatedFormData);
-  }, [prepopulatedFormData]);
+    setFormData(populatedFormData);
+  }, [populatedFormData]);
 
   const onChange = ({ formData: updatedFormData } :Object) => {
     setFormData(updatedFormData);
@@ -87,7 +87,7 @@ const PeacemakerInformationForm = ({ personId } :Props) => {
   };
 
   const handleEdit = (params) => {
-    dispatch(editPeacemakerInformation({ ...params }));
+    dispatch(editPeacemakerInformation(params));
   };
 
   const communication :List = useSelector((store) => store

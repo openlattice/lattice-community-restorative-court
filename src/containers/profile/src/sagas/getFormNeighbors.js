@@ -17,14 +17,13 @@ import type { SequenceAction } from 'redux-reqseq';
 import { AppTypes } from '../../../../core/edm/constants';
 import { APP_PATHS } from '../../../../core/redux/constants';
 import { selectEntitySetId } from '../../../../core/redux/selectors';
-import { NeighborUtils } from '../../../../utils/data';
+import { getNeighborDetails, getNeighborESID } from '../../../../utils/data';
 import { ERR_ACTION_VALUE_NOT_DEFINED } from '../../../../utils/error/constants';
 import { GET_FORM_NEIGHBORS, getFormNeighbors } from '../actions';
 
 const { isDefined } = LangUtils;
 const { searchEntityNeighborsWithFilter } = SearchApiActions;
 const { searchEntityNeighborsWithFilterWorker } = SearchApiSagas;
-const { getNeighborDetails, getNeighborESID } = NeighborUtils;
 const { FQN } = Models;
 const {
   CRC_CASE,

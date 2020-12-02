@@ -1,5 +1,5 @@
 // @flow
-const PEACEMAKER :string = 'peacemaker';
+const PEACEMAKER :'peacemaker' = 'peacemaker';
 
 export {
   PEACEMAKER,

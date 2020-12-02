@@ -19,7 +19,7 @@ const {
 const { PEACEMAKER_INFORMATION_FORM } = FormConstants;
 const { getPropertyValue } = DataUtils;
 
-export default function prepopulateForm(personInformationForm :Map, personNeighborMap :Map) :Object {
+export default function populateForm(personInformationForm :Map, personNeighborMap :Map) :Object {
 
   const datetimeAdministered = getPropertyValue(personInformationForm, [DATETIME_ADMINISTERED, 0]);
   const text = getPropertyValue(personInformationForm, [TEXT, 0]);

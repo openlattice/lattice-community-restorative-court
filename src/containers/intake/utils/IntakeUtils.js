@@ -3,7 +3,7 @@ import { List, Map } from 'immutable';
 import { DataProcessingUtils } from 'lattice-fabricate';
 import { DataUtils } from 'lattice-utils';
 import { DateTime } from 'luxon';
-import type { UUID } from 'lattice';
+import type { FQN, UUID } from 'lattice';
 
 import { AppTypes, PropertyTypes } from '../../../core/edm/constants';
 import { EMPTY_VALUE, RoleConstants } from '../../profile/src/constants';
@@ -34,6 +34,16 @@ const {
 const { getEntityAddressKey, getPageSectionKey } = DataProcessingUtils;
 const { getEntityKeyId, getPropertyValue } = DataUtils;
 
+const getPersonData = (person :Map, index :number) => {
+  const fqns = [GIVEN_NAME, MIDDLE_NAME, SURNAME, DOB, RACE, ETHNICITY];
+  const result = {};
+  fqns.forEach((fqn :FQN) => {
+    const value = getPropertyValue(person, [fqn, 0], EMPTY_VALUE);
+    result[getEntityAddressKey(index, PEOPLE, fqn)] = value;
+  });
+  return result;
+};
+
 const populateFormData = (
   person :Map,
   selectedCaseEKID :?UUID,
@@ -41,13 +51,6 @@ const populateFormData = (
   personCaseNeighborMap :Map,
   referralRequestNeighborMap :Map
 ) :Object => {
-
-  const personFirstName :string = getPropertyValue(person, [GIVEN_NAME, 0], EMPTY_VALUE);
-  const personMiddleName :string = getPropertyValue(person, [MIDDLE_NAME, 0], EMPTY_VALUE);
-  const personLastName :string = getPropertyValue(person, [SURNAME, 0], EMPTY_VALUE);
-  const personDOB :string = getPropertyValue(person, [DOB, 0], EMPTY_VALUE);
-  const personRace :string = getPropertyValue(person, [RACE, 0], EMPTY_VALUE);
-  const personEthnicity :string = getPropertyValue(person, [ETHNICITY, 0], EMPTY_VALUE);
 
   const referralRequestEKID :?UUID = getEntityKeyId(referralRequest);
   const referringSource = getPropertyValue(referralRequest, [SOURCE, 0], EMPTY_VALUE);
@@ -71,32 +74,10 @@ const populateFormData = (
   const offenseDescription = getPropertyValue(offense, [DESCRIPTION, 0], EMPTY_VALUE);
 
   const victims :List = personCaseNeighborMap.getIn([ROLE, selectedCaseEKID, VICTIM], List());
-  const victimFormData = victims.toJS().map((victim :Object) => {
-    const firstName = getPropertyValue(victim, [GIVEN_NAME, 0], EMPTY_VALUE);
-    const middleName = getPropertyValue(victim, [MIDDLE_NAME, 0], EMPTY_VALUE);
-    const lastName = getPropertyValue(victim, [SURNAME, 0], EMPTY_VALUE);
-    const dob = getPropertyValue(victim, [DOB, 0], EMPTY_VALUE);
-    const race = getPropertyValue(victim, [RACE, 0], EMPTY_VALUE);
-    const ethnicity = getPropertyValue(victim, [ETHNICITY, 0], EMPTY_VALUE);
-    return {
-      [getEntityAddressKey(-1, PEOPLE, GIVEN_NAME)]: firstName,
-      [getEntityAddressKey(-1, PEOPLE, MIDDLE_NAME)]: middleName,
-      [getEntityAddressKey(-1, PEOPLE, SURNAME)]: lastName,
-      [getEntityAddressKey(-1, PEOPLE, DOB)]: dob,
-      [getEntityAddressKey(-1, PEOPLE, RACE)]: race,
-      [getEntityAddressKey(-1, PEOPLE, ETHNICITY)]: ethnicity,
-    };
-  });
+  const victimFormData = victims.toJS().map((victim :Object) => getPersonData(victim, -1));
 
   const formData = {
-    [getPageSectionKey(1, 1)]: {
-      [getEntityAddressKey(0, PEOPLE, GIVEN_NAME)]: personFirstName,
-      [getEntityAddressKey(0, PEOPLE, MIDDLE_NAME)]: personMiddleName,
-      [getEntityAddressKey(0, PEOPLE, SURNAME)]: personLastName,
-      [getEntityAddressKey(0, PEOPLE, DOB)]: personDOB,
-      [getEntityAddressKey(0, PEOPLE, RACE)]: personRace,
-      [getEntityAddressKey(0, PEOPLE, ETHNICITY)]: personEthnicity,
-    },
+    [getPageSectionKey(1, 1)]: getPersonData(person, 0),
     [getPageSectionKey(1, 2)]: victimFormData,
     [getPageSectionKey(1, 3)]: {
       [getEntityAddressKey(0, REFERRAL_REQUEST, DATETIME_COMPLETED)]: dateOfReferral,
