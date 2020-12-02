@@ -8,7 +8,7 @@ const { INTAKE_FORM, PEACEMAKER_INFORMATION_FORM, REFERRAL_FORM } = FormConstant
 
 const ROOT :'/' = '/';
 
-const PERSON_ID :string = ':personId';
+const PERSON_ID :':personId' = ':personId';
 
 const PEACEMAKER_INFORMATION :string = 'peacemakerinformation';
 const PEACEMAKER_INFORMATION_ROUTE_END :string = `${PERSON_ID}/${PEACEMAKER_INFORMATION}`;

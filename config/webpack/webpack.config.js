@@ -3,8 +3,8 @@
 const path = require('path');
 const Webpack = require('webpack');
 
-const LIB_CONFIG = require('../app/app.config.js');
-const LIB_PATHS = require('../app/paths.config.js');
+const APP_CONFIG = require('../app/app.config.js');
+const APP_PATHS = require('../app/paths.config.js');
 const PACKAGE = require('../../package.json');
 
 module.exports = (env = {}) => {
@@ -27,7 +27,7 @@ module.exports = (env = {}) => {
     test: /\.js$/,
     exclude: /node_modules/,
     include: [
-      LIB_PATHS.ABS.SOURCE,
+      APP_PATHS.ABS.SOURCE,
     ],
     use: {
       loader: 'babel-loader',
@@ -55,7 +55,7 @@ module.exports = (env = {}) => {
    */
 
   const BANNER_PLUGIN = new Webpack.BannerPlugin({
-    banner: LIB_CONFIG.BANNER,
+    banner: APP_CONFIG.BANNER,
     entryOnly: true,
   });
 
@@ -73,7 +73,7 @@ module.exports = (env = {}) => {
   return {
     bail: true,
     entry: [
-      LIB_PATHS.ABS.ENTRY,
+      APP_PATHS.ABS.APP,
     ],
     externals: {
       react: {
@@ -127,7 +127,7 @@ module.exports = (env = {}) => {
     output: {
       library: LIB_NAMESPACE,
       libraryTarget: 'umd',
-      path: LIB_PATHS.ABS.BUILD,
+      path: APP_PATHS.ABS.BUILD,
       publicPath: '/',
       filename: LIB_FILE_NAME,
     },
@@ -141,7 +141,7 @@ module.exports = (env = {}) => {
     resolve: {
       extensions: ['.js'],
       modules: [
-        LIB_PATHS.ABS.SOURCE,
+        APP_PATHS.ABS.SOURCE,
         'node_modules',
       ],
     },

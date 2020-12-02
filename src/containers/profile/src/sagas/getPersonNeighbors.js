@@ -20,7 +20,12 @@ import { getPersonCaseNeighborsWorker } from './getPersonCaseNeighbors';
 import { AppTypes, PropertyTypes } from '../../../../core/edm/constants';
 import { APP_PATHS, NEIGHBOR_DIRECTIONS } from '../../../../core/redux/constants';
 import { selectEntitySetId } from '../../../../core/redux/selectors';
-import { NeighborUtils } from '../../../../utils/data';
+import {
+  getAssociationDetails,
+  getAssociationESID,
+  getNeighborDetails,
+  getNeighborESID,
+} from '../../../../utils/data';
 import { ERR_ACTION_VALUE_NOT_DEFINED } from '../../../../utils/error/constants';
 import {
   GET_PERSON_NEIGHBORS,
@@ -33,12 +38,6 @@ const { isDefined } = LangUtils;
 const { getEntityKeyId, getPropertyValue } = DataUtils;
 const { searchEntityNeighborsWithFilter } = SearchApiActions;
 const { searchEntityNeighborsWithFilterWorker } = SearchApiSagas;
-const {
-  getAssociationDetails,
-  getAssociationESID,
-  getNeighborDetails,
-  getNeighborESID,
-} = NeighborUtils;
 const { FQN } = Models;
 const {
   APPEARS_IN,

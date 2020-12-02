@@ -16,12 +16,11 @@ import { submitDataGraphWorker } from '../../../core/data/sagas';
 import { AppTypes } from '../../../core/edm/constants';
 import { EDM, PROPERTY_FQNS_BY_TYPE_ID } from '../../../core/redux/constants';
 import { selectEntitySetId } from '../../../core/redux/selectors';
-import { EntityUtils } from '../../../utils/data';
+import { formatNewEntityData } from '../../../utils/data';
 import { ERR_ACTION_VALUE_NOT_DEFINED } from '../../../utils/error/constants';
 import { ADD_PEACEMAKER_INFORMATION, addPeacemakerInformation } from '../actions';
 
 const { isDefined } = LangUtils;
-const { formatNewEntityData } = EntityUtils;
 const { COMMUNICATION, FORM, PERSON_DETAILS } = AppTypes;
 
 const LOG = new Logger('PeacemakerSagas');
