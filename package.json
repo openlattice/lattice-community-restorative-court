@@ -28,6 +28,7 @@
   "bugs": {
     "url": "https://github.com/openlattice/lattice-community-restorative-court/issues"
   },
+  "main": "build/index.js",
   "dependencies": {
     "@babel/polyfill": "~7.12.1",
     "@babel/runtime": "~7.12.5",
