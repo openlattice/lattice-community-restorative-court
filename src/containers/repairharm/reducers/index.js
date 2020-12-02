@@ -30,8 +30,9 @@ export default function reducer(state :Map = INITIAL_STATE, action :Object) {
       return selectRepairHarmAgreementReducer(state, action);
     }
 
-    case submitRepairHarmAgreement.case(action.type):
+    case submitRepairHarmAgreement.case(action.type): {
       return submitRepairHarmAgreementReducer(state, action);
+    }
 
     default:
       return state;
