@@ -11,7 +11,14 @@ import { DataUtils } from 'lattice-utils';
 import { useDispatch, useSelector } from '../../containers/app/AppProvider';
 import { APP_PATHS } from '../../core/redux/constants';
 import { selectPerson } from '../../core/redux/selectors';
-import { PEACEMAKER_INFORMATION, PERSON_ID, REFERRAL } from '../../core/router/Routes';
+import {
+  INTAKE_ROUTE_END,
+  PEACEMAKER_INFORMATION_ROUTE_END,
+  PERSON_ID,
+  REFERRAL_ROUTE_END,
+  REPAIR_HARM_AGREEMENT_ROUTE_END,
+  RESTITUTION_REFERRAL_ROUTE_END,
+} from '../../core/router/Routes';
 import { goToRoute } from '../../core/router/RoutingActions';
 import { getPersonName } from '../../utils/people';
 
@@ -45,11 +52,24 @@ const ChooseFormTypeModal = ({ isVisible, onClose } :Props) => {
   const dispatch = useDispatch();
   const root = useSelector((store) => store.getIn(APP_PATHS.ROOT));
   const goToReferral = () => {
-    if (personEKID) dispatch(goToRoute(`${root}/${PERSON_ID}/${REFERRAL}`.replace(PERSON_ID, personEKID)));
+    if (personEKID) dispatch(goToRoute(`${root}/${REFERRAL_ROUTE_END}`.replace(PERSON_ID, personEKID)));
+  };
+  const goToIntake = () => {
+    if (personEKID) dispatch(goToRoute(`${root}/${INTAKE_ROUTE_END}`.replace(PERSON_ID, personEKID)));
+  };
+  const goToRepairHarm = () => {
+    if (personEKID) {
+      dispatch(goToRoute(`${root}/${REPAIR_HARM_AGREEMENT_ROUTE_END}`.replace(PERSON_ID, personEKID)));
+    }
+  };
+  const goToRestitutionReferral = () => {
+    if (personEKID) {
+      dispatch(goToRoute(`${root}/${RESTITUTION_REFERRAL_ROUTE_END}`.replace(PERSON_ID, personEKID)));
+    }
   };
   const goToPeacemakerInformation = () => {
     if (personEKID) {
-      dispatch(goToRoute(`${root}/${PERSON_ID}/${PEACEMAKER_INFORMATION}`.replace(PERSON_ID, personEKID)));
+      dispatch(goToRoute(`${root}/${PEACEMAKER_INFORMATION_ROUTE_END}`.replace(PERSON_ID, personEKID)));
     }
   };
   return (
@@ -64,15 +84,15 @@ const ChooseFormTypeModal = ({ isVisible, onClose } :Props) => {
           {Icon}
           Referral
         </Button>
-        <Button aria-label="Form Button">
+        <Button aria-label="Form Button" onClick={goToIntake}>
           {Icon}
           Intake
         </Button>
-        <Button aria-label="Form Button">
+        <Button aria-label="Form Button" onClick={goToRepairHarm}>
           {Icon}
           Repair Harm Agreement
         </Button>
-        <Button aria-label="Form Button">
+        <Button aria-label="Form Button" onClick={goToRestitutionReferral}>
           {Icon}
           Restitution Referral
         </Button>

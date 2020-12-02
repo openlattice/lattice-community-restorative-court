@@ -6,8 +6,11 @@ import { Map, fromJS } from 'immutable';
 import { ReduxConstants } from 'lattice-utils';
 import { RequestStates } from 'redux-reqseq';
 
+import * as IntakeReduxConstants from './IntakeReduxConstants';
 import * as ProfileReduxConstants from './ProfileReduxConstants';
 import * as ReferralReduxConstants from './ReferralReduxConstants';
+import * as RepairHarmReduxConstants from './RepairHarmReduxConstants';
+import * as RestitutionReferralReduxConstants from './RestitutionReferralReduxConstants';
 
 export const {
   APP,
@@ -70,11 +73,14 @@ export {
   APP_PATHS,
   APP_REDUX_CONSTANTS,
   INITIAL_SEARCH_RESULTS,
+  IntakeReduxConstants,
   NEIGHBOR_DIRECTIONS,
   PROPERTY_FQNS_BY_TYPE_ID,
   PROPERTY_TYPE_IDS,
   ProfileReduxConstants,
-  ReferralReduxConstants,
   RS_INITIAL_STATE,
+  ReferralReduxConstants,
+  RepairHarmReduxConstants,
+  RestitutionReferralReduxConstants,
   SEARCH_RESULTS,
 };

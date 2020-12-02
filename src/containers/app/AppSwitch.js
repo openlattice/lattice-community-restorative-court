@@ -11,15 +11,27 @@ import type { RequestState } from 'redux-reqseq';
 import { useDispatch, useSelector } from './AppProvider';
 import { INITIALIZE_APPLICATION, initializeApplication } from './actions';
 
+import CompletedIntakeForm from '../intake/CompletedIntakeForm';
 import CompletedReferralForm from '../referral/CompletedReferralForm';
+import CompletedRepairHarmAgreement from '../repairharm/CompletedRepairHarmAgreement';
+import CompletedRestitutionReferral from '../restitutionreferral/CompletedRestitutionReferral';
+import IntakeForm from '../intake/IntakeForm';
 import PeacemakerInformationForm from '../peacemaker/PeacemakerInformationForm';
 import ProfileContainer from '../profile/src/ProfileContainer';
 import ReferralForm from '../referral/ReferralForm';
+import RepairHarmAgreement from '../repairharm/RepairHarmAgreement';
+import RestitutionReferral from '../restitutionreferral/RestitutionReferral';
 import { APP, REQUEST_STATE } from '../../core/redux/constants';
 import {
+  COMPLETED_INTAKE_ROUTE_END,
   COMPLETED_REFERRAL_ROUTE_END,
+  COMPLETED_REPAIR_HARM_AGREEMENT_ROUTE_END,
+  COMPLETED_RESTITUTION_REFERRAL_ROUTE_END,
+  INTAKE_ROUTE_END,
   PEACEMAKER_INFORMATION_ROUTE_END,
   REFERRAL_ROUTE_END,
+  REPAIR_HARM_AGREEMENT_ROUTE_END,
+  RESTITUTION_REFERRAL_ROUTE_END,
 } from '../../core/router/Routes';
 import { CenterWrapper } from '../profile/src/styled';
 
@@ -54,9 +66,27 @@ const AppSwitch = ({
   return (
     <Switch>
       <Route
+          path={`${root}/${COMPLETED_INTAKE_ROUTE_END}`}
+          render={() => <CompletedIntakeForm personId={personId} />} />
+      <Route path={`${root}/${INTAKE_ROUTE_END}`} render={() => <IntakeForm personId={personId} />} />
+      <Route
+          path={`${root}/${COMPLETED_RESTITUTION_REFERRAL_ROUTE_END}`}
+          render={() => <CompletedRestitutionReferral personId={personId} />} />
+      <Route
+          path={`${root}/${RESTITUTION_REFERRAL_ROUTE_END}`}
+          render={() => <RestitutionReferral personId={personId} />} />
+      <Route
+          path={`${root}/${COMPLETED_REPAIR_HARM_AGREEMENT_ROUTE_END}`}
+          render={() => <CompletedRepairHarmAgreement personId={personId} />} />
+      <Route
+          path={`${root}/${REPAIR_HARM_AGREEMENT_ROUTE_END}`}
+          render={() => <RepairHarmAgreement personId={personId} />} />
+      <Route
           path={`${root}/${COMPLETED_REFERRAL_ROUTE_END}`}
           render={() => <CompletedReferralForm personId={personId} />} />
-      <Route path={`${root}/${REFERRAL_ROUTE_END}`} render={() => <ReferralForm personId={personId} />} />
+      <Route
+          path={`${root}/${REFERRAL_ROUTE_END}`}
+          render={() => <ReferralForm personId={personId} />} />
       <Route
           path={`${root}/${PEACEMAKER_INFORMATION_ROUTE_END}`}
           render={() => <PeacemakerInformationForm personId={personId} />} />
