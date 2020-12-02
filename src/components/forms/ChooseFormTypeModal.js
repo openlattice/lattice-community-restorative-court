@@ -12,6 +12,7 @@ import { useDispatch, useSelector } from '../../containers/app/AppProvider';
 import { APP_PATHS } from '../../core/redux/constants';
 import { selectPerson } from '../../core/redux/selectors';
 import {
+  INTAKE_ROUTE_END,
   PEACEMAKER_INFORMATION_ROUTE_END,
   PERSON_ID,
   REFERRAL_ROUTE_END,
@@ -53,6 +54,9 @@ const ChooseFormTypeModal = ({ isVisible, onClose } :Props) => {
   const goToReferral = () => {
     if (personEKID) dispatch(goToRoute(`${root}/${REFERRAL_ROUTE_END}`.replace(PERSON_ID, personEKID)));
   };
+  const goToIntake = () => {
+    if (personEKID) dispatch(goToRoute(`${root}/${INTAKE_ROUTE_END}`.replace(PERSON_ID, personEKID)));
+  };
   const goToRepairHarm = () => {
     if (personEKID) {
       dispatch(goToRoute(`${root}/${REPAIR_HARM_AGREEMENT_ROUTE_END}`.replace(PERSON_ID, personEKID)));
@@ -80,7 +84,7 @@ const ChooseFormTypeModal = ({ isVisible, onClose } :Props) => {
           {Icon}
           Referral
         </Button>
-        <Button aria-label="Form Button">
+        <Button aria-label="Form Button" onClick={goToIntake}>
           {Icon}
           Intake
         </Button>
