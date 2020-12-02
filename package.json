@@ -1,7 +1,7 @@
 {
-  "name": "@lattice-works/lattice-community-restorative-court",
+  "name": "@openlattice/lattice-community-restorative-court",
   "version": "0.0.0",
-  "homepage": "https://github.com/lattice-works/lattice-community-restorative-court",
+  "homepage": "https://github.com/openlattice/lattice-community-restorative-court",
   "description": "",
   "author": {
     "name": "OpenLattice, Inc.",
@@ -12,14 +12,21 @@
     {
       "name": "Hristo Oskov",
       "email": "hristo@openlattice.com"
+    },
+    {
+      "name": "Giulia Campana",
+      "email": "giulia@openlattice.com"
     }
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/lattice-works/lattice-community-restorative-court.git"
+    "url": "git+https://github.com/openlattice/lattice-community-restorative-court.git"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
   },
   "bugs": {
-    "url": "https://github.com/lattice-works/lattice-community-restorative-court/issues"
+    "url": "https://github.com/openlattice/lattice-community-restorative-court/issues"
   },
   "dependencies": {
     "@babel/polyfill": "~7.11.5",
