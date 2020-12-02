@@ -88,7 +88,8 @@ const CaseParticipationListItem = ({ personCase } :Props) => {
           caseIdentifier={caseIdentifier}
           caseRoleMap={caseRoleMap}
           isVisible={modalIsVisible}
-          onClose={() => setModalVisibility(false)} />
+          onClose={() => setModalVisibility(false)}
+          personCase={personCase} />
     </>
   );
 };
