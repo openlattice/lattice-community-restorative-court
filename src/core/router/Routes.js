@@ -12,7 +12,7 @@ const PERSON_ID :string = ':personId';
 const FORM_ID :string = ':formId';
 const CASE_ID :string = ':caseId';
 
-const ADD_PEOPLE_TO_CASE :string = `${PERSON_ID}/${CASE_ID}/addpeopletocase`;
+const ADD_PEOPLE_TO_CASE :string = `${CASE_ID}/addpeopletocase`;
 
 const INTAKE :string = 'intake';
 const INTAKE_ROUTE_END :string = `${PERSON_ID}/${INTAKE}`;
@@ -51,6 +51,7 @@ const ROUTES_FOR_COMPLETED_FORMS = {
 
 export {
   ADD_PEOPLE_TO_CASE,
+  CASE_ID,
   COMPLETED_INTAKE,
   COMPLETED_INTAKE_ROUTE_END,
   COMPLETED_REFERRAL,
