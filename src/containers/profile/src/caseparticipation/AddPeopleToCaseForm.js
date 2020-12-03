@@ -172,7 +172,7 @@ const AddPeopleToCaseForm = ({ personId } :Props) => {
       </CardSegment>
       <Card>
         <CardSegment padding="30px" vertical>
-          <div>Search Participants</div>
+          <div>Search People</div>
           <SearchGrid>
             <div>
               <Label>First name</Label>
