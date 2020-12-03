@@ -6,6 +6,7 @@ import addCaseStatusReducer from './addCaseStatusReducer';
 import addContactActivityReducer from './addContactActivityReducer';
 import addPeacemakerInformationReducer from './addPeacemakerInformationReducer';
 import addPersonToCaseReducer from './addPersonToCaseReducer';
+import clearSearchedPeopleReducer from './clearSearchedPeopleReducer';
 import editPeacemakerInformationReducer from './editPeacemakerInformationReducer';
 import getFormNeighborsReducer from './getFormNeighborsReducer';
 import getPersonCaseNeighborsReducer from './getPersonCaseNeighborsReducer';
@@ -29,6 +30,7 @@ import {
   ADD_CASE_STATUS,
   ADD_CONTACT_ACTIVITY,
   ADD_PERSON_TO_CASE,
+  CLEAR_SEARCHED_PEOPLE,
   GET_FORM_NEIGHBORS,
   GET_PERSON,
   GET_PERSON_CASE_NEIGHBORS,
@@ -90,6 +92,10 @@ const INITIAL_STATE :Map = fromJS({
 export default function profileReducer(state :Map = INITIAL_STATE, action :Object) {
 
   switch (action.type) {
+
+    case CLEAR_SEARCHED_PEOPLE: {
+      return clearSearchedPeopleReducer(state);
+    }
 
     case RESET_REQUEST_STATE: {
       return resetRequestStateReducer(state, action);
