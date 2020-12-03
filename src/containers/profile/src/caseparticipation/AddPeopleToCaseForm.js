@@ -1,5 +1,5 @@
 // @flow
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import styled from 'styled-components';
 import { List, Map } from 'immutable';
@@ -26,7 +26,7 @@ import { APP_PATHS, ProfileReduxConstants, REQUEST_STATE } from '../../../../cor
 import { selectPerson } from '../../../../core/redux/selectors';
 import { getPersonName } from '../../../../utils/people';
 import { useDispatch, useSelector } from '../../../app/AppProvider';
-import { SEARCH_PEOPLE, searchPeople } from '../actions';
+import { SEARCH_PEOPLE, clearSearchedPeople, searchPeople } from '../actions';
 import { RoleConstants } from '../constants';
 
 const { getEntityKeyId, getPropertyValue } = DataUtils;
@@ -135,6 +135,12 @@ const AddPeopleToCaseForm = ({ personId } :Props) => {
   const searchPeopleRequestState = useSelector((store) => store.getIn([PROFILE, SEARCH_PEOPLE, REQUEST_STATE]));
   const isSearching :boolean = isPending(searchPeopleRequestState);
   const hasSearched :boolean = isFailure(searchPeopleRequestState) || isSuccess(searchPeopleRequestState);
+
+  const resetSearchedPeopleList = () => {
+    dispatch(clearSearchedPeople());
+  };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => resetSearchedPeopleList, []);
 
   return (
     <>
