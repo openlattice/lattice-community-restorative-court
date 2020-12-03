@@ -62,6 +62,12 @@ const CaseRoleTextWrapper = styled.div`
   color: ${NEUTRAL.N500};
 `;
 
+const ButtonWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+`;
+
 type Props = {
   personId :UUID;
 };
@@ -178,7 +184,9 @@ const AddPeopleToCaseForm = ({ personId } :Props) => {
               <Label>Date of birth</Label>
               <DatePicker onChange={(date :string) => setDOB(date)} />
             </div>
-            <Button aria-label="Search Button" isLoading={isSearching} onClick={searchPeopleForCase}>Search</Button>
+            <ButtonWrapper>
+              <Button aria-label="Search Button" isLoading={isSearching} onClick={searchPeopleForCase}>Search</Button>
+            </ButtonWrapper>
           </SearchGrid>
         </CardSegment>
       </Card>
