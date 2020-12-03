@@ -9,6 +9,9 @@ const addCaseStatus :RequestSequence = newRequestSequence(ADD_CASE_STATUS);
 const ADD_CONTACT_ACTIVITY :'ADD_CONTACT_ACTIVITY' = 'ADD_CONTACT_ACTIVITY';
 const addContactActivity :RequestSequence = newRequestSequence(ADD_CONTACT_ACTIVITY);
 
+const ADD_PERSON_TO_CASE :'ADD_PERSON_TO_CASE' = 'ADD_PERSON_TO_CASE';
+const addPersonToCase :RequestSequence = newRequestSequence(ADD_PERSON_TO_CASE);
+
 const GET_FORM_NEIGHBORS :'GET_FORM_NEIGHBORS' = 'GET_FORM_NEIGHBORS';
 const getFormNeighbors :RequestSequence = newRequestSequence(GET_FORM_NEIGHBORS);
 
@@ -39,6 +42,7 @@ const selectCase = (value :any) => ({
 export {
   ADD_CASE_STATUS,
   ADD_CONTACT_ACTIVITY,
+  ADD_PERSON_TO_CASE,
   GET_FORM_NEIGHBORS,
   GET_PERSON,
   GET_PERSON_CASE_NEIGHBORS,
@@ -49,6 +53,7 @@ export {
   SELECT_CASE,
   addCaseStatus,
   addContactActivity,
+  addPersonToCase,
   getFormNeighbors,
   getPerson,
   getPersonCaseNeighbors,
