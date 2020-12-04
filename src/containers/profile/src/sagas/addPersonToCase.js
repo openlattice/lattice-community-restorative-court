@@ -52,7 +52,7 @@ function* addPersonToCaseWorker(action :SequenceAction) :Saga<WorkerResponse> {
       ]
     };
 
-    const response :Object = yield call(
+    const response :WorkerResponse = yield call(
       createOrReplaceAssociationWorker,
       createOrReplaceAssociation({ associations, associationsToDelete: [] })
     );
