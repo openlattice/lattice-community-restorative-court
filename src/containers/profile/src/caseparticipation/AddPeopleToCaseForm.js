@@ -136,21 +136,21 @@ const AddPeopleToCaseForm = ({ personId } :Props) => {
   const isSearching :boolean = isPending(searchPeopleRequestState);
   const hasSearched :boolean = isFailure(searchPeopleRequestState) || isSuccess(searchPeopleRequestState);
 
-  const resetSearchedPeopleList = () => {
-    dispatch(clearSearchedPeople());
-  };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  useEffect(() => resetSearchedPeopleList, []);
+  useEffect(() => {
+    const resetSearchedPeopleList = () => {
+      dispatch(clearSearchedPeople());
+    };
+    return resetSearchedPeopleList;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <>
       <CardSegment>
         <Crumbs>
-          <CrumbItem>
-            <CrumbLink to={`${root}/${personId}`}>
-              <Typography color="inherit" variant="body2">{ personName }</Typography>
-            </CrumbLink>
-          </CrumbItem>
+          <CrumbLink to={`${root}/${personId}`}>
+            <Typography color="inherit" variant="body2">{ personName }</Typography>
+          </CrumbLink>
           <CrumbItem>
             <Typography color="inherit" variant="body2">Add People to Case</Typography>
           </CrumbItem>
@@ -172,7 +172,7 @@ const AddPeopleToCaseForm = ({ personId } :Props) => {
       </CardSegment>
       <Card>
         <CardSegment padding="30px" vertical>
-          <div>Search People</div>
+          <Typography variant="h5">Search People</Typography>
           <SearchGrid>
             <div>
               <Label>First name</Label>
