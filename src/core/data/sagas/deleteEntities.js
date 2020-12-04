@@ -20,7 +20,7 @@ const LOG = new Logger('DataSagas');
 
 function* deleteEntitiesWorker(action :SequenceAction) :Saga<WorkerResponse> {
 
-  const workerResponse :Object = {};
+  let workerResponse :WorkerResponse;
 
   try {
     yield put(deleteEntities.request(action.id, action.value));
@@ -35,11 +35,12 @@ function* deleteEntitiesWorker(action :SequenceAction) :Saga<WorkerResponse> {
     deleteResponses.forEach((response) => {
       if (response.error) throw response.error;
     });
+    workerResponse = { data: deleteResponses.length };
 
     yield put(deleteEntities.success(action.id));
   }
   catch (error) {
-    workerResponse.error = error;
+    workerResponse = { error };
     LOG.error(action.type, error);
     yield put(deleteEntities.failure(action.id, error));
   }
