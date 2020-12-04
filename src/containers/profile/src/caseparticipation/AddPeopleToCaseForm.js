@@ -56,16 +56,16 @@ const SearchGrid = styled.div`
   margin-top: 20px;
   margin-bottom: 20px;
   width: 100%;
+
+  span:last-child {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
 `;
 
 const CaseRoleTextWrapper = styled.div`
   color: ${NEUTRAL.N500};
-`;
-
-const ButtonWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
 `;
 
 type Props = {
@@ -171,28 +171,28 @@ const AddPeopleToCaseForm = ({ personId } :Props) => {
         </CaseRoleTextWrapper>
       </CardSegment>
       <Card>
-        <CardSegment padding="30px" vertical>
+        <CardSegment padding="30px">
           <Typography variant="h5">Search People</Typography>
           <SearchGrid>
-            <div>
+            <span>
               <Label>First name</Label>
               <Input
                   name="firstName"
                   onChange={onInputChange} />
-            </div>
-            <div>
+            </span>
+            <span>
               <Label>Last name</Label>
               <Input
                   name="lastName"
                   onChange={onInputChange} />
-            </div>
-            <div>
+            </span>
+            <span>
               <Label>Date of birth</Label>
               <DatePicker onChange={(date :string) => setDOB(date)} />
-            </div>
-            <ButtonWrapper>
+            </span>
+            <span>
               <Button aria-label="Search Button" isLoading={isSearching} onClick={searchPeopleForCase}>Search</Button>
-            </ButtonWrapper>
+            </span>
           </SearchGrid>
         </CardSegment>
       </Card>
