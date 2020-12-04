@@ -22,6 +22,7 @@ const REPAIR_HARM_CONDITIONS :string[] = [
   'Other',
 ];
 
+/* eslint-disable import/prefer-default-export */
 export {
   REPAIR_HARM_CONDITIONS,
 };
