@@ -11,6 +11,7 @@ import type { RequestState } from 'redux-reqseq';
 import { useDispatch, useSelector } from './AppProvider';
 import { INITIALIZE_APPLICATION, initializeApplication } from './actions';
 
+import AddPeopleToCaseForm from '../profile/src/caseparticipation/AddPeopleToCaseForm';
 import CompletedIntakeForm from '../intake/CompletedIntakeForm';
 import CompletedReferralForm from '../referral/CompletedReferralForm';
 import CompletedRepairHarmAgreement from '../repairharm/CompletedRepairHarmAgreement';
@@ -23,6 +24,7 @@ import RepairHarmAgreement from '../repairharm/RepairHarmAgreement';
 import RestitutionReferral from '../restitutionreferral/RestitutionReferral';
 import { APP, REQUEST_STATE } from '../../core/redux/constants';
 import {
+  ADD_PEOPLE_TO_CASE,
   COMPLETED_INTAKE_ROUTE_END,
   COMPLETED_REFERRAL_ROUTE_END,
   COMPLETED_REPAIR_HARM_AGREEMENT_ROUTE_END,
@@ -65,6 +67,9 @@ const AppSwitch = ({
 
   return (
     <Switch>
+      <Route
+          path={`${root}/${ADD_PEOPLE_TO_CASE}`}
+          render={() => <AddPeopleToCaseForm personId={personId} />} />
       <Route
           path={`${root}/${COMPLETED_INTAKE_ROUTE_END}`}
           render={() => <CompletedIntakeForm personId={personId} />} />

@@ -7,3 +7,4 @@ export { default as selectEntitySetId } from './selectEntitySetId';
 export { default as selectEntitySetPropertyTypes } from './selectEntitySetPropertyTypes';
 export { default as selectFqn } from './selectFqn';
 export { default as selectPerson } from './selectPerson';
+export { default as selectPropertyTypeId } from './selectPropertyTypeId';
