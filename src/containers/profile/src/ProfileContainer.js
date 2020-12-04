@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 
 import styled from 'styled-components';
 import { Map } from 'immutable';
-import { Spinner, StyleUtils } from 'lattice-ui-kit';
+import { Spinner, StyleUtils, Typography } from 'lattice-ui-kit';
 import { ReduxUtils } from 'lattice-utils';
 import type { UUID } from 'lattice';
 import type { RequestState } from 'redux-reqseq';
@@ -13,7 +13,7 @@ import ProfileBody from './ProfileBody';
 import { LOAD_PROFILE, loadProfile } from './actions';
 import { CenterWrapper } from './styled';
 
-import { CrumbItem, Crumbs } from '../../../components/crumbs';
+import { CrumbItem, CrumbLink, Crumbs } from '../../../components/crumbs';
 import { APP_PATHS, ProfileReduxConstants, REQUEST_STATE } from '../../../core/redux/constants';
 import { selectPerson } from '../../../core/redux/selectors';
 import { getPersonName } from '../../../utils/people';
@@ -47,6 +47,7 @@ const ProfileContainer = ({ personId } :Props) => {
   const loadProfileRS :?RequestState = useSelector((store) => store.getIn([PROFILE, LOAD_PROFILE, REQUEST_STATE]));
   const person :Map = useSelector(selectPerson());
   const personName :string = getPersonName(person);
+  const root :string = useSelector((store) => store.getIn(APP_PATHS.ROOT));
 
   if (isPending(loadProfileRS)) {
     return <CenterWrapper><Spinner size="2x" /></CenterWrapper>;
@@ -55,7 +56,12 @@ const ProfileContainer = ({ personId } :Props) => {
   return (
     <div>
       <Crumbs>
-        <CrumbItem>{ personName }</CrumbItem>
+        <CrumbLink to={root}>
+          <Typography color="inherit" variant="body2">Search People</Typography>
+        </CrumbLink>
+        <CrumbItem>
+          <Typography color="inherit" variant="body2">{ personName }</Typography>
+        </CrumbItem>
       </Crumbs>
       <ProfileGrid>
         <ProfileAside />
