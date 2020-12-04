@@ -17,13 +17,13 @@ import {
   RestitutionReferralReduxConstants,
 } from './constants';
 
+import AppReducer from '../../containers/app/reducers';
 import intakeReducer from '../../containers/intake/reducers';
 import peacemakerReducer from '../../containers/peacemaker/reducers';
 import profileReducer from '../../containers/profile/src/reducers';
 import referralReducer from '../../containers/referral/reducers';
 import repairHarmReducer from '../../containers/repairharm/reducers';
 import restitutionReferralReducer from '../../containers/restitutionreferral/reducers';
-import { AppReducer } from '../../containers/app';
 import { PEACEMAKER } from '../../containers/peacemaker/reducers/constants';
 import { EDMReducer } from '../edm';
 
