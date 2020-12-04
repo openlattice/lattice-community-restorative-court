@@ -22,6 +22,7 @@ const formatNewEntityData = (data :Object, propertyFqnsByTypeId :Map, entityKeyI
   });
 };
 
+/* eslint-disable import/prefer-default-export */
 export {
   formatNewEntityData,
 };

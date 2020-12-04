@@ -1,4 +1,3 @@
-// @flow
 import React, { useState } from 'react';
 
 import { configure } from 'lattice';
@@ -27,16 +26,6 @@ export const LiveCRCContainerStory = () => {
   const { jwt, orgId, personId } = inputData;
   const [organizationId, setOrganization] = useState(orgId);
   const [personEKID, setPerson] = useState(personId);
-  console.log('inputData ', inputData);
-
-  const onConfigure = (e) => {
-    e.preventDefault();
-    configure({
-      baseUrl: 'localhost',
-      authToken: jwt
-    });
-    setOrganization(orgId);
-  };
 
   const onFetch = (e) => {
     e.preventDefault();
@@ -48,6 +37,15 @@ export const LiveCRCContainerStory = () => {
       ...inputData,
       [e.target.name]: e.target.value.trim()
     });
+  };
+
+  const onConfigure = (e) => {
+    e.preventDefault();
+    configure({
+      baseUrl: 'localhost',
+      authToken: jwt
+    });
+    setOrganization(orgId);
   };
 
   return (
@@ -64,7 +62,7 @@ export const LiveCRCContainerStory = () => {
           <form onSubmit={onFetch}>
             <Label htmlFor="person-id" subtle>Person ID</Label>
             <Input id="person-id" name="personId" onChange={onChange} value={personId} />
-            <Button color="primary" type="submit">Fetch Person</Button>
+            <Button type="submit">Fetch Person</Button>
           </form>
         </CardSegment>
       </Card>
@@ -72,7 +70,12 @@ export const LiveCRCContainerStory = () => {
           root="/"
           organizationId={organizationId}
           personId={personEKID}
-          match={{}} />
+          match={{
+            isExact: false,
+            params: {},
+            path: '',
+            url: ''
+          }} />
     </>
   );
 };

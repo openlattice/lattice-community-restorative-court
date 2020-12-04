@@ -14,6 +14,7 @@ const ModalInnerWrapper = styled.div`
   }
 `;
 
+/* eslint-disable import/prefer-default-export */
 export {
   ModalInnerWrapper,
 };
