@@ -24,6 +24,7 @@ import { SUBMIT_RESTITUTION_REFERRAL, submitRestitutionReferral } from './action
 import { schema, uiSchema } from './schemas/RestitutionReferralFormSchemas';
 
 import { CrumbItem, CrumbLink, Crumbs } from '../../components/crumbs';
+import { SubmissionFieldsGrid } from '../../components/forms';
 import { AppTypes, PropertyTypes } from '../../core/edm/constants';
 import { resetRequestState } from '../../core/redux/actions';
 import {
@@ -80,11 +81,7 @@ const {
 } = PropertyTypes;
 const { RESTITUTION_REFERRAL } = RestitutionReferralReduxConstants;
 
-type Props = {
-  personId :UUID;
-};
-
-const RestitutionReferral = ({ personId } :Props) => {
+const RestitutionReferral = () => {
 
   const personCases :List = useSelector((store) => store.getIn([PROFILE, PERSON_NEIGHBOR_MAP, CRC_CASE], List()));
   const caseRoleMap :Map = useSelector((store) => store.getIn([PROFILE, PERSON_CASE_NEIGHBOR_MAP, ROLE], Map()));
@@ -146,6 +143,7 @@ const RestitutionReferral = ({ personId } :Props) => {
 
   const entitySetIds :Map = useSelector((store) => store.getIn([APP, APP_REDUX_CONSTANTS.ENTITY_SET_IDS]));
   const propertyTypeIds :Map = useSelector((store) => store.getIn([EDM, PROPERTY_TYPE_IDS]));
+  const personEKID :?UUID = getEntityKeyId(person);
   const dispatch = useDispatch();
 
   const onSubmit = () => {
@@ -172,7 +170,7 @@ const RestitutionReferral = ({ personId } :Props) => {
 
     const entityData = processEntityData(formDataForSubmit, entitySetIds, propertyTypeIds);
     const associations = [
-      [SCREENED_WITH, personId, PEOPLE, 0, FORM, {}],
+      [SCREENED_WITH, personEKID, PEOPLE, 0, FORM, {}],
       [RELATED_TO, 0, FORM, crcCaseEKID, CRC_CASE, {}],
       [RECORDED_BY, 0, FORM, staffEKID, STAFF, {}],
       [SUBJECT_OF, victimEKID, PEOPLE, 0, FORM, {}],
@@ -198,7 +196,7 @@ const RestitutionReferral = ({ personId } :Props) => {
   const relativeRoot = getRelativeRoot(root, match);
 
   const goToProfile = () => {
-    if (personId) dispatch(goToRoute(relativeRoot));
+    dispatch(goToRoute(relativeRoot));
   };
 
   return (
@@ -227,14 +225,16 @@ const RestitutionReferral = ({ personId } :Props) => {
           uiSchema={uiSchema} />
       {submitSuccessful && (
         <CardSegment>
-          <Typography gutterBottom>Submitted!</Typography>
-          <Button
-              aria-label="Success Button"
-              color="success"
-              onClick={goToProfile}
-              variant="outlined">
-            Back to Profile
-          </Button>
+          <SubmissionFieldsGrid>
+            <Typography gutterBottom>Submitted!</Typography>
+            <Button
+                aria-label="Success Button"
+                color="success"
+                onClick={goToProfile}
+                variant="outlined">
+              Back to Profile
+            </Button>
+          </SubmissionFieldsGrid>
         </CardSegment>
       )}
     </>

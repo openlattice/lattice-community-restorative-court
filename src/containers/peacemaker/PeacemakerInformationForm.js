@@ -13,6 +13,7 @@ import { schema, uiSchema } from './schemas/PeacemakerInformationSchemas';
 import { populateForm } from './utils';
 
 import { CrumbItem, CrumbLink, Crumbs } from '../../components/crumbs';
+import { SubmissionFieldsGrid } from '../../components/forms';
 import { AppTypes, PropertyTypes } from '../../core/edm/constants';
 import {
   APP,
@@ -46,11 +47,7 @@ const { isPending, isSuccess } = ReduxUtils;
 const { getEntityKeyId, getPropertyValue } = DataUtils;
 const { isDefined } = LangUtils;
 
-type Props = {
-  personId :UUID;
-};
-
-const PeacemakerInformationForm = ({ personId } :Props) => {
+const PeacemakerInformationForm = () => {
   const dispatch = useDispatch();
 
   const personNeighborMap :Map = useSelector((store) => store.getIn([PROFILE, PERSON_NEIGHBOR_MAP], Map()));
@@ -76,13 +73,15 @@ const PeacemakerInformationForm = ({ personId } :Props) => {
 
   const entitySetIds :Map = useSelector((store) => store.getIn([APP, APP_REDUX_CONSTANTS.ENTITY_SET_IDS]));
   const propertyTypeIds :Map = useSelector((store) => store.getIn([EDM, PROPERTY_TYPE_IDS]));
+  const person :Map = useSelector(selectPerson());
+  const personEKID :?UUID = getEntityKeyId(person);
 
   const onSubmit = () => {
     const entityData = processEntityData(formData, entitySetIds, propertyTypeIds);
     const associations = [
-      [SCREENED_WITH, personId, PEOPLE, 0, FORM, {}],
-      [HAS, personId, PEOPLE, 0, PERSON_DETAILS, {}],
-      [HAS, personId, PEOPLE, 0, COMMUNICATION, {}],
+      [SCREENED_WITH, personEKID, PEOPLE, 0, FORM, {}],
+      [HAS, personEKID, PEOPLE, 0, PERSON_DETAILS, {}],
+      [HAS, personEKID, PEOPLE, 0, COMMUNICATION, {}],
     ];
     const associationEntityData = processAssociationEntityData(associations, entitySetIds, propertyTypeIds);
     dispatch(addPeacemakerInformation({ associationEntityData, entityData }));
@@ -113,7 +112,6 @@ const PeacemakerInformationForm = ({ personId } :Props) => {
   const submitRequestState = useSelector((store :Map) => store
     .getIn([PEACEMAKER, ADD_PEACEMAKER_INFORMATION, REQUEST_STATE]));
 
-  const person :Map = useSelector(selectPerson());
   const personName :string = getPersonName(person);
 
   const root :string = useSelector((store) => store.getIn(APP_PATHS.ROOT));
@@ -121,7 +119,7 @@ const PeacemakerInformationForm = ({ personId } :Props) => {
   const relativeRoot = getRelativeRoot(root, match);
 
   const goToProfile = () => {
-    if (personId) dispatch(goToRoute(relativeRoot));
+    dispatch(goToRoute(relativeRoot));
   };
 
   return (
@@ -151,14 +149,16 @@ const PeacemakerInformationForm = ({ personId } :Props) => {
           uiSchema={uiSchema} />
       {isSuccess(submitRequestState) && (
         <CardSegment>
-          <Typography gutterBottom>Submitted!</Typography>
-          <Button
-              aria-label="Success Button"
-              color="success"
-              onClick={goToProfile}
-              variant="outlined">
-            Back to Profile
-          </Button>
+          <SubmissionFieldsGrid>
+            <Typography gutterBottom>Submitted!</Typography>
+            <Button
+                aria-label="Success Button"
+                color="success"
+                onClick={goToProfile}
+                variant="outlined">
+              Back to Profile
+            </Button>
+          </SubmissionFieldsGrid>
         </CardSegment>
       )}
     </>

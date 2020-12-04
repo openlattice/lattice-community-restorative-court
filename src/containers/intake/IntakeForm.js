@@ -30,6 +30,7 @@ import { schema, uiSchema } from './schemas/IntakeFormSchemas';
 import { populateFormData } from './utils/IntakeUtils';
 
 import { CrumbItem, CrumbLink, Crumbs } from '../../components/crumbs';
+import { SubmissionFieldsGrid } from '../../components/forms';
 import { AppTypes, PropertyTypes } from '../../core/edm/constants';
 import { resetRequestState } from '../../core/redux/actions';
 import {
@@ -90,11 +91,7 @@ const { getEntityKeyId, getPropertyValue } = DataUtils;
 const { isPending, isSuccess } = ReduxUtils;
 const { isNonEmptyString } = LangUtils;
 
-type Props = {
-  personId :UUID;
-};
-
-const IntakeForm = ({ personId } :Props) => {
+const IntakeForm = () => {
 
   const [selectedCase, selectCase] = useState('');
   const [formData, setFormData] = useState({});
@@ -147,6 +144,7 @@ const IntakeForm = ({ personId } :Props) => {
 
   const entitySetIds :Map = useSelector((store) => store.getIn([APP, APP_REDUX_CONSTANTS.ENTITY_SET_IDS]));
   const propertyTypeIds :Map = useSelector((store) => store.getIn([EDM, PROPERTY_TYPE_IDS]));
+  const personEKID :?UUID = getEntityKeyId(person);
 
   const onSubmit = () => {
     const page1Section4 = getPageSectionKey(1, 4);
@@ -166,11 +164,11 @@ const IntakeForm = ({ personId } :Props) => {
 
     const entityData = processEntityData(formDataForSubmit, entitySetIds, propertyTypeIds);
     const associations = [
-      [SCREENED_WITH, personId, PEOPLE, 0, FORM, {}],
+      [SCREENED_WITH, personEKID, PEOPLE, 0, FORM, {}],
       [RELATED_TO, 0, FORM, selectedCase, CRC_CASE, {}],
       [RECORDED_BY, 0, FORM, staffEKID, STAFF, {}],
       [RECORDED_BY, 0, STATUS, staffEKID, STAFF, {}],
-      [HAS, personId, PEOPLE, 0, STATUS, {}],
+      [HAS, personEKID, PEOPLE, 0, STATUS, {}],
       [HAS, selectedCase, CRC_CASE, 0, STATUS, {}],
     ];
     const associationEntityData = processAssociationEntityData(associations, entitySetIds, propertyTypeIds);
@@ -194,7 +192,7 @@ const IntakeForm = ({ personId } :Props) => {
   const relativeRoot = getRelativeRoot(root, match);
 
   const goToProfile = () => {
-    if (personId) dispatch(goToRoute(relativeRoot));
+    dispatch(goToRoute(relativeRoot));
   };
 
   return (
@@ -231,14 +229,16 @@ const IntakeForm = ({ personId } :Props) => {
       )}
       {submitSuccessful && (
         <CardSegment>
-          <Typography gutterBottom>Submitted!</Typography>
-          <Button
-              aria-label="Success Button"
-              color="success"
-              onClick={goToProfile}
-              variant="outlined">
-            Back to Profile
-          </Button>
+          <SubmissionFieldsGrid>
+            <Typography gutterBottom>Submitted!</Typography>
+            <Button
+                aria-label="Success Button"
+                color="success"
+                onClick={goToProfile}
+                variant="outlined">
+              Back to Profile
+            </Button>
+          </SubmissionFieldsGrid>
         </CardSegment>
       )}
     </>
