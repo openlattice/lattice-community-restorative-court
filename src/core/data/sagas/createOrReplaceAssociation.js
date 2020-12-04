@@ -21,11 +21,10 @@ const LOG = new Logger('DataSagas');
 
 function* createOrReplaceAssociationWorker(action :SequenceAction) :Saga<WorkerResponse> {
 
-  const workerResponse :Object = {};
-  const { id } = action;
+  let workerResponse :WorkerResponse;
 
   try {
-    yield put(createOrReplaceAssociation.request(id));
+    yield put(createOrReplaceAssociation.request(action.id));
     const { value } = action;
 
     const { associations, associationsToDelete } = value;
@@ -37,11 +36,11 @@ function* createOrReplaceAssociationWorker(action :SequenceAction) :Saga<WorkerR
 
     const createAssociationResponse = yield call(createAssociationsWorker, createAssociations(associations));
     if (createAssociationResponse.error) throw createAssociationResponse.error;
-    workerResponse.data = createAssociationResponse.data;
+    workerResponse = { data: createAssociationResponse.data };
     yield put(createOrReplaceAssociation.success(action.id, createAssociationResponse));
   }
   catch (error) {
-    workerResponse.error = error;
+    workerResponse = { error };
     LOG.error(action.type, error);
     yield put(createOrReplaceAssociation.failure(action.id, error));
   }
