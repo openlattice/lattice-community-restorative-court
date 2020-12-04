@@ -144,10 +144,10 @@ const CaseDetailsModal = ({
         viewportScrolling
         withHeader={modalHeader}>
       <ModalInnerWrapper>
-        <Typography color={NEUTRAL.N800} variant="h2">{caseIdentifier}</Typography>
+        <Typography variant="h2">{caseIdentifier}</Typography>
         <ModalSection>
           <header>
-            <Typography color={NEUTRAL.N700} variant="h3">Status</Typography>
+            <Typography variant="h3">Status</Typography>
             <IconButton
                 aria-label="Small Status Icon Button"
                 color="success"
