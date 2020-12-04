@@ -94,6 +94,7 @@ const populateFormData = (
   return formData;
 };
 
+/* eslint-disable import/prefer-default-export */
 export {
   populateFormData
 };
