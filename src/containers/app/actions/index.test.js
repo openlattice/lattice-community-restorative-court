@@ -1,6 +1,8 @@
 import { OrderedSet } from 'immutable';
 
-import * as EDMActions from '.';
+import * as AppActions from '.';
+// import-sort-style-openlattice puts this TestUtils file below the AppActions, but eslint wants the opposite:
+/* eslint-disable import/order */
 import { TestUtils } from '../../../utils/testing';
 
 const { testShouldExportActionTypes, testShouldExportRequestSequences } = TestUtils;
@@ -13,8 +15,8 @@ const REQSEQ_NAMES = OrderedSet([
   'initializeApplication',
 ]).toJS();
 
-describe('EDMActions', () => {
+describe('AppActions', () => {
 
-  testShouldExportActionTypes(EDMActions, ACTION_TYPES);
-  testShouldExportRequestSequences(EDMActions, ACTION_TYPES, REQSEQ_NAMES);
+  testShouldExportActionTypes(AppActions, ACTION_TYPES);
+  testShouldExportRequestSequences(AppActions, ACTION_TYPES, REQSEQ_NAMES);
 });
