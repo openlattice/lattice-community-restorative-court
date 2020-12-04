@@ -227,6 +227,10 @@ declare module "react-redux" {
     subKey?: string,
   ): Class<Provider<*>>;
 
+  declare export function createDispatchHook(context: React$Context<*>) :any;
+  declare export function createSelectorHook(context: React$Context<*>) :any;
+  declare export function createStoreHook(context: React$Context<*>) :any;
+
   // ------------------------------------------------------------
   // Typings for connectAdvanced()
   // ------------------------------------------------------------
@@ -289,6 +293,9 @@ declare module "react-redux" {
   declare export default {
     Provider: typeof Provider,
     createProvider: typeof createProvider,
+    createDispatchHook: typeof createDispatchHook,
+    createSelectorHook: typeof createDispatchHook,
+    createStoreHook: typeof createDispatchHook,
     connect: typeof connect,
     connectAdvanced: typeof connectAdvanced,
     useDispatch: typeof useDispatch,

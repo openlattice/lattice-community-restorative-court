@@ -11,7 +11,6 @@ import type { UUID } from 'lattice';
 
 import { useDispatch, useSelector } from '../../containers/app/AppProvider';
 import { FormConstants } from '../../containers/profile/src/constants';
-import { selectReferralForm } from '../../containers/referral/actions';
 import { APP_PATHS } from '../../core/redux/constants';
 import { selectPerson } from '../../core/redux/selectors';
 import { FORM_ID, PERSON_ID, ROUTES_FOR_COMPLETED_FORMS } from '../../core/router/Routes';
