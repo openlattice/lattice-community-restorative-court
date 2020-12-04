@@ -69,26 +69,26 @@ const AppSwitch = ({
     <Switch>
       <Route
           path={`${root}/${ADD_PEOPLE_TO_CASE}`}
-          render={() => <AddPeopleToCaseForm personId={personId} />} />
+          render={() => <AddPeopleToCaseForm />} />
       <Route
           path={`${root}/${COMPLETED_INTAKE_ROUTE_END}`}
-          render={() => <CompletedIntakeForm personId={personId} />} />
+          render={() => <CompletedIntakeForm />} />
       <Route path={`${root}/${INTAKE_ROUTE_END}`} render={() => <IntakeForm personId={personId} />} />
       <Route
           path={`${root}/${COMPLETED_RESTITUTION_REFERRAL_ROUTE_END}`}
-          render={() => <CompletedRestitutionReferral personId={personId} />} />
+          render={() => <CompletedRestitutionReferral />} />
       <Route
           path={`${root}/${RESTITUTION_REFERRAL_ROUTE_END}`}
           render={() => <RestitutionReferral personId={personId} />} />
       <Route
           path={`${root}/${COMPLETED_REPAIR_HARM_AGREEMENT_ROUTE_END}`}
-          render={() => <CompletedRepairHarmAgreement personId={personId} />} />
+          render={() => <CompletedRepairHarmAgreement />} />
       <Route
           path={`${root}/${REPAIR_HARM_AGREEMENT_ROUTE_END}`}
           render={() => <RepairHarmAgreement personId={personId} />} />
       <Route
           path={`${root}/${COMPLETED_REFERRAL_ROUTE_END}`}
-          render={() => <CompletedReferralForm personId={personId} />} />
+          render={() => <CompletedReferralForm />} />
       <Route
           path={`${root}/${REFERRAL_ROUTE_END}`}
           render={() => <ReferralForm personId={personId} />} />

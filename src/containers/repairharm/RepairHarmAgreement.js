@@ -22,6 +22,7 @@ import { SUBMIT_REPAIR_HARM_AGREEMENT, submitRepairHarmAgreement } from './actio
 import { schema, uiSchema } from './schemas/RepairHarmAgreementSchemas';
 
 import { CrumbItem, CrumbLink, Crumbs } from '../../components/crumbs';
+import { SubmissionFieldsGrid } from '../../components/forms';
 import { AppTypes, PropertyTypes } from '../../core/edm/constants';
 import { resetRequestState } from '../../core/redux/actions';
 import {
@@ -38,6 +39,7 @@ import { selectPerson } from '../../core/redux/selectors';
 import { goToRoute } from '../../core/router/RoutingActions';
 import { hydrateSchema } from '../../utils/form';
 import { getPersonName } from '../../utils/people';
+import { getRelativeRoot } from '../../utils/router';
 import { useDispatch, useSelector } from '../app/AppProvider';
 import { EMPTY_VALUE, RoleConstants } from '../profile/src/constants';
 
@@ -75,11 +77,7 @@ const {
 } = PropertyTypes;
 const { REPAIR_HARM } = RepairHarmReduxConstants;
 
-type Props = {
-  personId :UUID;
-};
-
-const RepairHarmAgreement = ({ personId } :Props) => {
+const RepairHarmAgreement = () => {
 
   const personCases :List = useSelector((store) => store.getIn([PROFILE, PERSON_NEIGHBOR_MAP, CRC_CASE], List()));
   const caseRoleMap :Map = useSelector((store) => store.getIn([PROFILE, PERSON_CASE_NEIGHBOR_MAP, ROLE], Map()));
@@ -131,6 +129,7 @@ const RepairHarmAgreement = ({ personId } :Props) => {
 
   const entitySetIds :Map = useSelector((store) => store.getIn([APP, APP_REDUX_CONSTANTS.ENTITY_SET_IDS]));
   const propertyTypeIds :Map = useSelector((store) => store.getIn([EDM, PROPERTY_TYPE_IDS]));
+  const personEKID :?UUID = getEntityKeyId(person);
   const dispatch = useDispatch();
 
   const onSubmit = () => {
@@ -146,7 +145,7 @@ const RepairHarmAgreement = ({ personId } :Props) => {
 
     const entityData = processEntityData(formDataForSubmit, entitySetIds, propertyTypeIds);
     const associations = [
-      [SCREENED_WITH, personId, PEOPLE, 0, FORM, {}],
+      [SCREENED_WITH, personEKID, PEOPLE, 0, FORM, {}],
       [RELATED_TO, 0, FORM, crcCaseEKID, CRC_CASE, {}],
       [RECORDED_BY, 0, FORM, staffEKID, STAFF, {}],
     ];
@@ -166,16 +165,20 @@ const RepairHarmAgreement = ({ personId } :Props) => {
   useEffect(() => clearSubmitState, [clearSubmitState]);
 
   const personName :string = getPersonName(person);
+
   const root :string = useSelector((store) => store.getIn(APP_PATHS.ROOT));
+  const match = useSelector((store) => store.getIn(APP_PATHS.MATCH));
+  const relativeRoot = getRelativeRoot(root, match);
 
   const goToProfile = () => {
-    if (personId) dispatch(goToRoute(`${root}/${personId}`));
+    dispatch(goToRoute(relativeRoot));
   };
+
   return (
     <>
       <CardSegment>
         <Crumbs>
-          <CrumbLink to={`${root}/${personId}`}>
+          <CrumbLink to={relativeRoot}>
             <Typography color="inherit" variant="body2">{ personName }</Typography>
           </CrumbLink>
           <CrumbItem>
@@ -197,14 +200,16 @@ const RepairHarmAgreement = ({ personId } :Props) => {
           uiSchema={uiSchema} />
       {submitSuccessful && (
         <CardSegment>
-          <Typography gutterBottom>Submitted!</Typography>
-          <Button
-              aria-label="Success Button"
-              color="success"
-              onClick={goToProfile}
-              variant="outlined">
-            Back to Profile
-          </Button>
+          <SubmissionFieldsGrid>
+            <Typography gutterBottom>Submitted!</Typography>
+            <Button
+                arialabelledby="repairHarmAgreement backToProfile"
+                color="success"
+                onClick={goToProfile}
+                variant="outlined">
+              Back to Profile
+            </Button>
+          </SubmissionFieldsGrid>
         </CardSegment>
       )}
     </>

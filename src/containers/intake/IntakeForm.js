@@ -30,6 +30,7 @@ import { schema, uiSchema } from './schemas/IntakeFormSchemas';
 import { populateFormData } from './utils/IntakeUtils';
 
 import { CrumbItem, CrumbLink, Crumbs } from '../../components/crumbs';
+import { SubmissionFieldsGrid } from '../../components/forms';
 import { AppTypes, PropertyTypes } from '../../core/edm/constants';
 import { resetRequestState } from '../../core/redux/actions';
 import {
@@ -47,6 +48,7 @@ import { selectPerson } from '../../core/redux/selectors';
 import { goToRoute } from '../../core/router/RoutingActions';
 import { hydrateSchema, updateFormWithDateAsDateTime } from '../../utils/form';
 import { getPersonName } from '../../utils/people';
+import { getRelativeRoot } from '../../utils/router';
 import { useDispatch, useSelector } from '../app/AppProvider';
 import { RoleConstants } from '../profile/src/constants';
 
@@ -89,11 +91,7 @@ const { getEntityKeyId, getPropertyValue } = DataUtils;
 const { isPending, isSuccess } = ReduxUtils;
 const { isNonEmptyString } = LangUtils;
 
-type Props = {
-  personId :UUID;
-};
-
-const IntakeForm = ({ personId } :Props) => {
+const IntakeForm = () => {
 
   const [selectedCase, selectCase] = useState('');
   const [formData, setFormData] = useState({});
@@ -146,6 +144,7 @@ const IntakeForm = ({ personId } :Props) => {
 
   const entitySetIds :Map = useSelector((store) => store.getIn([APP, APP_REDUX_CONSTANTS.ENTITY_SET_IDS]));
   const propertyTypeIds :Map = useSelector((store) => store.getIn([EDM, PROPERTY_TYPE_IDS]));
+  const personEKID :?UUID = getEntityKeyId(person);
 
   const onSubmit = () => {
     const page1Section4 = getPageSectionKey(1, 4);
@@ -165,11 +164,11 @@ const IntakeForm = ({ personId } :Props) => {
 
     const entityData = processEntityData(formDataForSubmit, entitySetIds, propertyTypeIds);
     const associations = [
-      [SCREENED_WITH, personId, PEOPLE, 0, FORM, {}],
+      [SCREENED_WITH, personEKID, PEOPLE, 0, FORM, {}],
       [RELATED_TO, 0, FORM, selectedCase, CRC_CASE, {}],
       [RECORDED_BY, 0, FORM, staffEKID, STAFF, {}],
       [RECORDED_BY, 0, STATUS, staffEKID, STAFF, {}],
-      [HAS, personId, PEOPLE, 0, STATUS, {}],
+      [HAS, personEKID, PEOPLE, 0, STATUS, {}],
       [HAS, selectedCase, CRC_CASE, 0, STATUS, {}],
     ];
     const associationEntityData = processAssociationEntityData(associations, entitySetIds, propertyTypeIds);
@@ -187,16 +186,21 @@ const IntakeForm = ({ personId } :Props) => {
   useEffect(() => clearSubmitState, [clearSubmitState]);
 
   const personName :string = getPersonName(person);
+
   const root :string = useSelector((store) => store.getIn(APP_PATHS.ROOT));
+  const match = useSelector((store) => store.getIn(APP_PATHS.MATCH));
+  const relativeRoot = getRelativeRoot(root, match);
+
   const goToProfile = () => {
-    if (personId) dispatch(goToRoute(`${root}/${personId}`));
+    dispatch(goToRoute(relativeRoot));
   };
+
   return (
     <>
       <CardSegment>
         <Crumbs>
           <CrumbItem>
-            <CrumbLink to={`${root}/${personId}`}>
+            <CrumbLink to={relativeRoot}>
               <Typography color="inherit" variant="body2">{ personName }</Typography>
             </CrumbLink>
           </CrumbItem>
@@ -225,14 +229,16 @@ const IntakeForm = ({ personId } :Props) => {
       )}
       {submitSuccessful && (
         <CardSegment>
-          <Typography gutterBottom>Submitted!</Typography>
-          <Button
-              aria-label="Success Button"
-              color="success"
-              onClick={goToProfile}
-              variant="outlined">
-            Back to Profile
-          </Button>
+          <SubmissionFieldsGrid>
+            <Typography gutterBottom>Submitted!</Typography>
+            <Button
+                arialabelledby="intake backToProfile"
+                color="success"
+                onClick={goToProfile}
+                variant="outlined">
+              Back to Profile
+            </Button>
+          </SubmissionFieldsGrid>
         </CardSegment>
       )}
     </>

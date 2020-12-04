@@ -23,6 +23,7 @@ import {
 } from '../../core/redux/constants';
 import { selectPerson } from '../../core/redux/selectors';
 import { getPersonName } from '../../utils/people';
+import { getRelativeRoot } from '../../utils/router';
 import { useSelector } from '../app/AppProvider';
 import { EMPTY_VALUE } from '../profile/src/constants';
 
@@ -41,15 +42,13 @@ const { getEntityKeyId, getPropertyValue } = DataUtils;
 const { isDefined } = LangUtils;
 const { getEntityAddressKey, getPageSectionKey } = DataProcessingUtils;
 
-type Props = {
-  personId :UUID;
-};
-
-const CompletedIntakeForm = ({ personId } :Props) => {
+const CompletedIntakeForm = () => {
 
   const person :Map = useSelector(selectPerson());
   const personName :string = getPersonName(person);
   const root :string = useSelector((store) => store.getIn(APP_PATHS.ROOT));
+  const match = useSelector((store) => store.getIn(APP_PATHS.MATCH));
+  const relativeRoot = getRelativeRoot(root, match);
 
   const selectedForm :Map = useSelector((store) => store.getIn([INTAKE, SELECTED_INTAKE]));
   const formEKID :?UUID = getEntityKeyId(selectedForm);
@@ -91,7 +90,7 @@ const CompletedIntakeForm = ({ personId } :Props) => {
     <>
       <CardSegment>
         <Crumbs>
-          <CrumbLink to={`${root}/${personId}`}>
+          <CrumbLink to={relativeRoot}>
             <Typography color="inherit" variant="body2">{ personName }</Typography>
           </CrumbLink>
           <CrumbItem>

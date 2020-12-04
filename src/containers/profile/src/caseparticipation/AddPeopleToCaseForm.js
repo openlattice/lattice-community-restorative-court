@@ -25,6 +25,7 @@ import { PropertyTypes } from '../../../../core/edm/constants';
 import { APP_PATHS, ProfileReduxConstants, REQUEST_STATE } from '../../../../core/redux/constants';
 import { selectPerson } from '../../../../core/redux/selectors';
 import { getPersonName } from '../../../../utils/people';
+import { getRelativeRoot } from '../../../../utils/router';
 import { useDispatch, useSelector } from '../../../app/AppProvider';
 import { SEARCH_PEOPLE, clearSearchedPeople, searchPeople } from '../actions';
 import { RoleConstants } from '../constants';
@@ -68,11 +69,7 @@ const CaseRoleTextWrapper = styled.div`
   color: ${NEUTRAL.N500};
 `;
 
-type Props = {
-  personId :UUID;
-};
-
-const AddPeopleToCaseForm = ({ personId } :Props) => {
+const AddPeopleToCaseForm = () => {
 
   const personCase :Map = useSelector((store) => store.getIn([PROFILE, SELECTED_CASE]));
   const caseEKID :?UUID = getEntityKeyId(personCase);
@@ -122,7 +119,10 @@ const AddPeopleToCaseForm = ({ personId } :Props) => {
 
   const person :Map = useSelector(selectPerson());
   const personName :string = getPersonName(person);
+
   const root :string = useSelector((store) => store.getIn(APP_PATHS.ROOT));
+  const match = useSelector((store) => store.getIn(APP_PATHS.MATCH));
+  const relativeRoot = getRelativeRoot(root, match);
 
   const searchedPeople :List = useSelector((store) => store.getIn([PROFILE, SEARCHED_PEOPLE]));
   const totalHits :List = useSelector((store) => store.getIn([PROFILE, TOTAL_HITS]));
@@ -148,7 +148,7 @@ const AddPeopleToCaseForm = ({ personId } :Props) => {
     <>
       <CardSegment>
         <Crumbs>
-          <CrumbLink to={`${root}/${personId}`}>
+          <CrumbLink to={relativeRoot}>
             <Typography color="inherit" variant="body2">{ personName }</Typography>
           </CrumbLink>
           <CrumbItem>
@@ -191,7 +191,12 @@ const AddPeopleToCaseForm = ({ personId } :Props) => {
               <DatePicker onChange={(date :string) => setDOB(date)} />
             </span>
             <span>
-              <Button aria-label="Search Button" isLoading={isSearching} onClick={searchPeopleForCase}>Search</Button>
+              <Button
+                  arialabelledby="searchPeople"
+                  isLoading={isSearching}
+                  onClick={searchPeopleForCase}>
+                Search
+              </Button>
             </span>
           </SearchGrid>
         </CardSegment>

@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 
 import styled from 'styled-components';
 import { Map } from 'immutable';
-import { Spinner, StyleUtils } from 'lattice-ui-kit';
+import { Spinner, StyleUtils, Typography } from 'lattice-ui-kit';
 import { ReduxUtils } from 'lattice-utils';
 import type { UUID } from 'lattice';
 import type { RequestState } from 'redux-reqseq';
@@ -20,7 +20,7 @@ import { getPersonName } from '../../../utils/people';
 import { useDispatch, useSelector } from '../../app/AppProvider';
 
 const { media } = StyleUtils;
-const { isPending } = ReduxUtils;
+const { isPending, isStandby } = ReduxUtils;
 const { PROFILE } = ProfileReduxConstants;
 
 const ProfileGrid = styled.div`
@@ -48,14 +48,16 @@ const ProfileContainer = ({ personId } :Props) => {
   const person :Map = useSelector(selectPerson());
   const personName :string = getPersonName(person);
 
-  if (isPending(loadProfileRS)) {
-    return <CenterWrapper><Spinner size="2x" /></CenterWrapper>;
+  if (isPending(loadProfileRS) || isStandby(loadProfileRS)) {
+    return <CenterWrapper><Spinner size="3x" /></CenterWrapper>;
   }
 
   return (
     <div>
       <Crumbs>
-        <CrumbItem>{ personName }</CrumbItem>
+        <CrumbItem>
+          <Typography color="inherit" variant="body2">{ personName }</Typography>
+        </CrumbItem>
       </Crumbs>
       <ProfileGrid>
         <ProfileAside />

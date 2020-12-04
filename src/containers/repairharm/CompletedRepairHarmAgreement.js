@@ -14,21 +14,20 @@ import { CrumbItem, CrumbLink, Crumbs } from '../../components/crumbs';
 import { APP_PATHS, ProfileReduxConstants, RepairHarmReduxConstants } from '../../core/redux/constants';
 import { selectPerson } from '../../core/redux/selectors';
 import { getPersonName } from '../../utils/people';
+import { getRelativeRoot } from '../../utils/router';
 import { useSelector } from '../app/AppProvider';
 
 const { FORM_NEIGHBOR_MAP, PERSON_CASE_NEIGHBOR_MAP, PROFILE } = ProfileReduxConstants;
 const { REPAIR_HARM, SELECTED_REPAIR_HARM_AGREEMENT } = RepairHarmReduxConstants;
 const { getEntityKeyId } = DataUtils;
 
-type Props = {
-  personId :UUID;
-};
-
-const CompletedRepairHarmAgreement = ({ personId } :Props) => {
+const CompletedRepairHarmAgreement = () => {
 
   const person :Map = useSelector(selectPerson());
   const personName :string = getPersonName(person);
   const root :string = useSelector((store) => store.getIn(APP_PATHS.ROOT));
+  const match = useSelector((store) => store.getIn(APP_PATHS.MATCH));
+  const relativeRoot = getRelativeRoot(root, match);
 
   const selectedForm :Map = useSelector((store) => store.getIn([REPAIR_HARM, SELECTED_REPAIR_HARM_AGREEMENT]));
   const formEKID :?UUID = getEntityKeyId(selectedForm);
@@ -39,7 +38,7 @@ const CompletedRepairHarmAgreement = ({ personId } :Props) => {
     <>
       <CardSegment>
         <Crumbs>
-          <CrumbLink to={`${root}/${personId}`}>
+          <CrumbLink to={relativeRoot}>
             <Typography color="inherit" variant="body2">{ personName }</Typography>
           </CrumbLink>
           <CrumbItem>

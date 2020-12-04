@@ -19,6 +19,7 @@ import {
 } from '../../core/redux/constants';
 import { selectPerson } from '../../core/redux/selectors';
 import { getPersonName } from '../../utils/people';
+import { getRelativeRoot } from '../../utils/router';
 import { useSelector } from '../app/AppProvider';
 
 const {
@@ -31,16 +32,14 @@ const { RESTITUTION_REFERRAL, SELECTED_RESTITUTION_REFERRAL } = RestitutionRefer
 const { REFERRAL, REFERRAL_REQUEST_NEIGHBOR_MAP } = ReferralReduxConstants;
 const { getEntityKeyId } = DataUtils;
 
-type Props = {
-  personId :UUID;
-};
-
-const CompletedRestitutionReferral = ({ personId } :Props) => {
+const CompletedRestitutionReferral = () => {
 
   const person :Map = useSelector(selectPerson());
   const personEKID :?UUID = getEntityKeyId(person);
   const personName :string = getPersonName(person);
   const root :string = useSelector((store) => store.getIn(APP_PATHS.ROOT));
+  const match = useSelector((store) => store.getIn(APP_PATHS.MATCH));
+  const relativeRoot = getRelativeRoot(root, match);
 
   const selectedRequest :Map = useSelector((store) => store
     .getIn([RESTITUTION_REFERRAL, SELECTED_RESTITUTION_REFERRAL]));
@@ -63,7 +62,7 @@ const CompletedRestitutionReferral = ({ personId } :Props) => {
     <>
       <CardSegment>
         <Crumbs>
-          <CrumbLink to={`${root}/${personId}`}>
+          <CrumbLink to={relativeRoot}>
             <Typography color="inherit" variant="body2">{ personName }</Typography>
           </CrumbLink>
           <CrumbItem>
