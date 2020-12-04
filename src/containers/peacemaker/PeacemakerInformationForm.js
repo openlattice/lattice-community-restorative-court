@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 
 import { List, Map } from 'immutable';
 import { DataProcessingUtils, Form } from 'lattice-fabricate';
-import { CardSegment, Typography } from 'lattice-ui-kit';
+import { Button, CardSegment, Typography } from 'lattice-ui-kit';
 import { DataUtils, LangUtils, ReduxUtils } from 'lattice-utils';
 import type { UUID } from 'lattice';
 
@@ -13,6 +13,7 @@ import { schema, uiSchema } from './schemas/PeacemakerInformationSchemas';
 import { populateForm } from './utils';
 
 import { CrumbItem, CrumbLink, Crumbs } from '../../components/crumbs';
+import { SubmissionFieldsGrid } from '../../components/forms';
 import { AppTypes, PropertyTypes } from '../../core/edm/constants';
 import {
   APP,
@@ -24,7 +25,9 @@ import {
   REQUEST_STATE,
 } from '../../core/redux/constants';
 import { selectPerson } from '../../core/redux/selectors';
+import { goToRoute } from '../../core/router/RoutingActions';
 import { getPersonName } from '../../utils/people';
+import { getRelativeRoot } from '../../utils/router';
 import { useDispatch, useSelector } from '../app/AppProvider';
 import { FormConstants } from '../profile/src/constants';
 
@@ -40,15 +43,11 @@ const { NAME } = PropertyTypes;
 const { PERSON_NEIGHBOR_MAP, PROFILE } = ProfileReduxConstants;
 const { PEACEMAKER_INFORMATION_FORM } = FormConstants;
 const { processAssociationEntityData, processEntityData } = DataProcessingUtils;
-const { isPending } = ReduxUtils;
+const { isPending, isSuccess } = ReduxUtils;
 const { getEntityKeyId, getPropertyValue } = DataUtils;
 const { isDefined } = LangUtils;
 
-type Props = {
-  personId :UUID;
-};
-
-const PeacemakerInformationForm = ({ personId } :Props) => {
+const PeacemakerInformationForm = () => {
   const dispatch = useDispatch();
 
   const personNeighborMap :Map = useSelector((store) => store.getIn([PROFILE, PERSON_NEIGHBOR_MAP], Map()));
@@ -74,13 +73,15 @@ const PeacemakerInformationForm = ({ personId } :Props) => {
 
   const entitySetIds :Map = useSelector((store) => store.getIn([APP, APP_REDUX_CONSTANTS.ENTITY_SET_IDS]));
   const propertyTypeIds :Map = useSelector((store) => store.getIn([EDM, PROPERTY_TYPE_IDS]));
+  const person :Map = useSelector(selectPerson());
+  const personEKID :?UUID = getEntityKeyId(person);
 
   const onSubmit = () => {
     const entityData = processEntityData(formData, entitySetIds, propertyTypeIds);
     const associations = [
-      [SCREENED_WITH, personId, PEOPLE, 0, FORM, {}],
-      [HAS, personId, PEOPLE, 0, PERSON_DETAILS, {}],
-      [HAS, personId, PEOPLE, 0, COMMUNICATION, {}],
+      [SCREENED_WITH, personEKID, PEOPLE, 0, FORM, {}],
+      [HAS, personEKID, PEOPLE, 0, PERSON_DETAILS, {}],
+      [HAS, personEKID, PEOPLE, 0, COMMUNICATION, {}],
     ];
     const associationEntityData = processAssociationEntityData(associations, entitySetIds, propertyTypeIds);
     dispatch(addPeacemakerInformation({ associationEntityData, entityData }));
@@ -111,16 +112,22 @@ const PeacemakerInformationForm = ({ personId } :Props) => {
   const submitRequestState = useSelector((store :Map) => store
     .getIn([PEACEMAKER, ADD_PEACEMAKER_INFORMATION, REQUEST_STATE]));
 
-  const person :Map = useSelector(selectPerson());
   const personName :string = getPersonName(person);
+
   const root :string = useSelector((store) => store.getIn(APP_PATHS.ROOT));
+  const match = useSelector((store) => store.getIn(APP_PATHS.MATCH));
+  const relativeRoot = getRelativeRoot(root, match);
+
+  const goToProfile = () => {
+    dispatch(goToRoute(relativeRoot));
+  };
 
   return (
     <>
       <CardSegment>
         <Crumbs>
           <CrumbItem>
-            <CrumbLink to={`${root}/${personId}`}>
+            <CrumbLink to={relativeRoot}>
               <Typography color="inherit" variant="body2">{ personName }</Typography>
             </CrumbLink>
           </CrumbItem>
@@ -140,6 +147,20 @@ const PeacemakerInformationForm = ({ personId } :Props) => {
           onSubmit={onSubmit}
           schema={schema}
           uiSchema={uiSchema} />
+      {isSuccess(submitRequestState) && (
+        <CardSegment>
+          <SubmissionFieldsGrid>
+            <Typography gutterBottom>Submitted!</Typography>
+            <Button
+                arialabelledby="peacemakerInformationForm backToProfile"
+                color="success"
+                onClick={goToProfile}
+                variant="outlined">
+              Back to Profile
+            </Button>
+          </SubmissionFieldsGrid>
+        </CardSegment>
+      )}
     </>
   );
 };

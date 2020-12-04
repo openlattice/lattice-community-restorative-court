@@ -5,7 +5,7 @@ import { List, Map } from 'immutable';
 import { Constants } from 'lattice';
 import { DataProcessingUtils, Form } from 'lattice-fabricate';
 import { Button, CardSegment, Typography } from 'lattice-ui-kit';
-import { ReduxUtils } from 'lattice-utils';
+import { DataUtils, ReduxUtils } from 'lattice-utils';
 import type { UUID } from 'lattice';
 
 import { SUBMIT_REFERRAL_FORM, getCRCPeople, submitReferralForm } from './actions';
@@ -19,6 +19,7 @@ import {
 } from './utils';
 
 import { CrumbItem, CrumbLink, Crumbs } from '../../components/crumbs';
+import { SubmissionFieldsGrid } from '../../components/forms';
 import { AppTypes, PropertyTypes } from '../../core/edm/constants';
 import { resetRequestState } from '../../core/redux/actions';
 import {
@@ -35,9 +36,11 @@ import { selectPerson } from '../../core/redux/selectors';
 import { goToRoute } from '../../core/router/RoutingActions';
 import { hydrateSchema, updateFormWithDateAsDateTime } from '../../utils/form';
 import { getPersonName } from '../../utils/people';
+import { getRelativeRoot } from '../../utils/router';
 import { useDispatch, useSelector } from '../app/AppProvider';
 import { RoleConstants } from '../profile/src/constants';
 
+const { getEntityKeyId } = DataUtils;
 const { isPending, isSuccess } = ReduxUtils;
 const {
   getEntityAddressKey,
@@ -105,6 +108,10 @@ const ReferralForm = ({ personId } :Props) => {
   const entitySetIds :Map = useSelector((store) => store.getIn([APP, APP_REDUX_CONSTANTS.ENTITY_SET_IDS]));
   const propertyTypeIds :Map = useSelector((store) => store.getIn([EDM, PROPERTY_TYPE_IDS]));
 
+  const person :Map = useSelector(selectPerson());
+  const personEKID :?UUID = getEntityKeyId(person);
+  const personName :string = getPersonName(person);
+
   const onSubmit = ({ formData } :Object) => {
 
     const dateOfReferralPath = [getPageSectionKey(1, 1), getEntityAddressKey(0, REFERRAL_REQUEST, DATETIME_COMPLETED)];
@@ -122,17 +129,17 @@ const ReferralForm = ({ personId } :Props) => {
 
     let associations = [
       // $FlowFixMe
-      [APPEARS_IN, personId, PEOPLE, 0, CRC_CASE, { [ROLE]: [RESPONDENT] }],
+      [APPEARS_IN, personEKID, PEOPLE, 0, CRC_CASE, { [ROLE]: [RESPONDENT] }],
       [APPEARS_IN, 0, DA_CASE, 0, REFERRAL_REQUEST, {}],
       [RESULTS_IN, 0, REFERRAL_REQUEST, 0, CRC_CASE, {}],
-      [SUBJECT_OF, personId, PEOPLE, 0, REFERRAL_REQUEST, {}],
+      [SUBJECT_OF, personEKID, PEOPLE, 0, REFERRAL_REQUEST, {}],
       [REGISTERED_FOR, 0, STATUS, 0, REFERRAL_REQUEST, {}],
-      [SCREENED_WITH, personId, PEOPLE, 0, FORM, {}],
+      [SCREENED_WITH, personEKID, PEOPLE, 0, FORM, {}],
       [RELATED_TO, 0, FORM, 0, REFERRAL_REQUEST, {}],
       [RELATED_TO, 0, FORM, 0, CRC_CASE, {}],
       [RECORDED_BY, 0, FORM, selectedStaffEKID, STAFF, {}],
       [RECORDED_BY, 0, STATUS, selectedStaffEKID, STAFF, {}],
-      [HAS, personId, PEOPLE, 0, STATUS, {}],
+      [HAS, personEKID, PEOPLE, 0, STATUS, {}],
       [HAS, 0, CRC_CASE, 0, STATUS, {}],
     ];
     associations = associations.concat(getVictimAssociations(formDataWithoutStaff, existingVictimEKIDs));
@@ -141,10 +148,6 @@ const ReferralForm = ({ personId } :Props) => {
     const associationEntityData = processAssociationEntityData(associations, entitySetIds, propertyTypeIds);
     dispatch(submitReferralForm({ associationEntityData, entityData }));
   };
-
-  const person :Map = useSelector(selectPerson());
-  const personName :string = getPersonName(person);
-  const root :string = useSelector((store) => store.getIn(APP_PATHS.ROOT));
 
   const submitRequestState = useSelector((store :Map) => store.getIn([REFERRAL, SUBMIT_REFERRAL_FORM, REQUEST_STATE]));
   const submitSuccessful = isSuccess(submitRequestState);
@@ -155,15 +158,19 @@ const ReferralForm = ({ personId } :Props) => {
 
   useEffect(() => clearSubmitState, [clearSubmitState]);
 
+  const root :string = useSelector((store) => store.getIn(APP_PATHS.ROOT));
+  const match = useSelector((store) => store.getIn(APP_PATHS.MATCH));
+  const relativeRoot = getRelativeRoot(root, match);
+
   const goToProfile = () => {
-    if (personId) dispatch(goToRoute(`${root}/${personId}`));
+    dispatch(goToRoute(relativeRoot));
   };
 
   return (
     <>
       <CardSegment>
         <Crumbs>
-          <CrumbLink to={`${root}/${personId}`}>
+          <CrumbLink to={relativeRoot}>
             <Typography color="inherit" variant="body2">{ personName }</Typography>
           </CrumbLink>
           <CrumbItem>
@@ -183,8 +190,16 @@ const ReferralForm = ({ personId } :Props) => {
           uiSchema={uiSchema} />
       {submitSuccessful && (
         <CardSegment>
-          <Typography gutterBottom>Submitted!</Typography>
-          <Button color="success" onClick={goToProfile} variant="outlined">Back to Profile</Button>
+          <SubmissionFieldsGrid>
+            <Typography>Submitted!</Typography>
+            <Button
+                arialabelledby="referral backToProfile"
+                color="success"
+                onClick={goToProfile}
+                variant="outlined">
+              Back to Profile
+            </Button>
+          </SubmissionFieldsGrid>
         </CardSegment>
       )}
     </>

@@ -31,6 +31,6 @@ export const CRCTag = styled(Tag)`
   color: ${getFontColor};
   display: flex;
   justify-content: center;
-  padding:  ${(props) => props.padding};
+  padding: ${(props) => props.padding};
   text-transform: capitalize;
 `;

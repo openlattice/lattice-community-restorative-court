@@ -25,9 +25,12 @@ import {
   ModalInnerWrapper,
 } from '../../../../components';
 import { AppTypes, PropertyTypes } from '../../../../core/edm/constants';
-import { ProfileReduxConstants } from '../../../../core/redux/constants';
+import { APP_PATHS, ProfileReduxConstants } from '../../../../core/redux/constants';
+import { ADD_PEOPLE_TO_CASE, CASE_ID } from '../../../../core/router/Routes';
+import { goToRoute } from '../../../../core/router/RoutingActions';
 import { getPersonName } from '../../../../utils/people';
-import { useSelector } from '../../../app/AppProvider';
+import { useDispatch, useSelector } from '../../../app/AppProvider';
+import { selectCase } from '../actions';
 import { CaseStatusConstants, RoleConstants } from '../constants';
 
 const {
@@ -77,6 +80,7 @@ type Props = {
   caseRoleMap :Map;
   isVisible :boolean;
   onClose :() => void;
+  personCase :Map;
 };
 
 const CaseDetailsModal = ({
@@ -85,6 +89,7 @@ const CaseDetailsModal = ({
   caseRoleMap,
   isVisible,
   onClose,
+  personCase,
 } :Props) => {
 
   const [statusModalIsVisible, setStatusModalVisibility] = useState(false);
@@ -112,6 +117,16 @@ const CaseDetailsModal = ({
   const mode :string = isDefined(caseIsResolvedOrClosed) ? 'closed' : 'open';
   const modalHeader = <CaseDetailsModalHeader mode={mode} onClose={onClose} />;
 
+  const dispatch = useDispatch();
+  const root = useSelector((store) => store.getIn(APP_PATHS.ROOT));
+
+  const goToAddPeopleForm = () => {
+    if (caseEKID) {
+      dispatch(selectCase(personCase));
+      dispatch(goToRoute(`${root}/${ADD_PEOPLE_TO_CASE}`.replace(CASE_ID, caseEKID)));
+    }
+  };
+
   const renderParticipantTile = (person :Map, role :string) => (
     <ParticipantTile key={getEntityKeyId(person)}>
       <Label subtle>Name</Label>
@@ -129,10 +144,10 @@ const CaseDetailsModal = ({
         viewportScrolling
         withHeader={modalHeader}>
       <ModalInnerWrapper>
-        <Typography color={NEUTRAL.N800} variant="h2">{caseIdentifier}</Typography>
+        <Typography variant="h2">{caseIdentifier}</Typography>
         <ModalSection>
           <header>
-            <Typography color={NEUTRAL.N700} variant="h3">Status</Typography>
+            <Typography variant="h3">Status</Typography>
             <IconButton
                 aria-label="Small Status Icon Button"
                 color="success"
@@ -147,7 +162,16 @@ const CaseDetailsModal = ({
               staffMemberByStatusEKID={staffMemberByStatusEKID} />
         </ModalSection>
         <ModalSection>
-          <header><Typography color={NEUTRAL.N700} variant="h3">Participants</Typography></header>
+          <header>
+            <Typography color={NEUTRAL.N700} variant="h3">Participants</Typography>
+            <IconButton
+                aria-label="Small Status Icon Button"
+                color="success"
+                size="small"
+                onClick={goToAddPeopleForm}>
+              <FontAwesomeIcon fixedWidth icon={faPlus} />
+            </IconButton>
+          </header>
           <ParticipantsTileGrid>
             { respondentList.map((respondent :Map) => renderParticipantTile(respondent, RESPONDENT)) }
             { victimList.map((victim :Map) => renderParticipantTile(victim, VICTIM)) }

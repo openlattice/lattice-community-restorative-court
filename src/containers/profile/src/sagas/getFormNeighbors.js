@@ -28,6 +28,7 @@ const { FQN } = Models;
 const {
   CRC_CASE,
   FORM,
+  PEOPLE,
   REFERRAL_REQUEST,
   STAFF,
 } = AppTypes;
@@ -54,12 +55,13 @@ function* getFormNeighborsWorker(action :SequenceAction) :Saga<*> {
     const crcCaseESID :UUID = yield select(selectEntitySetId(CRC_CASE));
     const formESID :UUID = yield select(selectEntitySetId(FORM));
     const referralRequestESID :UUID = yield select(selectEntitySetId(REFERRAL_REQUEST));
+    const peopleESID :UUID = yield select(selectEntitySetId(PEOPLE));
     const staffESID :UUID = yield select(selectEntitySetId(STAFF));
 
     const filter = {
       entityKeyIds: formEKIDs,
       destinationEntitySetIds: [crcCaseESID, referralRequestESID, staffESID],
-      sourceEntitySetIds: [],
+      sourceEntitySetIds: [peopleESID],
     };
 
     const response :Object = yield call(

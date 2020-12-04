@@ -32,6 +32,7 @@ const { isDefined } = LangUtils;
 const {
   COMMUNICATION,
   CONTACT_ACTIVITY,
+  CONTACT_INFO,
   CRC_CASE,
   FORM,
   PERSON_DETAILS,
@@ -59,6 +60,7 @@ function* loadProfileWorker(action :SequenceAction) :Saga<*> {
     const caseESID :UUID = yield select(selectEntitySetId(CRC_CASE));
     const communicationESID = yield select(selectEntitySetId(COMMUNICATION));
     const contactActivityESID :UUID = yield select(selectEntitySetId(CONTACT_ACTIVITY));
+    const contactInfoESID :UUID = yield select(selectEntitySetId(CONTACT_INFO));
     const formESID :UUID = yield select(selectEntitySetId(FORM));
     const personDetailsESID = yield select(selectEntitySetId(PERSON_DETAILS));
 
@@ -68,6 +70,7 @@ function* loadProfileWorker(action :SequenceAction) :Saga<*> {
       { direction: DST, entitySetId: formESID },
       { direction: DST, entitySetId: personDetailsESID },
       { direction: DST, entitySetId: communicationESID },
+      { direction: DST, entitySetId: contactInfoESID },
     ];
 
     const workerResponses :Object[] = yield all([
