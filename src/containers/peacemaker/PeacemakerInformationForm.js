@@ -152,7 +152,7 @@ const PeacemakerInformationForm = () => {
           <SubmissionFieldsGrid>
             <Typography gutterBottom>Submitted!</Typography>
             <Button
-                aria-label="Success Button"
+                arialabelledby="peacemakerInformationForm backToProfile"
                 color="success"
                 onClick={goToProfile}
                 variant="outlined">

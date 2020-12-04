@@ -203,7 +203,7 @@ const RepairHarmAgreement = () => {
           <SubmissionFieldsGrid>
             <Typography gutterBottom>Submitted!</Typography>
             <Button
-                aria-label="Success Button"
+                arialabelledby="repairHarmAgreement backToProfile"
                 color="success"
                 onClick={goToProfile}
                 variant="outlined">

@@ -228,7 +228,7 @@ const RestitutionReferral = () => {
           <SubmissionFieldsGrid>
             <Typography gutterBottom>Submitted!</Typography>
             <Button
-                aria-label="Success Button"
+                arialabelledby="restitutionReferral backToProfile"
                 color="success"
                 onClick={goToProfile}
                 variant="outlined">

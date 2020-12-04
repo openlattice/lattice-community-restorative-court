@@ -192,7 +192,13 @@ const ReferralForm = ({ personId } :Props) => {
         <CardSegment>
           <SubmissionFieldsGrid>
             <Typography>Submitted!</Typography>
-            <Button color="success" onClick={goToProfile} variant="outlined">Back to Profile</Button>
+            <Button
+                arialabelledby="referral backToProfile"
+                color="success"
+                onClick={goToProfile}
+                variant="outlined">
+              Back to Profile
+            </Button>
           </SubmissionFieldsGrid>
         </CardSegment>
       )}

@@ -191,7 +191,12 @@ const AddPeopleToCaseForm = () => {
               <DatePicker onChange={(date :string) => setDOB(date)} />
             </span>
             <span>
-              <Button aria-label="Search Button" isLoading={isSearching} onClick={searchPeopleForCase}>Search</Button>
+              <Button
+                  arialabelledby="searchPeople"
+                  isLoading={isSearching}
+                  onClick={searchPeopleForCase}>
+                Search
+              </Button>
             </span>
           </SearchGrid>
         </CardSegment>
