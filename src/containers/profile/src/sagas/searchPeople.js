@@ -43,10 +43,10 @@ function* searchPeopleWorker(action :SequenceAction) :Saga<*> {
       start,
     } = value;
 
-    const peopleESID :?UUID = yield select(selectEntitySetId(PEOPLE));
-    const firstNamePTID :?UUID = yield select(selectPropertyTypeId(GIVEN_NAME));
-    const lastNamePTID :?UUID = yield select(selectPropertyTypeId(SURNAME));
-    const dobPTID :?UUID = yield select(selectPropertyTypeId(DOB));
+    const peopleESID :UUID = yield select(selectEntitySetId(PEOPLE));
+    const firstNamePTID :UUID = yield select(selectPropertyTypeId(GIVEN_NAME));
+    const lastNamePTID :UUID = yield select(selectPropertyTypeId(SURNAME));
+    const dobPTID :UUID = yield select(selectPropertyTypeId(DOB));
 
     const searchOptions = {
       entitySetIds: [peopleESID],
