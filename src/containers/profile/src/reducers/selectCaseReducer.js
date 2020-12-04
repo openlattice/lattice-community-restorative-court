@@ -7,9 +7,6 @@ const { SELECTED_CASE } = ProfileReduxConstants;
 
 export default function reducer(state :Map, action :Object) {
 
-  const { value } = action;
-  const selectedCase :Map = value;
-  return state
-    .set(SELECTED_CASE, selectedCase);
+  return state.set(SELECTED_CASE, action.value);
 
 }
