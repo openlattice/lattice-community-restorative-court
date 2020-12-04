@@ -47,6 +47,7 @@ import { selectPerson } from '../../core/redux/selectors';
 import { goToRoute } from '../../core/router/RoutingActions';
 import { hydrateSchema, updateFormWithDateAsDateTime } from '../../utils/form';
 import { getPersonName } from '../../utils/people';
+import { getRelativeRoot } from '../../utils/router';
 import { useDispatch, useSelector } from '../app/AppProvider';
 import { RoleConstants } from '../profile/src/constants';
 
@@ -187,16 +188,21 @@ const IntakeForm = ({ personId } :Props) => {
   useEffect(() => clearSubmitState, [clearSubmitState]);
 
   const personName :string = getPersonName(person);
+
   const root :string = useSelector((store) => store.getIn(APP_PATHS.ROOT));
+  const match = useSelector((store) => store.getIn(APP_PATHS.MATCH));
+  const relativeRoot = getRelativeRoot(root, match);
+
   const goToProfile = () => {
-    if (personId) dispatch(goToRoute(`${root}/${personId}`));
+    if (personId) dispatch(goToRoute(relativeRoot));
   };
+
   return (
     <>
       <CardSegment>
         <Crumbs>
           <CrumbItem>
-            <CrumbLink to={`${root}/${personId}`}>
+            <CrumbLink to={relativeRoot}>
               <Typography color="inherit" variant="body2">{ personName }</Typography>
             </CrumbLink>
           </CrumbItem>

@@ -69,7 +69,7 @@ const AppSwitch = ({
     <Switch>
       <Route
           path={`${root}/${ADD_PEOPLE_TO_CASE}`}
-          render={() => <AddPeopleToCaseForm personId={personId} />} />
+          render={() => <AddPeopleToCaseForm />} />
       <Route
           path={`${root}/${COMPLETED_INTAKE_ROUTE_END}`}
           render={() => <CompletedIntakeForm personId={personId} />} />

@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 
 import { List, Map } from 'immutable';
 import { DataProcessingUtils, Form } from 'lattice-fabricate';
-import { CardSegment, Typography } from 'lattice-ui-kit';
+import { Button, CardSegment, Typography } from 'lattice-ui-kit';
 import { DataUtils, LangUtils, ReduxUtils } from 'lattice-utils';
 import type { UUID } from 'lattice';
 
@@ -24,7 +24,9 @@ import {
   REQUEST_STATE,
 } from '../../core/redux/constants';
 import { selectPerson } from '../../core/redux/selectors';
+import { goToRoute } from '../../core/router/RoutingActions';
 import { getPersonName } from '../../utils/people';
+import { getRelativeRoot } from '../../utils/router';
 import { useDispatch, useSelector } from '../app/AppProvider';
 import { FormConstants } from '../profile/src/constants';
 
@@ -40,7 +42,7 @@ const { NAME } = PropertyTypes;
 const { PERSON_NEIGHBOR_MAP, PROFILE } = ProfileReduxConstants;
 const { PEACEMAKER_INFORMATION_FORM } = FormConstants;
 const { processAssociationEntityData, processEntityData } = DataProcessingUtils;
-const { isPending } = ReduxUtils;
+const { isPending, isSuccess } = ReduxUtils;
 const { getEntityKeyId, getPropertyValue } = DataUtils;
 const { isDefined } = LangUtils;
 
@@ -113,14 +115,21 @@ const PeacemakerInformationForm = ({ personId } :Props) => {
 
   const person :Map = useSelector(selectPerson());
   const personName :string = getPersonName(person);
+
   const root :string = useSelector((store) => store.getIn(APP_PATHS.ROOT));
+  const match = useSelector((store) => store.getIn(APP_PATHS.MATCH));
+  const relativeRoot = getRelativeRoot(root, match);
+
+  const goToProfile = () => {
+    if (personId) dispatch(goToRoute(relativeRoot));
+  };
 
   return (
     <>
       <CardSegment>
         <Crumbs>
           <CrumbItem>
-            <CrumbLink to={`${root}/${personId}`}>
+            <CrumbLink to={relativeRoot}>
               <Typography color="inherit" variant="body2">{ personName }</Typography>
             </CrumbLink>
           </CrumbItem>
@@ -140,6 +149,18 @@ const PeacemakerInformationForm = ({ personId } :Props) => {
           onSubmit={onSubmit}
           schema={schema}
           uiSchema={uiSchema} />
+      {isSuccess(submitRequestState) && (
+        <CardSegment>
+          <Typography gutterBottom>Submitted!</Typography>
+          <Button
+              aria-label="Success Button"
+              color="success"
+              onClick={goToProfile}
+              variant="outlined">
+            Back to Profile
+          </Button>
+        </CardSegment>
+      )}
     </>
   );
 };
