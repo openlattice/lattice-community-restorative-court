@@ -49,7 +49,7 @@ const ProfileContainer = ({ personId } :Props) => {
   const personName :string = getPersonName(person);
 
   if (isPending(loadProfileRS)) {
-    return <CenterWrapper><Spinner size="2x" /></CenterWrapper>;
+    return <CenterWrapper><Spinner size="3x" /></CenterWrapper>;
   }
 
   return (
