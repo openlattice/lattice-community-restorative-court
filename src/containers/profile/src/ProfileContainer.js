@@ -20,7 +20,7 @@ import { getPersonName } from '../../../utils/people';
 import { useDispatch, useSelector } from '../../app/AppProvider';
 
 const { media } = StyleUtils;
-const { isPending } = ReduxUtils;
+const { isPending, isStandby } = ReduxUtils;
 const { PROFILE } = ProfileReduxConstants;
 
 const ProfileGrid = styled.div`
@@ -48,7 +48,7 @@ const ProfileContainer = ({ personId } :Props) => {
   const person :Map = useSelector(selectPerson());
   const personName :string = getPersonName(person);
 
-  if (isPending(loadProfileRS)) {
+  if (isPending(loadProfileRS) || isStandby(loadProfileRS)) {
     return <CenterWrapper><Spinner size="3x" /></CenterWrapper>;
   }
 
