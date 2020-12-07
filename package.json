@@ -43,7 +43,7 @@
     "history": "~4.10.0",
     "immutable": "4.0.0-rc.10",
     "iso-639-1": "~2.1.4",
-    "lattice": "~0.84.1",
+    "lattice": "~0.85.1",
     "lattice-auth": "~0.22.0",
     "lattice-fabricate": "~0.14.5",
     "lattice-sagas": "~0.58.0",
