@@ -22,6 +22,7 @@ const {
   HAS,
   OFFENSE,
   OFFICERS,
+  ELECTRONIC_SIGNATURE, // change to ORGANIZATIONS
   PEOPLE,
   PERSON_DETAILS,
   REFERRAL_REQUEST,
@@ -43,13 +44,13 @@ const getStaffInformation = (formData :Object) :Object => {
 
   const staffEKID = getIn(
     formData,
-    [getPageSectionKey(1, 4), getEntityAddressKey(0, STAFF, OPENLATTICE_ID_FQN)]
+    [getPageSectionKey(1, 6), getEntityAddressKey(0, STAFF, OPENLATTICE_ID_FQN)]
   );
   if (isDefined(staffEKID) && staffEKID.length) {
     selectedStaffEKID = staffEKID;
   }
 
-  const formDataWithoutStaff = remove(formData, getPageSectionKey(1, 4));
+  const formDataWithoutStaff = remove(formData, getPageSectionKey(1, 6));
 
   return { formDataWithoutStaff, selectedStaffEKID };
 };
@@ -61,6 +62,7 @@ const getStaffInformation = (formData :Object) :Object => {
 const getVictimInformation = (formData :Object) :Object => {
 
   let existingVictimEKIDs = [];
+  let existingVictimOrgEKIDs = [];
 
   const existingPeopleSelected = getIn(
     formData,
@@ -70,16 +72,31 @@ const getVictimInformation = (formData :Object) :Object => {
     existingVictimEKIDs = existingPeopleSelected;
   }
 
-  const formDataWithoutVictimsArray = remove(formData, getPageSectionKey(1, 2));
+  let formDataWithoutVictimsArray = remove(formData, getPageSectionKey(1, 2));
 
-  return { existingVictimEKIDs, formDataWithoutVictimsArray };
+  const existingOrgsSelected = getIn(
+    formData,
+    // change to ORGANIZATIONS:
+    [getPageSectionKey(1, 4), getEntityAddressKey(0, ELECTRONIC_SIGNATURE, OPENLATTICE_ID_FQN)]
+  );
+  if (isDefined(existingOrgsSelected) && existingOrgsSelected.length) {
+    existingVictimOrgEKIDs = existingOrgsSelected;
+  }
+
+  formDataWithoutVictimsArray = remove(formDataWithoutVictimsArray, getPageSectionKey(1, 4));
+
+  return { existingVictimEKIDs, existingVictimOrgEKIDs, formDataWithoutVictimsArray };
 };
 
 /*
  * ReferralFormUtils.getVictimAssociations
  */
 
-const getVictimAssociations = (formData :Object, existingVictimEKIDs :string[]) :Array<Array<*>> => {
+const getVictimAssociations = (
+  formData :Object,
+  existingVictimEKIDs :string[],
+  existingVictimOrgEKIDs :string[],
+) :Array<Array<*>> => {
 
   const associations = [];
   existingVictimEKIDs.forEach((ekid :UUID) => {
@@ -93,6 +110,21 @@ const getVictimAssociations = (formData :Object, existingVictimEKIDs :string[]) 
       // $FlowFixMe
       associations.push([APPEARS_IN, index, PEOPLE, 0, CRC_CASE, { [ROLE]: [VICTIM] }]);
       associations.push([HAS, index, PEOPLE, 0, PERSON_DETAILS]);
+    });
+  }
+
+  existingVictimOrgEKIDs.forEach((ekid :UUID) => {
+    // change to ORGANIZATIONS:
+    // $FlowFixMe
+    associations.push([APPEARS_IN, ekid, ELECTRONIC_SIGNATURE, 0, CRC_CASE, { [ROLE]: [VICTIM] }]);
+  });
+
+  const newVictimOrgs = get(formData, getPageSectionKey(1, 3));
+  if (isDefined(newVictimOrgs)) {
+    newVictimOrgs.forEach((person :Object, index :number) => {
+      // change to ORGANIZATIONS:
+      // $FlowFixMe
+      associations.push([APPEARS_IN, index, ELECTRONIC_SIGNATURE, 0, CRC_CASE, { [ROLE]: [VICTIM] }]);
     });
   }
 
