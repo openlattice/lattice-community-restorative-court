@@ -13,6 +13,7 @@ import {
   Typography,
 } from 'lattice-ui-kit';
 import { DataUtils, LangUtils } from 'lattice-utils';
+import { Link } from 'react-router-dom';
 import type { UUID } from 'lattice';
 
 import AddStatusModal from './AddStatusModal';
@@ -29,11 +30,13 @@ import { APP_PATHS, ProfileReduxConstants } from '../../../../core/redux/constan
 import { ADD_PEOPLE_TO_CASE, CASE_ID } from '../../../../core/router/Routes';
 import { goToRoute } from '../../../../core/router/RoutingActions';
 import { getPersonName } from '../../../../utils/people';
+import { getRelativeRoot } from '../../../../utils/router';
 import { useDispatch, useSelector } from '../../../app/AppProvider';
 import { selectCase } from '../actions';
 import { CaseStatusConstants, RoleConstants } from '../constants';
 
 const {
+  PERSON,
   PERSON_CASE_NEIGHBOR_MAP,
   PROFILE,
   STAFF_MEMBER_BY_STATUS_EKID,
@@ -55,16 +58,18 @@ const ModalSection = styled.div`
   }
 `;
 
-const ParticipantTile = styled.div`
+const ParticipantTile = styled(Link)`
   align-items: start;
   border: 1px solid ${NEUTRAL.N200};
   border-radius: 3px;
+  color: ${NEUTRAL.N700};
   display: grid;
   grid-template-rows: 1fr 1fr 1fr;
   grid-gap: 5px 0;
   justify-items: start;
   max-width: 280px;
   padding: 24px 32px;
+  text-decoration: none;
 `;
 
 const ParticipantsTileGrid = styled.div`
@@ -118,7 +123,10 @@ const CaseDetailsModal = ({
   const modalHeader = <CaseDetailsModalHeader mode={mode} onClose={onClose} />;
 
   const dispatch = useDispatch();
+  const person :Map = useSelector((store) => store.getIn([PROFILE, PERSON]));
   const root = useSelector((store) => store.getIn(APP_PATHS.ROOT));
+  const match = useSelector((store) => store.getIn(APP_PATHS.MATCH));
+  const relativeRoot = getRelativeRoot(root, match);
 
   const goToAddPeopleForm = () => {
     if (caseEKID) {
@@ -127,15 +135,28 @@ const CaseDetailsModal = ({
     }
   };
 
-  const renderParticipantTile = (person :Map, role :string) => (
-    <ParticipantTile key={getEntityKeyId(person)}>
-      <Label subtle>Name</Label>
-      <Typography>{getPersonName(person)}</Typography>
-      <CRCTag background={role} borderRadius="31px" color={role} padding="10px 16px">
-        <Typography color="inherit" variant="body2">{role}</Typography>
-      </CRCTag>
-    </ParticipantTile>
-  );
+  const getNewProfileUrl = (personEKID :?UUID) => {
+    if (personEKID) {
+      const currentlySelectedPersonEKID :?UUID = getEntityKeyId(person);
+      if (currentlySelectedPersonEKID) return `${relativeRoot}`.replace(currentlySelectedPersonEKID, personEKID);
+    }
+    return relativeRoot;
+  };
+
+  const renderParticipantTile = (participant :Map, role :string) => {
+    const participantEKID :?UUID = getEntityKeyId(participant);
+    return (
+      <ParticipantTile
+          key={getEntityKeyId(participant)}
+          to={getNewProfileUrl(participantEKID)}>
+        <Label subtle>Name</Label>
+        <Typography>{getPersonName(participant)}</Typography>
+        <CRCTag background={role} borderRadius="31px" color={role} padding="10px 16px">
+          <Typography color="inherit" variant="body2">{role}</Typography>
+        </CRCTag>
+      </ParticipantTile>
+    );
+  };
 
   return (
     <Modal
@@ -181,7 +202,6 @@ const CaseDetailsModal = ({
         <ModalSection>
           <header><Typography color={NEUTRAL.N700} variant="h3">Documents</Typography></header>
           <DocumentList
-              caseEKID={caseEKID}
               caseIdentifier={caseIdentifier}
               forms={relevantForms}
               personCaseNeighborMap={personCaseNeighborMap} />
