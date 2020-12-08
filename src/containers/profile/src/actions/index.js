@@ -20,6 +20,9 @@ const clearSearchedPeople = () => ({
 const EDIT_PERSON :'EDIT_PERSON' = 'EDIT_PERSON';
 const editPerson :RequestSequence = newRequestSequence(EDIT_PERSON);
 
+const EDIT_PERSON_DETAILS :'EDIT_PERSON_DETAILS' = 'EDIT_PERSON_DETAILS';
+const editPersonDetails :RequestSequence = newRequestSequence(EDIT_PERSON_DETAILS);
+
 const GET_PERSON :'GET_PERSON' = 'GET_PERSON';
 const getPerson :RequestSequence = newRequestSequence(GET_PERSON);
 
@@ -50,6 +53,7 @@ export {
   ADD_PERSON_TO_CASE,
   CLEAR_SEARCHED_PEOPLE,
   EDIT_PERSON,
+  EDIT_PERSON_DETAILS,
   GET_PERSON,
   GET_PERSON_CASE_NEIGHBORS,
   GET_PERSON_NEIGHBORS,
@@ -62,6 +66,7 @@ export {
   addPersonToCase,
   clearSearchedPeople,
   editPerson,
+  editPersonDetails,
   getPerson,
   getPersonCaseNeighbors,
   getPersonNeighbors,
