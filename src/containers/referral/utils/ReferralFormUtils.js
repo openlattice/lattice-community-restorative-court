@@ -119,7 +119,7 @@ const getVictimAssociations = (
     associations.push([APPEARS_IN, ekid, ELECTRONIC_SIGNATURE, 0, CRC_CASE, { [ROLE]: [VICTIM] }]);
   });
 
-  const newVictimOrgs = get(formData, getPageSectionKey(1, 3));
+  const newVictimOrgs = get(formData, getPageSectionKey(1, 5));
   if (isDefined(newVictimOrgs)) {
     newVictimOrgs.forEach((person :Object, index :number) => {
       // change to ORGANIZATIONS:
