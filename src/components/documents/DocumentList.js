@@ -9,20 +9,26 @@ import type { UUID } from 'lattice';
 import DocumentListItem from './DocumentListItem';
 
 import { AppTypes, PropertyTypes } from '../../core/edm/constants';
+import { ProfileReduxConstants } from '../../core/redux/constants';
 import { getPersonName } from '../../utils/people';
 
 const { formatAsDate } = DateTimeUtils;
 const { getEntityKeyId, getPropertyValue } = DataUtils;
 const { STAFF } = AppTypes;
 const { DATETIME_ADMINISTERED, NAME } = PropertyTypes;
+const { FORM_NEIGHBOR_MAP } = ProfileReduxConstants;
 
 type Props = {
   caseIdentifier ?:string;
   forms :List;
-  formNeighborMap :Map;
+  personCaseNeighborMap :Map;
 };
 
-const DocumentList = ({ caseIdentifier, forms, formNeighborMap } :Props) => (
+const DocumentList = ({
+  caseIdentifier,
+  forms,
+  personCaseNeighborMap,
+} :Props) => (
   <CardStack>
     {
       forms.map((form :Map) => {
@@ -30,8 +36,8 @@ const DocumentList = ({ caseIdentifier, forms, formNeighborMap } :Props) => (
         const formName = getPropertyValue(form, [NAME, 0]);
         const submittedDate = formatAsDate(datetime);
         const formEKID :?UUID = getEntityKeyId(form);
-        const staffMembers :List = formNeighborMap.getIn([formEKID, STAFF], List());
-        const staffMemberName = getPersonName(staffMembers.get(0, Map()));
+        const staffMemberList :List = personCaseNeighborMap.getIn([FORM_NEIGHBOR_MAP, formEKID, STAFF], List());
+        const staffMemberName = getPersonName(staffMemberList.get(0, Map()));
         return (
           <DocumentListItem
               caseIdentifier={caseIdentifier}

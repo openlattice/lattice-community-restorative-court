@@ -37,7 +37,7 @@ import {
 } from '../../core/redux/constants';
 import { selectPerson } from '../../core/redux/selectors';
 import { goToRoute } from '../../core/router/RoutingActions';
-import { hydrateSchema } from '../../utils/form';
+import { hydrateSchema, updateFormWithDateAsDateTime } from '../../utils/form';
 import { getPersonName } from '../../utils/people';
 import { getRelativeRoot } from '../../utils/router';
 import { useDispatch, useSelector } from '../app/AppProvider';
@@ -69,6 +69,7 @@ const {
   STAFF,
 } = AppTypes;
 const {
+  DUE_DATE,
   GIVEN_NAME,
   MIDDLE_NAME,
   NOTES,
@@ -142,6 +143,11 @@ const RepairHarmAgreement = () => {
     const crcCaseEKIDPath = [page1Section2, getEntityAddressKey(0, CRC_CASE, OPENLATTICE_ID_FQN)];
     const crcCaseEKID = getIn(formDataForSubmit, crcCaseEKIDPath);
     formDataForSubmit = removeIn(formDataForSubmit, crcCaseEKIDPath);
+
+    formDataForSubmit = updateFormWithDateAsDateTime(formDataForSubmit, [
+      page1Section2,
+      getEntityAddressKey(0, FORM, DUE_DATE)
+    ]);
 
     const entityData = processEntityData(formDataForSubmit, entitySetIds, propertyTypeIds);
     const associations = [

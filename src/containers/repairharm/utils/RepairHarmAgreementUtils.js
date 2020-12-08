@@ -60,11 +60,12 @@ const populateCompletedForm = (selectedForm :Map, formNeighborMap :Map, person :
     ? DateTime.fromISO(datetimeAdministered).toISODate()
     : EMPTY_VALUE;
 
-  const staffList :List = formNeighborMap.get(STAFF, List());
+  const formEKID :?UUID = getEntityKeyId(selectedForm);
+  const staffList :List = formNeighborMap.getIn([formEKID, STAFF], List());
   const staffMember :Map = staffList.get(0, Map());
   const staffMemberName :string = getPersonName(staffMember);
 
-  const crcCaseList :List = formNeighborMap.get(CRC_CASE, List());
+  const crcCaseList :List = formNeighborMap.getIn([formEKID, CRC_CASE], List());
   const crcCase :Map = crcCaseList.get(0, Map());
   const crcCaseEKID :?UUID = getEntityKeyId(crcCase);
   const crcCaseNumber = getPropertyValue(crcCase, [NOTES, 0]);

@@ -21,7 +21,7 @@ export default function reducer(state :Map, action :SequenceAction) {
     SUCCESS: () => {
       const { caseEKID, newStatus, selectedStaffEKID } = action.value;
       let personCaseNeighborMap = state.get(PERSON_CASE_NEIGHBOR_MAP);
-      const caseStatuses :List = personCaseNeighborMap.getIn([STATUS, caseEKID], List()).push(newStatus);
+      const caseStatuses :List = personCaseNeighborMap.getIn([STATUS, caseEKID], List()).unshift(newStatus);
       personCaseNeighborMap = personCaseNeighborMap.setIn([STATUS, caseEKID], caseStatuses);
 
       const staffMembers :List = state.get(STAFF_MEMBERS);

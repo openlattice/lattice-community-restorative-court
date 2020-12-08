@@ -17,8 +17,17 @@ const clearSearchedPeople = () => ({
   type: CLEAR_SEARCHED_PEOPLE
 });
 
-const GET_FORM_NEIGHBORS :'GET_FORM_NEIGHBORS' = 'GET_FORM_NEIGHBORS';
-const getFormNeighbors :RequestSequence = newRequestSequence(GET_FORM_NEIGHBORS);
+const EDIT_ADDRESS :'EDIT_ADDRESS' = 'EDIT_ADDRESS';
+const editAddress :RequestSequence = newRequestSequence(EDIT_ADDRESS);
+
+const EDIT_CONTACT :'EDIT_CONTACT' = 'EDIT_CONTACT';
+const editContact :RequestSequence = newRequestSequence(EDIT_CONTACT);
+
+const EDIT_PERSON :'EDIT_PERSON' = 'EDIT_PERSON';
+const editPerson :RequestSequence = newRequestSequence(EDIT_PERSON);
+
+const EDIT_PERSON_DETAILS :'EDIT_PERSON_DETAILS' = 'EDIT_PERSON_DETAILS';
+const editPersonDetails :RequestSequence = newRequestSequence(EDIT_PERSON_DETAILS);
 
 const GET_PERSON :'GET_PERSON' = 'GET_PERSON';
 const getPerson :RequestSequence = newRequestSequence(GET_PERSON);
@@ -44,12 +53,21 @@ const selectCase = (value :any) => ({
   value
 });
 
+const SUBMIT_ADDRESS :'SUBMIT_ADDRESS' = 'SUBMIT_ADDRESS';
+const submitAddress :RequestSequence = newRequestSequence(SUBMIT_ADDRESS);
+
+const SUBMIT_CONTACT :'SUBMIT_CONTACT' = 'SUBMIT_CONTACT';
+const submitContact :RequestSequence = newRequestSequence(SUBMIT_CONTACT);
+
 export {
   ADD_CASE_STATUS,
   ADD_CONTACT_ACTIVITY,
   ADD_PERSON_TO_CASE,
   CLEAR_SEARCHED_PEOPLE,
-  GET_FORM_NEIGHBORS,
+  EDIT_ADDRESS,
+  EDIT_CONTACT,
+  EDIT_PERSON,
+  EDIT_PERSON_DETAILS,
   GET_PERSON,
   GET_PERSON_CASE_NEIGHBORS,
   GET_PERSON_NEIGHBORS,
@@ -57,11 +75,16 @@ export {
   LOAD_PROFILE,
   SEARCH_PEOPLE,
   SELECT_CASE,
+  SUBMIT_ADDRESS,
+  SUBMIT_CONTACT,
   addCaseStatus,
   addContactActivity,
   addPersonToCase,
   clearSearchedPeople,
-  getFormNeighbors,
+  editAddress,
+  editContact,
+  editPerson,
+  editPersonDetails,
   getPerson,
   getPersonCaseNeighbors,
   getPersonNeighbors,
@@ -69,4 +92,6 @@ export {
   loadProfile,
   searchPeople,
   selectCase,
+  submitAddress,
+  submitContact,
 };

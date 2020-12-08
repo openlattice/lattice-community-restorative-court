@@ -18,6 +18,7 @@ const {
   FORM,
   OFFENSE,
   OFFICERS,
+  ORGANIZATIONS,
   PEOPLE,
   REFERRAL_REQUEST,
   STAFF,
@@ -33,6 +34,7 @@ const {
   GENERAL_DATETIME,
   GIVEN_NAME,
   MIDDLE_NAME,
+  ORGANIZATION_NAME,
   RACE,
   ROLE,
   SOURCE,
@@ -48,14 +50,15 @@ const populateFormData = (
   referralRequestNeighborMap :Map
 ) :Object => {
 
+  const formEKID :?UUID = getEntityKeyId(form);
   const datetimeAdministered = getPropertyValue(form, [DATETIME_ADMINISTERED, 0], EMPTY_VALUE);
   const dateFormCompleted = DateTime.fromISO(datetimeAdministered).toISODate();
 
-  const crcCaseList :List = formNeighborMap.get(CRC_CASE, List());
+  const crcCaseList :List = formNeighborMap.getIn([formEKID, CRC_CASE], List());
   const crcCase :Map = crcCaseList.get(0, Map());
   const crcCaseEKID :?UUID = getEntityKeyId(crcCase);
 
-  const referralRequestList :List = formNeighborMap.get(REFERRAL_REQUEST, List());
+  const referralRequestList :List = formNeighborMap.getIn([formEKID, REFERRAL_REQUEST], List());
   const referralRequest :Map = referralRequestList.get(0, Map());
   const referralRequestEKID :?UUID = getEntityKeyId(referralRequest);
   const referringSource = getPropertyValue(referralRequest, [SOURCE, 0], EMPTY_VALUE);
@@ -79,7 +82,8 @@ const populateFormData = (
   const offenseDescription = getPropertyValue(offense, [DESCRIPTION, 0], EMPTY_VALUE);
 
   const victims :List = personCaseNeighborMap.getIn([ROLE, crcCaseEKID, VICTIM], List());
-  const victimFormData = victims.toJS().map((victim :Object) => {
+  const victimPeople :List = victims.filter((victim :Map) => !victim.has(ORGANIZATION_NAME));
+  const victimPeopleFormData = victimPeople.toJS().map((victim :Object) => {
     const lastName = getPropertyValue(victim, [SURNAME, 0], EMPTY_VALUE);
     const firstName = getPropertyValue(victim, [GIVEN_NAME, 0], EMPTY_VALUE);
     const middleName = getPropertyValue(victim, [MIDDLE_NAME, 0], EMPTY_VALUE);
@@ -96,7 +100,15 @@ const populateFormData = (
     };
   });
 
-  const staffList :List = formNeighborMap.get(STAFF, List());
+  const victimOrgs :List = victims.filter((victim :Map) => victim.has(ORGANIZATION_NAME));
+  const victimOrgsFormData = victimOrgs.toJS().map((victim :Object) => {
+    const orgName = getPropertyValue(victim, [ORGANIZATION_NAME, 0], EMPTY_VALUE);
+    return {
+      [getEntityAddressKey(-1, ORGANIZATIONS, ORGANIZATION_NAME)]: orgName,
+    };
+  });
+
+  const staffList :List = formNeighborMap.getIn([formEKID, STAFF], List());
   const staffMember :Map = staffList.get(0, Map());
   const staffMemberName :string = getPersonName(staffMember);
 
@@ -111,11 +123,12 @@ const populateFormData = (
       [getEntityAddressKey(0, DA_CASE, GENERAL_DATETIME)]: dateOfIncident,
       [getEntityAddressKey(0, OFFENSE, DESCRIPTION)]: offenseDescription,
     },
-    [getPageSectionKey(1, 3)]: victimFormData,
-    [getPageSectionKey(1, 4)]: {
+    [getPageSectionKey(1, 3)]: victimPeopleFormData,
+    [getPageSectionKey(1, 5)]: victimOrgsFormData,
+    [getPageSectionKey(1, 6)]: {
       [getEntityAddressKey(0, STAFF, OPENLATTICE_ID_FQN)]: staffMemberName,
     },
-    [getPageSectionKey(1, 5)]: {
+    [getPageSectionKey(1, 7)]: {
       [getEntityAddressKey(0, FORM, DATETIME_ADMINISTERED)]: dateFormCompleted,
     }
   };

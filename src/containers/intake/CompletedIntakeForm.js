@@ -50,15 +50,18 @@ const CompletedIntakeForm = () => {
   const match = useSelector((store) => store.getIn(APP_PATHS.MATCH));
   const relativeRoot = getRelativeRoot(root, match);
 
+  const personCaseNeighborMap :Map = useSelector((store) => store.getIn([PROFILE, PERSON_CASE_NEIGHBOR_MAP]));
+
   const selectedForm :Map = useSelector((store) => store.getIn([INTAKE, SELECTED_INTAKE]));
   const formEKID :?UUID = getEntityKeyId(selectedForm);
-  const formNeighborMap :Map = useSelector((store) => store.getIn([PROFILE, FORM_NEIGHBOR_MAP, formEKID], Map()));
-  const crcCaseList :List = formNeighborMap.get(CRC_CASE, List());
+
+  const formNeighborMap = personCaseNeighborMap.get(FORM_NEIGHBOR_MAP, Map());
+  const crcCaseList :List = formNeighborMap.getIn([formEKID, CRC_CASE], List());
   const crcCase :Map = crcCaseList.get(0, Map());
   const crcCaseEKID :?UUID = getEntityKeyId(crcCase);
 
-  const personCaseNeighborMap :Map = useSelector((store) => store.getIn([PROFILE, PERSON_CASE_NEIGHBOR_MAP]));
-  const referralRequest = personCaseNeighborMap.getIn([REFERRAL_REQUEST, crcCaseEKID, 0], Map());
+  const referralRequestList :List = formNeighborMap.getIn([formEKID, REFERRAL_REQUEST], List());
+  const referralRequest :Map = referralRequestList.get(0, Map());
 
   const referralRequestNeighborMap :Map = useSelector((store) => store
     .getIn([REFERRAL, REFERRAL_REQUEST_NEIGHBOR_MAP]));
@@ -71,10 +74,10 @@ const CompletedIntakeForm = () => {
     referralRequestNeighborMap,
   );
 
-  const staffList :List = formNeighborMap.get(STAFF, List());
+  const staffList :List = formNeighborMap.getIn([formEKID, STAFF], List());
   const staffMember :Map = staffList.get(0, Map());
   const staffMemberName :string = getPersonName(staffMember);
-  formData[getPageSectionKey(1, 4)] = {
+  formData[getPageSectionKey(1, 5)] = {
     [getEntityAddressKey(0, STAFF, OPENLATTICE_ID_FQN)]: staffMemberName,
   };
 
@@ -82,7 +85,7 @@ const CompletedIntakeForm = () => {
   const dateAdministered = isDefined(datetimeAdministered)
     ? DateTime.fromISO(datetimeAdministered).toISODate()
     : EMPTY_VALUE;
-  formData[getPageSectionKey(1, 5)] = {
+  formData[getPageSectionKey(1, 6)] = {
     [getEntityAddressKey(0, FORM, DATETIME_ADMINISTERED)]: dateAdministered,
   };
 

@@ -13,6 +13,7 @@ import {
   Typography,
 } from 'lattice-ui-kit';
 import { DataUtils, LangUtils } from 'lattice-utils';
+import { Link } from 'react-router-dom';
 import type { UUID } from 'lattice';
 
 import AddStatusModal from './AddStatusModal';
@@ -29,19 +30,20 @@ import { APP_PATHS, ProfileReduxConstants } from '../../../../core/redux/constan
 import { ADD_PEOPLE_TO_CASE, CASE_ID } from '../../../../core/router/Routes';
 import { goToRoute } from '../../../../core/router/RoutingActions';
 import { getPersonName } from '../../../../utils/people';
+import { getRelativeRoot } from '../../../../utils/router';
 import { useDispatch, useSelector } from '../../../app/AppProvider';
 import { selectCase } from '../actions';
 import { CaseStatusConstants, RoleConstants } from '../constants';
 
 const {
-  FORM_NEIGHBOR_MAP,
+  PERSON,
   PERSON_CASE_NEIGHBOR_MAP,
   PROFILE,
   STAFF_MEMBER_BY_STATUS_EKID,
 } = ProfileReduxConstants;
 const { NEUTRAL } = Colors;
 const { FORM, REFERRAL_REQUEST, STATUS } = AppTypes;
-const { DATETIME_ADMINISTERED, EFFECTIVE_DATE } = PropertyTypes;
+const { DATETIME_ADMINISTERED, EFFECTIVE_DATE, ORGANIZATION_NAME } = PropertyTypes;
 const { PEACEMAKER, RESPONDENT, VICTIM } = RoleConstants;
 const { CLOSED, RESOLUTION } = CaseStatusConstants;
 const { getEntityKeyId, getPropertyValue } = DataUtils;
@@ -56,16 +58,18 @@ const ModalSection = styled.div`
   }
 `;
 
-const ParticipantTile = styled.div`
+const ParticipantTile = styled(Link)`
   align-items: start;
   border: 1px solid ${NEUTRAL.N200};
   border-radius: 3px;
+  color: ${NEUTRAL.N700};
   display: grid;
   grid-template-rows: 1fr 1fr 1fr;
   grid-gap: 5px 0;
   justify-items: start;
   max-width: 280px;
   padding: 24px 32px;
+  text-decoration: none;
 `;
 
 const ParticipantsTileGrid = styled.div`
@@ -100,11 +104,12 @@ const CaseDetailsModal = ({
 
   const staffMemberByStatusEKID :Map = useSelector((store) => store.getIn([PROFILE, STAFF_MEMBER_BY_STATUS_EKID]));
   const referralRequest :?Map = useSelector((store) => store
-    .getIn([PROFILE, PERSON_CASE_NEIGHBOR_MAP, REFERRAL_REQUEST], List())).get(0);
+    .getIn([PROFILE, PERSON_CASE_NEIGHBOR_MAP, REFERRAL_REQUEST, caseEKID], List())).get(0);
   const formMap :Map = useSelector((store) => store.getIn([PROFILE, PERSON_CASE_NEIGHBOR_MAP, FORM], Map()));
   const relevantForms :List = formMap.get(caseEKID, List())
     .sortBy((form :Map) => form.getIn([DATETIME_ADMINISTERED, 0])).reverse();
-  const formNeighborMap :Map = useSelector((store) => store.getIn([PROFILE, FORM_NEIGHBOR_MAP], Map()));
+
+  const personCaseNeighborMap = useSelector((store) => store.getIn([PROFILE, PERSON_CASE_NEIGHBOR_MAP]));
 
   const respondentList :List = caseRoleMap.get(RESPONDENT, List());
   const victimList :List = caseRoleMap.get(VICTIM, List());
@@ -118,7 +123,10 @@ const CaseDetailsModal = ({
   const modalHeader = <CaseDetailsModalHeader mode={mode} onClose={onClose} />;
 
   const dispatch = useDispatch();
+  const person :Map = useSelector((store) => store.getIn([PROFILE, PERSON]));
   const root = useSelector((store) => store.getIn(APP_PATHS.ROOT));
+  const match = useSelector((store) => store.getIn(APP_PATHS.MATCH));
+  const relativeRoot = getRelativeRoot(root, match);
 
   const goToAddPeopleForm = () => {
     if (caseEKID) {
@@ -127,15 +135,32 @@ const CaseDetailsModal = ({
     }
   };
 
-  const renderParticipantTile = (person :Map, role :string) => (
-    <ParticipantTile key={getEntityKeyId(person)}>
-      <Label subtle>Name</Label>
-      <Typography>{getPersonName(person)}</Typography>
-      <CRCTag background={role} borderRadius="31px" color={role} padding="10px 16px">
-        <Typography color="inherit" variant="body2">{role}</Typography>
-      </CRCTag>
-    </ParticipantTile>
-  );
+  const getNewProfileUrl = (personEKID :?UUID, isPerson :boolean) => {
+    if (personEKID && isPerson) {
+      const currentlySelectedPersonEKID :?UUID = getEntityKeyId(person);
+      if (currentlySelectedPersonEKID) return `${relativeRoot}`.replace(currentlySelectedPersonEKID, personEKID);
+    }
+    return relativeRoot;
+  };
+
+  const renderTile = (participantOrOrg :Map, role :string) => {
+    const participantOrOrgEKID :?UUID = getEntityKeyId(participantOrOrg);
+    const isOrganization = participantOrOrg.has(ORGANIZATION_NAME);
+    const name = isOrganization
+      ? getPropertyValue(participantOrOrg, [ORGANIZATION_NAME, 0])
+      : getPersonName(participantOrOrg);
+    return (
+      <ParticipantTile
+          key={getEntityKeyId(participantOrOrg)}
+          to={getNewProfileUrl(participantOrOrgEKID, !isOrganization)}>
+        <Label subtle>Name</Label>
+        <Typography>{name}</Typography>
+        <CRCTag background={role} borderRadius="31px" color={role} padding="10px 16px">
+          <Typography color="inherit" variant="body2">{role}</Typography>
+        </CRCTag>
+      </ParticipantTile>
+    );
+  };
 
   return (
     <Modal
@@ -173,14 +198,17 @@ const CaseDetailsModal = ({
             </IconButton>
           </header>
           <ParticipantsTileGrid>
-            { respondentList.map((respondent :Map) => renderParticipantTile(respondent, RESPONDENT)) }
-            { victimList.map((victim :Map) => renderParticipantTile(victim, VICTIM)) }
-            { peacemakerList.map((peacemaker :Map) => renderParticipantTile(peacemaker, PEACEMAKER)) }
+            { respondentList.map((respondent :Map) => renderTile(respondent, RESPONDENT)) }
+            { victimList.map((victim :Map) => renderTile(victim, VICTIM)) }
+            { peacemakerList.map((peacemaker :Map) => renderTile(peacemaker, PEACEMAKER)) }
           </ParticipantsTileGrid>
         </ModalSection>
         <ModalSection>
           <header><Typography color={NEUTRAL.N700} variant="h3">Documents</Typography></header>
-          <DocumentList caseIdentifier={caseIdentifier} forms={relevantForms} formNeighborMap={formNeighborMap} />
+          <DocumentList
+              caseIdentifier={caseIdentifier}
+              forms={relevantForms}
+              personCaseNeighborMap={personCaseNeighborMap} />
         </ModalSection>
       </ModalInnerWrapper>
       <AddStatusModal

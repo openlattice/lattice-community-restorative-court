@@ -16,6 +16,7 @@ import CompletedIntakeForm from '../intake/CompletedIntakeForm';
 import CompletedReferralForm from '../referral/CompletedReferralForm';
 import CompletedRepairHarmAgreement from '../repairharm/CompletedRepairHarmAgreement';
 import CompletedRestitutionReferral from '../restitutionreferral/CompletedRestitutionReferral';
+import EditProfileContainer from '../profile/src/edit/EditProfileContainer';
 import IntakeForm from '../intake/IntakeForm';
 import PeacemakerInformationForm from '../peacemaker/PeacemakerInformationForm';
 import ProfileContainer from '../profile/src/ProfileContainer';
@@ -29,6 +30,7 @@ import {
   COMPLETED_REFERRAL_ROUTE_END,
   COMPLETED_REPAIR_HARM_AGREEMENT_ROUTE_END,
   COMPLETED_RESTITUTION_REFERRAL_ROUTE_END,
+  EDIT_PROFILE_CONTAINER_ROUTE_END,
   INTAKE_ROUTE_END,
   PEACEMAKER_INFORMATION_ROUTE_END,
   REFERRAL_ROUTE_END,
@@ -95,6 +97,9 @@ const AppSwitch = ({
       <Route
           path={`${root}/${PEACEMAKER_INFORMATION_ROUTE_END}`}
           render={() => <PeacemakerInformationForm personId={personId} />} />
+      <Route
+          path={`${root}${EDIT_PROFILE_CONTAINER_ROUTE_END}`}
+          render={() => <EditProfileContainer personId={personId} />} />
       <Route render={() => <ProfileContainer personId={personId} />} />
     </Switch>
   );

@@ -93,11 +93,12 @@ const populateCompletedForm = (
     ? DateTime.fromISO(datetimeAdministered).toISODate()
     : EMPTY_VALUE;
 
-  const staffList :List = formNeighborMap.get(STAFF, List());
+  const formEKID :?UUID = getEntityKeyId(selectedForm);
+  const staffList :List = formNeighborMap.getIn([formEKID, STAFF], List());
   const staffMember :Map = staffList.get(0, Map());
   const staffMemberName :string = getPersonName(staffMember);
 
-  const crcCaseList :List = formNeighborMap.get(CRC_CASE, List());
+  const crcCaseList :List = formNeighborMap.getIn([formEKID, CRC_CASE], List());
   const crcCase :Map = crcCaseList.get(0, Map());
   const crcCaseEKID :?UUID = getEntityKeyId(crcCase);
   const crcCaseNumber = getPropertyValue(crcCase, [NOTES, 0]);
@@ -105,7 +106,7 @@ const populateCompletedForm = (
   const respondentName = getPersonName(respondent);
   const caseIdentifier = `${crcCaseNumber} - ${respondentName}`;
 
-  const peopleAssociatedWithForm = formNeighborMap.get(PEOPLE, List());
+  const peopleAssociatedWithForm = formNeighborMap.getIn([formEKID, PEOPLE], List());
   const victim = peopleAssociatedWithForm.find((formPerson :Map) => getEntityKeyId(formPerson) !== personEKID);
   const victimName = getPersonName(victim);
 
@@ -115,7 +116,7 @@ const populateCompletedForm = (
   const email = contactInfoList.find((contact :Map) => contact.has(EMAIL));
   const emailAddress = getPropertyValue(email, [EMAIL, 0]);
 
-  const referralRequestList :List = personCaseNeighborMap.getIn([REFERRAL_REQUEST, 0, crcCaseEKID], List());
+  const referralRequestList :List = formNeighborMap.getIn([formEKID, REFERRAL_REQUEST], List());
   const referralRequest :Map = referralRequestList.get(0, Map());
   const referralRequestEKID :?UUID = getEntityKeyId(referralRequest);
   const offenseList :List = referralRequestNeighborMap.getIn([OFFENSE, referralRequestEKID], List());

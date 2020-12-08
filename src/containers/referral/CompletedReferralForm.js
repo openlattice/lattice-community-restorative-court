@@ -5,8 +5,6 @@ import React from 'react';
 import { Map } from 'immutable';
 import { Form } from 'lattice-fabricate';
 import { CardSegment, Typography } from 'lattice-ui-kit';
-import { DataUtils } from 'lattice-utils';
-import type { UUID } from 'lattice';
 
 import { schema, uiSchema } from './schemas/CompletedReferralSchemas';
 import { populateFormData } from './utils';
@@ -20,7 +18,6 @@ import { useSelector } from '../app/AppProvider';
 
 const { FORM_NEIGHBOR_MAP, PERSON_CASE_NEIGHBOR_MAP, PROFILE } = ProfileReduxConstants;
 const { REFERRAL, REFERRAL_REQUEST_NEIGHBOR_MAP, SELECTED_REFERRAL_FORM } = ReferralReduxConstants;
-const { getEntityKeyId } = DataUtils;
 
 const CompletedReferralForm = () => {
 
@@ -31,9 +28,8 @@ const CompletedReferralForm = () => {
   const relativeRoot = getRelativeRoot(root, match);
 
   const selectedForm :Map = useSelector((store) => store.getIn([REFERRAL, SELECTED_REFERRAL_FORM]));
-  const formEKID :?UUID = getEntityKeyId(selectedForm);
-  const formNeighborMap :Map = useSelector((store) => store.getIn([PROFILE, FORM_NEIGHBOR_MAP, formEKID], Map()));
   const personCaseNeighborMap :Map = useSelector((store) => store.getIn([PROFILE, PERSON_CASE_NEIGHBOR_MAP]));
+  const formNeighborMap = personCaseNeighborMap.get(FORM_NEIGHBOR_MAP, Map());
   const referralRequestNeighborMap :Map = useSelector((store) => store
     .getIn([REFERRAL, REFERRAL_REQUEST_NEIGHBOR_MAP]));
 

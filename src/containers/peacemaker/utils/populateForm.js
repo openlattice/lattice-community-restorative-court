@@ -28,7 +28,9 @@ export default function populateForm(personInformationForm :Map, personNeighborM
   const language :List = getPropertyValue(communication, LANGUAGE);
   const languageAsJSArray = List.isList(language) ? language.toJS() : language;
 
-  const personDetails :Map = personNeighborMap.getIn([PERSON_DETAILS, 0], Map());
+  const personDetailsList :List = personNeighborMap.get(PERSON_DETAILS, List());
+  const personDetails :Map = personDetailsList
+    .find((details :Map) => details.has(INTERESTS_AND_HOBBIES) || details.has(RELIGION));
   const interestsAndHobbies = getPropertyValue(personDetails, [INTERESTS_AND_HOBBIES, 0]);
   const religion = getPropertyValue(personDetails, [RELIGION, 0]);
 

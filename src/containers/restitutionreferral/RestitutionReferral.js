@@ -72,6 +72,7 @@ const {
   SUBJECT_OF,
 } = AppTypes;
 const {
+  DUE_DATE,
   GENERAL_DATETIME,
   GIVEN_NAME,
   MIDDLE_NAME,
@@ -167,6 +168,11 @@ const RestitutionReferral = () => {
       [getPageSectionKey(1, 3), getEntityAddressKey(1, PEOPLE, OPENLATTICE_ID_FQN)]
     );
     formDataForSubmit = remove(formDataForSubmit, getPageSectionKey(1, 3));
+
+    formDataForSubmit = updateFormWithDateAsDateTime(formDataForSubmit, [
+      page1Section2,
+      getEntityAddressKey(0, FORM, DUE_DATE)
+    ]);
 
     const entityData = processEntityData(formDataForSubmit, entitySetIds, propertyTypeIds);
     const associations = [

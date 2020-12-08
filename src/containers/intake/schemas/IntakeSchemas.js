@@ -16,6 +16,7 @@ const {
   FORM,
   OFFENSE,
   OFFICERS,
+  ORGANIZATIONS,
   PEOPLE,
   PERSON_DETAILS,
   REFERRAL_REQUEST,
@@ -36,6 +37,7 @@ const {
   GIVEN_NAME,
   MIDDLE_NAME,
   NAME,
+  ORGANIZATION_NAME,
   PRONOUN,
   RACE,
   SOURCE,
@@ -127,6 +129,22 @@ const dataSchema = {
       }
     },
     [getPageSectionKey(1, 3)]: {
+      type: 'array',
+      title: '',
+      items: {
+        type: 'object',
+        properties: {
+          [getEntityAddressKey(-1, ORGANIZATIONS, ORGANIZATION_NAME)]: {
+            type: 'string',
+            title: 'Organization Name',
+          },
+        },
+        required: [
+          getEntityAddressKey(-1, ORGANIZATIONS, ORGANIZATION_NAME),
+        ]
+      }
+    },
+    [getPageSectionKey(1, 4)]: {
       type: 'object',
       title: 'Respondent Information',
       properties: {
@@ -166,7 +184,7 @@ const dataSchema = {
         },
       },
     },
-    [getPageSectionKey(1, 4)]: {
+    [getPageSectionKey(1, 5)]: {
       type: 'object',
       title: '',
       properties: {
@@ -179,7 +197,7 @@ const dataSchema = {
       },
       required: [getEntityAddressKey(0, STAFF, OPENLATTICE_ID_FQN)]
     },
-    [getPageSectionKey(1, 5)]: {
+    [getPageSectionKey(1, 6)]: {
       type: 'object',
       title: '',
       properties: {
@@ -270,6 +288,21 @@ const uiSchema = {
   },
   [getPageSectionKey(1, 3)]: {
     'ui:disabled': true,
+    classNames: 'column-span-12',
+    'ui:options': {
+      addable: false,
+      orderable: false,
+      removable: false,
+    },
+    items: {
+      classNames: 'grid-container',
+      [getEntityAddressKey(-1, ORGANIZATIONS, ORGANIZATION_NAME)]: {
+        classNames: 'column-span-4'
+      },
+    }
+  },
+  [getPageSectionKey(1, 4)]: {
+    'ui:disabled': true,
     classNames: 'column-span-12 grid-container',
     [getEntityAddressKey(0, REFERRAL_REQUEST, DATETIME_COMPLETED)]: {
       classNames: 'column-span-4'
@@ -296,13 +329,13 @@ const uiSchema = {
       classNames: 'column-span-4'
     },
   },
-  [getPageSectionKey(1, 4)]: {
+  [getPageSectionKey(1, 5)]: {
     classNames: 'column-span-12 grid-container',
     [getEntityAddressKey(0, STAFF, OPENLATTICE_ID_FQN)]: {
       classNames: 'column-span-4'
     },
   },
-  [getPageSectionKey(1, 5)]: {
+  [getPageSectionKey(1, 6)]: {
     classNames: 'column-span-12 grid-container',
     [getEntityAddressKey(0, FORM, DATETIME_ADMINISTERED)]: {
       classNames: 'column-span-4'
