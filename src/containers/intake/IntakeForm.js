@@ -124,7 +124,7 @@ const IntakeForm = () => {
     schema,
     staffMembers,
     [GIVEN_NAME, SURNAME],
-    ['properties', getPageSectionKey(1, 4), 'properties', getEntityAddressKey(0, STAFF, OPENLATTICE_ID_FQN)]
+    ['properties', getPageSectionKey(1, 5), 'properties', getEntityAddressKey(0, STAFF, OPENLATTICE_ID_FQN)]
   );
 
   const prepopulatedFormData = useMemo(() => populateFormData(
@@ -150,24 +150,24 @@ const IntakeForm = () => {
   const personEKID :?UUID = getEntityKeyId(person);
 
   const onSubmit = () => {
-    const page1Section4 = getPageSectionKey(1, 4);
     const page1Section5 = getPageSectionKey(1, 5);
+    const page1Section6 = getPageSectionKey(1, 6);
     let formDataForSubmit = {
-      [page1Section4]: get(formData, page1Section4),
       [page1Section5]: get(formData, page1Section5),
+      [page1Section6]: get(formData, page1Section6),
     };
-    const staffEKIDPath = [page1Section4, getEntityAddressKey(0, STAFF, OPENLATTICE_ID_FQN)];
+    const staffEKIDPath = [page1Section5, getEntityAddressKey(0, STAFF, OPENLATTICE_ID_FQN)];
     const staffEKID = getIn(formDataForSubmit, staffEKIDPath);
     formDataForSubmit = removeIn(formDataForSubmit, staffEKIDPath);
 
     formDataForSubmit = updateFormWithDateAsDateTime(formDataForSubmit, [
-      page1Section5,
+      page1Section6,
       getEntityAddressKey(0, FORM, DATETIME_ADMINISTERED)
     ]);
 
     formDataForSubmit = setIn(
       formDataForSubmit,
-      [page1Section5, getEntityAddressKey(0, STATUS, EFFECTIVE_DATE)],
+      [page1Section6, getEntityAddressKey(0, STATUS, EFFECTIVE_DATE)],
       DateTime.local().toISO()
     );
 

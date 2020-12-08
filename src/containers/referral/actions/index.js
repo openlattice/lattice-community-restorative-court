@@ -5,6 +5,9 @@ import type { RequestSequence } from 'redux-reqseq';
 const GET_CRC_PEOPLE :'GET_CRC_PEOPLE' = 'GET_CRC_PEOPLE';
 const getCRCPeople :RequestSequence = newRequestSequence(GET_CRC_PEOPLE);
 
+const GET_ORGANIZATIONS :'GET_ORGANIZATIONS' = 'GET_ORGANIZATIONS';
+const getOrganizations :RequestSequence = newRequestSequence(GET_ORGANIZATIONS);
+
 const GET_REFERRAL_REQUEST_NEIGHBORS :'GET_REFERRAL_REQUEST_NEIGHBORS' = 'GET_REFERRAL_REQUEST_NEIGHBORS';
 const getReferralRequestNeighbors :RequestSequence = newRequestSequence(GET_REFERRAL_REQUEST_NEIGHBORS);
 
@@ -19,10 +22,12 @@ const submitReferralForm :RequestSequence = newRequestSequence(SUBMIT_REFERRAL_F
 
 export {
   GET_CRC_PEOPLE,
+  GET_ORGANIZATIONS,
   GET_REFERRAL_REQUEST_NEIGHBORS,
   SELECT_REFERRAL_FORM,
   SUBMIT_REFERRAL_FORM,
   getCRCPeople,
+  getOrganizations,
   getReferralRequestNeighbors,
   selectReferralForm,
   submitReferralForm,

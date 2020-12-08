@@ -32,6 +32,7 @@ const { ROLE } = PropertyTypes;
 const {
   CRC_CASE,
   FORM,
+  ORGANIZATIONS,
   PEOPLE,
   REFERRAL_REQUEST,
   STAFF,
@@ -60,6 +61,7 @@ function* getPersonCaseNeighborsWorker(action :SequenceAction) :Saga<*> {
 
     const crcCaseESID :UUID = yield select(selectEntitySetId(CRC_CASE));
     const formESID :UUID = yield select(selectEntitySetId(FORM));
+    const organizationsESID :UUID = yield select(selectEntitySetId(ORGANIZATIONS));
     const peopleESID :UUID = yield select(selectEntitySetId(PEOPLE));
     const referralRequestESID :UUID = yield select(selectEntitySetId(REFERRAL_REQUEST));
     const statusESID :UUID = yield select(selectEntitySetId(STATUS));
@@ -67,7 +69,7 @@ function* getPersonCaseNeighborsWorker(action :SequenceAction) :Saga<*> {
     let filter = {
       entityKeyIds: personCaseEKIDs,
       destinationEntitySetIds: [statusESID],
-      sourceEntitySetIds: [formESID, peopleESID, referralRequestESID],
+      sourceEntitySetIds: [formESID, organizationsESID, peopleESID, referralRequestESID],
     };
 
     let response :Object = yield call(
@@ -112,7 +114,7 @@ function* getPersonCaseNeighborsWorker(action :SequenceAction) :Saga<*> {
             formEKIDs.push(entityEKID);
             caseEKIDByFormEKID.set(entityEKID, caseEKID);
           }
-          else if (neighborESID === peopleESID) {
+          else if (neighborESID === peopleESID || neighborESID === organizationsESID) {
             const associationDetails = getAssociationDetails(neighbor);
             const role = getPropertyValue(associationDetails, [ROLE, 0]);
             const roleMap = mutator.get(ROLE, Map())

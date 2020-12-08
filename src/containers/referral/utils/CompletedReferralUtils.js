@@ -18,6 +18,7 @@ const {
   FORM,
   OFFENSE,
   OFFICERS,
+  ORGANIZATIONS,
   PEOPLE,
   REFERRAL_REQUEST,
   STAFF,
@@ -33,6 +34,7 @@ const {
   GENERAL_DATETIME,
   GIVEN_NAME,
   MIDDLE_NAME,
+  ORGANIZATION_NAME,
   RACE,
   ROLE,
   SOURCE,
@@ -80,7 +82,8 @@ const populateFormData = (
   const offenseDescription = getPropertyValue(offense, [DESCRIPTION, 0], EMPTY_VALUE);
 
   const victims :List = personCaseNeighborMap.getIn([ROLE, crcCaseEKID, VICTIM], List());
-  const victimFormData = victims.toJS().map((victim :Object) => {
+  const victimPeople :List = victims.filter((victim :Map) => !victim.has(ORGANIZATION_NAME));
+  const victimPeopleFormData = victimPeople.toJS().map((victim :Object) => {
     const lastName = getPropertyValue(victim, [SURNAME, 0], EMPTY_VALUE);
     const firstName = getPropertyValue(victim, [GIVEN_NAME, 0], EMPTY_VALUE);
     const middleName = getPropertyValue(victim, [MIDDLE_NAME, 0], EMPTY_VALUE);
@@ -94,6 +97,14 @@ const populateFormData = (
       [getEntityAddressKey(-1, PEOPLE, DOB)]: dob,
       [getEntityAddressKey(-1, PEOPLE, RACE)]: race,
       [getEntityAddressKey(-1, PEOPLE, ETHNICITY)]: ethnicity,
+    };
+  });
+
+  const victimOrgs :List = victims.filter((victim :Map) => victim.has(ORGANIZATION_NAME));
+  const victimOrgsFormData = victimOrgs.toJS().map((victim :Object) => {
+    const orgName = getPropertyValue(victim, [ORGANIZATION_NAME, 0], EMPTY_VALUE);
+    return {
+      [getEntityAddressKey(-1, ORGANIZATIONS, ORGANIZATION_NAME)]: orgName,
     };
   });
 
@@ -112,11 +123,12 @@ const populateFormData = (
       [getEntityAddressKey(0, DA_CASE, GENERAL_DATETIME)]: dateOfIncident,
       [getEntityAddressKey(0, OFFENSE, DESCRIPTION)]: offenseDescription,
     },
-    [getPageSectionKey(1, 3)]: victimFormData,
-    [getPageSectionKey(1, 4)]: {
+    [getPageSectionKey(1, 3)]: victimPeopleFormData,
+    [getPageSectionKey(1, 5)]: victimOrgsFormData,
+    [getPageSectionKey(1, 6)]: {
       [getEntityAddressKey(0, STAFF, OPENLATTICE_ID_FQN)]: staffMemberName,
     },
-    [getPageSectionKey(1, 5)]: {
+    [getPageSectionKey(1, 7)]: {
       [getEntityAddressKey(0, FORM, DATETIME_ADMINISTERED)]: dateFormCompleted,
     }
   };
