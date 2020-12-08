@@ -34,11 +34,11 @@ ui[getPageSectionKey(1, 3)]['ui:options'] = {
   removable: false,
 };
 
-data.properties[getPageSectionKey(1, 5)]
+data.properties[getPageSectionKey(1, 7)]
   .properties[getEntityAddressKey(0, FORM, DATETIME_ADMINISTERED)]
   .format = 'date';
 
-ui[getPageSectionKey(1, 5)][getEntityAddressKey(0, FORM, DATETIME_ADMINISTERED)] = {
+ui[getPageSectionKey(1, 7)][getEntityAddressKey(0, FORM, DATETIME_ADMINISTERED)] = {
   classNames: 'column-span-4'
 };
 

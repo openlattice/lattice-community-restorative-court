@@ -17,6 +17,7 @@ const {
   FORM,
   OFFENSE,
   OFFICERS,
+  ELECTRONIC_SIGNATURE, // change to ORGANIZATIONS
   PEOPLE,
   PERSON_DETAILS,
   REFERRAL_REQUEST,
@@ -38,6 +39,7 @@ const {
   GIVEN_NAME,
   MIDDLE_NAME,
   NAME,
+  // add ORGANIZATION_NAME
   PRONOUN,
   RACE,
   SOURCE,
@@ -166,6 +168,39 @@ const dataSchema = {
       type: 'object',
       title: '',
       properties: {
+        [getEntityAddressKey(0, ELECTRONIC_SIGNATURE, OPENLATTICE_ID_FQN)]: {
+          type: 'array',
+          title: 'Organizations Already in Database',
+          items: {
+            enum: [],
+            enumNames: [],
+            type: 'string',
+          },
+          uniqueItems: true,
+        },
+      }
+    },
+
+    [getPageSectionKey(1, 5)]: {
+      type: 'array',
+      title: '',
+      items: {
+        type: 'object',
+        properties: {
+          [getEntityAddressKey(-1, ELECTRONIC_SIGNATURE, NAME)]: {
+            type: 'string',
+            title: 'Organization Name',
+          },
+        },
+        required: [
+          getEntityAddressKey(-1, ELECTRONIC_SIGNATURE, NAME),
+        ]
+      }
+    },
+    [getPageSectionKey(1, 6)]: {
+      type: 'object',
+      title: '',
+      properties: {
         [getEntityAddressKey(0, STAFF, OPENLATTICE_ID_FQN)]: {
           type: 'string',
           title: 'Staff Member',
@@ -175,7 +210,7 @@ const dataSchema = {
       },
       required: [getEntityAddressKey(0, STAFF, OPENLATTICE_ID_FQN)]
     },
-    [getPageSectionKey(1, 5)]: {
+    [getPageSectionKey(1, 7)]: {
       type: 'object',
       title: '',
       properties: {
@@ -280,11 +315,32 @@ const uiSchema = {
   },
   [getPageSectionKey(1, 4)]: {
     classNames: 'column-span-12 grid-container',
+    [getEntityAddressKey(0, ELECTRONIC_SIGNATURE, OPENLATTICE_ID_FQN)]: {
+      classNames: 'column-span-4',
+      'ui:options': { multiple: true }
+    }
+  },
+  [getPageSectionKey(1, 5)]: {
+    classNames: 'column-span-12',
+    'ui:options': {
+      addButtonText: '+ Add New Victim Organization',
+      orderable: false,
+      addActionKey: 'addVictimOrg'
+    },
+    items: {
+      classNames: 'grid-container',
+      [getEntityAddressKey(-1, ELECTRONIC_SIGNATURE, NAME)]: {
+        classNames: 'column-span-4'
+      },
+    }
+  },
+  [getPageSectionKey(1, 6)]: {
+    classNames: 'column-span-12 grid-container',
     [getEntityAddressKey(0, STAFF, OPENLATTICE_ID_FQN)]: {
       classNames: 'column-span-4'
     },
   },
-  [getPageSectionKey(1, 5)]: {
+  [getPageSectionKey(1, 7)]: {
     classNames: 'column-span-12 grid-container',
     [getEntityAddressKey(0, FORM, DATETIME_ADMINISTERED)]: {
       'ui:widget': 'hidden',
