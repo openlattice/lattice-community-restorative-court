@@ -17,7 +17,7 @@ const {
   FORM,
   OFFENSE,
   OFFICERS,
-  ELECTRONIC_SIGNATURE, // change to ORGANIZATIONS
+  ORGANIZATIONS,
   PEOPLE,
   PERSON_DETAILS,
   REFERRAL_REQUEST,
@@ -39,7 +39,7 @@ const {
   GIVEN_NAME,
   MIDDLE_NAME,
   NAME,
-  // add ORGANIZATION_NAME
+  ORGANIZATION_NAME,
   PRONOUN,
   RACE,
   SOURCE,
@@ -168,7 +168,7 @@ const dataSchema = {
       type: 'object',
       title: '',
       properties: {
-        [getEntityAddressKey(0, ELECTRONIC_SIGNATURE, OPENLATTICE_ID_FQN)]: {
+        [getEntityAddressKey(0, ORGANIZATIONS, OPENLATTICE_ID_FQN)]: {
           type: 'array',
           title: 'Organizations Already in Database',
           items: {
@@ -186,13 +186,13 @@ const dataSchema = {
       items: {
         type: 'object',
         properties: {
-          [getEntityAddressKey(-1, ELECTRONIC_SIGNATURE, NAME)]: {
+          [getEntityAddressKey(-1, ORGANIZATIONS, ORGANIZATION_NAME)]: {
             type: 'string',
             title: 'Organization Name',
           },
         },
         required: [
-          getEntityAddressKey(-1, ELECTRONIC_SIGNATURE, NAME),
+          getEntityAddressKey(-1, ORGANIZATIONS, ORGANIZATION_NAME),
         ]
       }
     },
@@ -314,7 +314,7 @@ const uiSchema = {
   },
   [getPageSectionKey(1, 4)]: {
     classNames: 'column-span-12 grid-container',
-    [getEntityAddressKey(0, ELECTRONIC_SIGNATURE, OPENLATTICE_ID_FQN)]: {
+    [getEntityAddressKey(0, ORGANIZATIONS, OPENLATTICE_ID_FQN)]: {
       classNames: 'column-span-4',
       'ui:options': { multiple: true }
     }
@@ -328,7 +328,7 @@ const uiSchema = {
     },
     items: {
       classNames: 'grid-container',
-      [getEntityAddressKey(-1, ELECTRONIC_SIGNATURE, NAME)]: {
+      [getEntityAddressKey(-1, ORGANIZATIONS, ORGANIZATION_NAME)]: {
         classNames: 'column-span-4'
       },
     }

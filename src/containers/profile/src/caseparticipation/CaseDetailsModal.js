@@ -43,8 +43,7 @@ const {
 } = ProfileReduxConstants;
 const { NEUTRAL } = Colors;
 const { FORM, REFERRAL_REQUEST, STATUS } = AppTypes;
-// change to ORGANIZATION_NAME:
-const { DATETIME_ADMINISTERED, EFFECTIVE_DATE, NAME } = PropertyTypes;
+const { DATETIME_ADMINISTERED, EFFECTIVE_DATE, ORGANIZATION_NAME } = PropertyTypes;
 const { PEACEMAKER, RESPONDENT, VICTIM } = RoleConstants;
 const { CLOSED, RESOLUTION } = CaseStatusConstants;
 const { getEntityKeyId, getPropertyValue } = DataUtils;
@@ -146,10 +145,9 @@ const CaseDetailsModal = ({
 
   const renderTile = (participantOrOrg :Map, role :string) => {
     const participantOrOrgEKID :?UUID = getEntityKeyId(participantOrOrg);
-    // change to ORGANIZATION_NAME:
-    const isOrganization = participantOrOrg.has(NAME);
+    const isOrganization = participantOrOrg.has(ORGANIZATION_NAME);
     const name = isOrganization
-      ? getPropertyValue(participantOrOrg, [NAME, 0])
+      ? getPropertyValue(participantOrOrg, [ORGANIZATION_NAME, 0])
       : getPersonName(participantOrOrg);
     return (
       <ParticipantTile

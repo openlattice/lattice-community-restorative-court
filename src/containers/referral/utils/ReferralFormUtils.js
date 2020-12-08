@@ -22,7 +22,7 @@ const {
   HAS,
   OFFENSE,
   OFFICERS,
-  ELECTRONIC_SIGNATURE, // change to ORGANIZATIONS
+  ORGANIZATIONS,
   PEOPLE,
   PERSON_DETAILS,
   REFERRAL_REQUEST,
@@ -76,8 +76,7 @@ const getVictimInformation = (formData :Object) :Object => {
 
   const existingOrgsSelected = getIn(
     formData,
-    // change to ORGANIZATIONS:
-    [getPageSectionKey(1, 4), getEntityAddressKey(0, ELECTRONIC_SIGNATURE, OPENLATTICE_ID_FQN)]
+    [getPageSectionKey(1, 4), getEntityAddressKey(0, ORGANIZATIONS, OPENLATTICE_ID_FQN)]
   );
   if (isDefined(existingOrgsSelected) && existingOrgsSelected.length) {
     existingVictimOrgEKIDs = existingOrgsSelected;
@@ -114,17 +113,15 @@ const getVictimAssociations = (
   }
 
   existingVictimOrgEKIDs.forEach((ekid :UUID) => {
-    // change to ORGANIZATIONS:
     // $FlowFixMe
-    associations.push([APPEARS_IN, ekid, ELECTRONIC_SIGNATURE, 0, CRC_CASE, { [ROLE]: [VICTIM] }]);
+    associations.push([APPEARS_IN, ekid, ORGANIZATIONS, 0, CRC_CASE, { [ROLE]: [VICTIM] }]);
   });
 
   const newVictimOrgs = get(formData, getPageSectionKey(1, 5));
   if (isDefined(newVictimOrgs)) {
     newVictimOrgs.forEach((person :Object, index :number) => {
-      // change to ORGANIZATIONS:
       // $FlowFixMe
-      associations.push([APPEARS_IN, index, ELECTRONIC_SIGNATURE, 0, CRC_CASE, { [ROLE]: [VICTIM] }]);
+      associations.push([APPEARS_IN, index, ORGANIZATIONS, 0, CRC_CASE, { [ROLE]: [VICTIM] }]);
     });
   }
 

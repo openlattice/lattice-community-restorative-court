@@ -18,7 +18,7 @@ import { GET_ORGANIZATIONS, getOrganizations } from '../actions';
 
 const { getEntitySetData } = DataApiActions;
 const { getEntitySetDataWorker } = DataApiSagas;
-const { ELECTRONIC_SIGNATURE } = AppTypes; // change to ORGANIZATIONS
+const { ORGANIZATIONS } = AppTypes;
 
 const LOG = new Logger('ReferralSagas');
 
@@ -30,7 +30,7 @@ function* getOrganizationsWorker(action :SequenceAction) :Saga<*> {
   try {
     yield put(getOrganizations.request(id));
 
-    const organizationsESID :UUID = yield select(selectEntitySetId(ELECTRONIC_SIGNATURE));
+    const organizationsESID :UUID = yield select(selectEntitySetId(ORGANIZATIONS));
     const response = yield call(
       getEntitySetDataWorker, getEntitySetData({ entitySetId: organizationsESID })
     );

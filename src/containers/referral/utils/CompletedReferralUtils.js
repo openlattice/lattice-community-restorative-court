@@ -15,11 +15,10 @@ const { VICTIM } = RoleConstants;
 const {
   CRC_CASE,
   DA_CASE,
-  // change to ORGANIZATIONS
-  ELECTRONIC_SIGNATURE,
   FORM,
   OFFENSE,
   OFFICERS,
+  ORGANIZATIONS,
   PEOPLE,
   REFERRAL_REQUEST,
   STAFF,
@@ -35,8 +34,7 @@ const {
   GENERAL_DATETIME,
   GIVEN_NAME,
   MIDDLE_NAME,
-  // change to ORGANIZATION_NAME:
-  NAME,
+  ORGANIZATION_NAME,
   RACE,
   ROLE,
   SOURCE,
@@ -84,8 +82,7 @@ const populateFormData = (
   const offenseDescription = getPropertyValue(offense, [DESCRIPTION, 0], EMPTY_VALUE);
 
   const victims :List = personCaseNeighborMap.getIn([ROLE, crcCaseEKID, VICTIM], List());
-  // change to ORGANIZATION_NAME:
-  const victimPeople :List = victims.filter((victim :Map) => !victim.has(NAME));
+  const victimPeople :List = victims.filter((victim :Map) => !victim.has(ORGANIZATION_NAME));
   const victimPeopleFormData = victimPeople.toJS().map((victim :Object) => {
     const lastName = getPropertyValue(victim, [SURNAME, 0], EMPTY_VALUE);
     const firstName = getPropertyValue(victim, [GIVEN_NAME, 0], EMPTY_VALUE);
@@ -103,14 +100,11 @@ const populateFormData = (
     };
   });
 
-  // change to ORGANIZATION_NAME:
-  const victimOrgs :List = victims.filter((victim :Map) => victim.has(NAME));
+  const victimOrgs :List = victims.filter((victim :Map) => victim.has(ORGANIZATION_NAME));
   const victimOrgsFormData = victimOrgs.toJS().map((victim :Object) => {
-    // change to ORGANIZATION_NAME:
-    const orgName = getPropertyValue(victim, [NAME, 0], EMPTY_VALUE);
+    const orgName = getPropertyValue(victim, [ORGANIZATION_NAME, 0], EMPTY_VALUE);
     return {
-      // change to ORGANIZATIONS:
-      [getEntityAddressKey(-1, ELECTRONIC_SIGNATURE, NAME)]: orgName,
+      [getEntityAddressKey(-1, ORGANIZATIONS, ORGANIZATION_NAME)]: orgName,
     };
   });
 

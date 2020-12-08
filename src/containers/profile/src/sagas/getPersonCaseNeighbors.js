@@ -31,8 +31,8 @@ const { FQN } = Models;
 const { ROLE } = PropertyTypes;
 const {
   CRC_CASE,
-  ELECTRONIC_SIGNATURE,
   FORM,
+  ORGANIZATIONS,
   PEOPLE,
   REFERRAL_REQUEST,
   STAFF,
@@ -61,8 +61,7 @@ function* getPersonCaseNeighborsWorker(action :SequenceAction) :Saga<*> {
 
     const crcCaseESID :UUID = yield select(selectEntitySetId(CRC_CASE));
     const formESID :UUID = yield select(selectEntitySetId(FORM));
-    // change to ORGANIZATIONS:
-    const organizationsESID :UUID = yield select(selectEntitySetId(ELECTRONIC_SIGNATURE));
+    const organizationsESID :UUID = yield select(selectEntitySetId(ORGANIZATIONS));
     const peopleESID :UUID = yield select(selectEntitySetId(PEOPLE));
     const referralRequestESID :UUID = yield select(selectEntitySetId(REFERRAL_REQUEST));
     const statusESID :UUID = yield select(selectEntitySetId(STATUS));

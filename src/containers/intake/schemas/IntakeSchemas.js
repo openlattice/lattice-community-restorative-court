@@ -16,8 +16,7 @@ const {
   FORM,
   OFFENSE,
   OFFICERS,
-  // change to ORGANIZATIONS:
-  ELECTRONIC_SIGNATURE,
+  ORGANIZATIONS,
   PEOPLE,
   PERSON_DETAILS,
   REFERRAL_REQUEST,
@@ -38,6 +37,7 @@ const {
   GIVEN_NAME,
   MIDDLE_NAME,
   NAME,
+  ORGANIZATION_NAME,
   PRONOUN,
   RACE,
   SOURCE,
@@ -134,13 +134,13 @@ const dataSchema = {
       items: {
         type: 'object',
         properties: {
-          [getEntityAddressKey(-1, ELECTRONIC_SIGNATURE, NAME)]: {
+          [getEntityAddressKey(-1, ORGANIZATIONS, ORGANIZATION_NAME)]: {
             type: 'string',
             title: 'Organization Name',
           },
         },
         required: [
-          getEntityAddressKey(-1, ELECTRONIC_SIGNATURE, NAME),
+          getEntityAddressKey(-1, ORGANIZATIONS, ORGANIZATION_NAME),
         ]
       }
     },
@@ -296,7 +296,7 @@ const uiSchema = {
     },
     items: {
       classNames: 'grid-container',
-      [getEntityAddressKey(-1, ELECTRONIC_SIGNATURE, NAME)]: {
+      [getEntityAddressKey(-1, ORGANIZATIONS, ORGANIZATION_NAME)]: {
         classNames: 'column-span-4'
       },
     }

@@ -62,9 +62,9 @@ const {
   APPEARS_IN,
   CRC_CASE,
   DA_CASE,
-  ELECTRONIC_SIGNATURE, // change to ORGANIZATIONS
   FORM,
   HAS,
+  ORGANIZATIONS,
   PEOPLE,
   RECORDED_BY,
   REFERRAL_REQUEST,
@@ -81,7 +81,7 @@ const {
   EFFECTIVE_DATE,
   GENERAL_DATETIME,
   GIVEN_NAME,
-  NAME, // change to ORGANIZATION_NAME
+  ORGANIZATION_NAME,
   ROLE,
   SURNAME,
 } = PropertyTypes;
@@ -120,13 +120,12 @@ const ReferralForm = ({ personId } :Props) => {
   hydratedSchema = hydrateSchema(
     hydratedSchema,
     organizations,
-    [NAME], // change to ORGANIZATION_NAME
-    // change to ORGANIZATIONS:
+    [ORGANIZATION_NAME],
     [
       'properties',
       getPageSectionKey(1, 4),
       'properties',
-      getEntityAddressKey(0, ELECTRONIC_SIGNATURE, OPENLATTICE_ID_FQN),
+      getEntityAddressKey(0, ORGANIZATIONS, OPENLATTICE_ID_FQN),
       'items'
     ]
   );
