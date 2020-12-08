@@ -180,7 +180,6 @@ const dataSchema = {
         },
       }
     },
-
     [getPageSectionKey(1, 5)]: {
       type: 'array',
       title: '',
