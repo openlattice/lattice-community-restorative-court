@@ -1,10 +1,10 @@
 // @flow
 import React, { useEffect, useMemo, useState } from 'react';
 
-import { List, Map } from 'immutable';
+import { List, Map, setIn } from 'immutable';
 import { DataProcessingUtils, Form } from 'lattice-fabricate';
 import { DataUtils, LangUtils, ReduxUtils } from 'lattice-utils';
-import type { UUID } from 'lattice';
+import type { FQN, UUID } from 'lattice';
 
 import { AppTypes, PropertyTypes } from '../../../../core/edm/constants';
 import {
@@ -45,17 +45,16 @@ const EditAddressForm = () => {
   const addressList :List = useSelector((store) => store.getIn([PROFILE, PERSON_NEIGHBOR_MAP, LOCATION], List()));
   const address :Map = addressList.get(0, Map());
 
-  const populatedFormData = useMemo(() => ({
-    [getPageSectionKey(1, 1)]: {
-      [getEntityAddressKey(0, LOCATION, LOCATION_ADDRESS)]: getPropertyValue(address, [LOCATION_ADDRESS, 0]),
-      [getEntityAddressKey(0, LOCATION, LOCATION_ADDRESS_LINE_2)]: getPropertyValue(
-        address, [LOCATION_ADDRESS_LINE_2, 0]
-      ),
-      [getEntityAddressKey(0, LOCATION, LOCATION_CITY)]: getPropertyValue(address, [LOCATION_CITY, 0]),
-      [getEntityAddressKey(0, LOCATION, LOCATION_STATE)]: getPropertyValue(address, [LOCATION_STATE, 0]),
-      [getEntityAddressKey(0, LOCATION, LOCATION_ZIP)]: getPropertyValue(address, [LOCATION_ZIP, 0]),
-    }
-  }), [address]);
+  const populatedFormData = useMemo(() => {
+    const fqns = [LOCATION, LOCATION_ADDRESS, LOCATION_ADDRESS_LINE_2, LOCATION_CITY, LOCATION_STATE, LOCATION_ZIP];
+    let result = {};
+    const page1section1 = getPageSectionKey(1, 1);
+    fqns.forEach((fqn :FQN) => {
+      const entityAddressKey = getEntityAddressKey(0, LOCATION, fqn);
+      result = setIn(result, [page1section1, entityAddressKey], getPropertyValue(address, [fqn, 0]));
+    });
+    return result;
+  }, [address]);
 
   const [formData, setFormData] = useState(populatedFormData);
 
