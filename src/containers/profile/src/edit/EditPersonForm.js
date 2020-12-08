@@ -5,7 +5,7 @@ import { List, Map, setIn } from 'immutable';
 import { DataProcessingUtils, Form } from 'lattice-fabricate';
 import { CardSegment, Typography } from 'lattice-ui-kit';
 import { DataUtils } from 'lattice-utils';
-import type { UUID } from 'lattice';
+import type { UUID, FQN } from 'lattice';
 
 import { CrumbItem, CrumbLink, Crumbs } from '../../../../components/crumbs';
 import { AppTypes, PropertyTypes } from '../../../../core/edm/constants';
