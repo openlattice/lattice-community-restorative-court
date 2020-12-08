@@ -13,6 +13,8 @@ const {
   DA_CASE,
   OFFENSE,
   OFFICERS,
+  // change to ORGANIZATIONS
+  ELECTRONIC_SIGNATURE,
   PEOPLE,
   REFERRAL_REQUEST,
 } = AppTypes;
@@ -26,6 +28,8 @@ const {
   GENERAL_DATETIME,
   GIVEN_NAME,
   MIDDLE_NAME,
+  // change to ORGANIZATION_NAME:
+  NAME,
   RACE,
   ROLE,
   SOURCE,
@@ -75,12 +79,25 @@ const populateFormData = (
   const offenseDescription = getPropertyValue(offense, [DESCRIPTION, 0], EMPTY_VALUE);
 
   const victims :List = personCaseNeighborMap.getIn([ROLE, selectedCaseEKID, VICTIM], List());
-  const victimFormData = victims.toJS().map((victim :Object) => getPersonData(victim, -1));
+  // change to ORGANIZATION_NAME:
+  const victimPeople :List = victims.filter((victim :Map) => !victim.has(NAME));
+  const victimPeopleFormData = victimPeople.toJS().map((victim :Object) => getPersonData(victim, -1));
+  // change to ORGANIZATION_NAME:
+  const victimOrgs :List = victims.filter((victim :Map) => victim.has(NAME));
+  const victimOrgsFormData = victimOrgs.toJS().map((victim :Object) => {
+    // change to ORGANIZATION_NAME:
+    const orgName = getPropertyValue(victim, [NAME, 0], EMPTY_VALUE);
+    return {
+      // change to ORGANIZATIONS:
+      [getEntityAddressKey(-1, ELECTRONIC_SIGNATURE, NAME)]: orgName,
+    };
+  });
 
   const formData = {
     [getPageSectionKey(1, 1)]: getPersonData(person, 0),
-    [getPageSectionKey(1, 2)]: victimFormData,
-    [getPageSectionKey(1, 3)]: {
+    [getPageSectionKey(1, 2)]: victimPeopleFormData,
+    [getPageSectionKey(1, 3)]: victimOrgsFormData,
+    [getPageSectionKey(1, 4)]: {
       [getEntityAddressKey(0, REFERRAL_REQUEST, DATETIME_COMPLETED)]: dateOfReferral,
       [getEntityAddressKey(0, OFFICERS, GIVEN_NAME)]: officerFirstName,
       [getEntityAddressKey(0, OFFICERS, SURNAME)]: officerLastName,
