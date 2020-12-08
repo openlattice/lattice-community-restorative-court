@@ -8,6 +8,7 @@ import addPeacemakerInformationReducer from './addPeacemakerInformationReducer';
 import addPersonToCaseReducer from './addPersonToCaseReducer';
 import clearSearchedPeopleReducer from './clearSearchedPeopleReducer';
 import editPeacemakerInformationReducer from './editPeacemakerInformationReducer';
+import editPersonReducer from './editPersonReducer';
 import getPersonCaseNeighborsReducer from './getPersonCaseNeighborsReducer';
 import getPersonNeighborsReducer from './getPersonNeighborsReducer';
 import getPersonReducer from './getPersonReducer';
@@ -30,6 +31,7 @@ import {
   ADD_CONTACT_ACTIVITY,
   ADD_PERSON_TO_CASE,
   CLEAR_SEARCHED_PEOPLE,
+  EDIT_PERSON,
   GET_PERSON,
   GET_PERSON_CASE_NEIGHBORS,
   GET_PERSON_NEIGHBORS,
@@ -40,6 +42,7 @@ import {
   addCaseStatus,
   addContactActivity,
   addPersonToCase,
+  editPerson,
   getPerson,
   getPersonCaseNeighbors,
   getPersonNeighbors,
@@ -66,6 +69,7 @@ const INITIAL_STATE :Map = fromJS({
   [ADD_PEACEMAKER_INFORMATION]: RS_INITIAL_STATE,
   [ADD_PERSON_TO_CASE]: RS_INITIAL_STATE,
   [EDIT_PEACEMAKER_INFORMATION]: RS_INITIAL_STATE,
+  [EDIT_PERSON]: RS_INITIAL_STATE,
   [GET_PERSON]: RS_INITIAL_STATE,
   [GET_PERSON_CASE_NEIGHBORS]: RS_INITIAL_STATE,
   [GET_PERSON_NEIGHBORS]: RS_INITIAL_STATE,
@@ -113,6 +117,9 @@ export default function profileReducer(state :Map = INITIAL_STATE, action :Objec
 
     case editPeacemakerInformation.case(action.type):
       return editPeacemakerInformationReducer(state, action);
+
+    case editPerson.case(action.type):
+      return editPersonReducer(state, action);
 
     case getPerson.case(action.type):
       return getPersonReducer(state, action);

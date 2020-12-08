@@ -3,6 +3,7 @@
 export * from './addCaseStatus';
 export * from './addContactActivity';
 export * from './addPersonToCase';
+export * from './editPerson';
 export * from './getPerson';
 export * from './getPersonCaseNeighbors';
 export * from './getPersonNeighbors';

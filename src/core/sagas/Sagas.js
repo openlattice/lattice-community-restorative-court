@@ -48,6 +48,7 @@ export default function* sagas() :Saga<*> {
     fork(ProfileSagas.addCaseStatusWatcher),
     fork(ProfileSagas.addContactActivityWatcher),
     fork(ProfileSagas.addPersonToCaseWatcher),
+    fork(ProfileSagas.editPersonWatcher),
     fork(ProfileSagas.getPersonCaseNeighborsWatcher),
     fork(ProfileSagas.getPersonNeighborsWatcher),
     fork(ProfileSagas.getPersonWatcher),
