@@ -17,6 +17,9 @@ const clearSearchedPeople = () => ({
   type: CLEAR_SEARCHED_PEOPLE
 });
 
+const EDIT_CONTACT :'EDIT_CONTACT' = 'EDIT_CONTACT';
+const editContact :RequestSequence = newRequestSequence(EDIT_CONTACT);
+
 const EDIT_PERSON :'EDIT_PERSON' = 'EDIT_PERSON';
 const editPerson :RequestSequence = newRequestSequence(EDIT_PERSON);
 
@@ -47,11 +50,15 @@ const selectCase = (value :any) => ({
   value
 });
 
+const SUBMIT_CONTACT :'SUBMIT_CONTACT' = 'SUBMIT_CONTACT';
+const submitContact :RequestSequence = newRequestSequence(SUBMIT_CONTACT);
+
 export {
   ADD_CASE_STATUS,
   ADD_CONTACT_ACTIVITY,
   ADD_PERSON_TO_CASE,
   CLEAR_SEARCHED_PEOPLE,
+  EDIT_CONTACT,
   EDIT_PERSON,
   EDIT_PERSON_DETAILS,
   GET_PERSON,
@@ -61,10 +68,12 @@ export {
   LOAD_PROFILE,
   SEARCH_PEOPLE,
   SELECT_CASE,
+  SUBMIT_CONTACT,
   addCaseStatus,
   addContactActivity,
   addPersonToCase,
   clearSearchedPeople,
+  editContact,
   editPerson,
   editPersonDetails,
   getPerson,
@@ -74,4 +83,5 @@ export {
   loadProfile,
   searchPeople,
   selectCase,
+  submitContact,
 };
