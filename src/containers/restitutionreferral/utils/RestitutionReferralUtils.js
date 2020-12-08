@@ -106,7 +106,7 @@ const populateCompletedForm = (
   const respondentName = getPersonName(respondent);
   const caseIdentifier = `${crcCaseNumber} - ${respondentName}`;
 
-  const peopleAssociatedWithForm = formNeighborMap.get(PEOPLE, List());
+  const peopleAssociatedWithForm = formNeighborMap.getIn([formEKID, PEOPLE], List());
   const victim = peopleAssociatedWithForm.find((formPerson :Map) => getEntityKeyId(formPerson) !== personEKID);
   const victimName = getPersonName(victim);
 
