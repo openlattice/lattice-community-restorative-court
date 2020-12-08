@@ -1,6 +1,7 @@
 // @flow
 import React from 'react';
 
+import EditAddressForm from './EditAddressForm';
 import EditEmailForm from './EditEmailForm';
 import EditPersonDetailsForm from './EditPersonDetailsForm';
 import EditPersonForm from './EditPersonForm';
@@ -12,6 +13,7 @@ const EditProfileContainer = () => (
     <EditPersonDetailsForm />
     <EditPhoneForm />
     <EditEmailForm />
+    <EditAddressForm />
   </>
 );
 
