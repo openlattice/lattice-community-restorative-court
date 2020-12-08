@@ -179,6 +179,7 @@ const IntakeForm = () => {
       [RECORDED_BY, 0, STATUS, staffEKID, STAFF, {}],
       [HAS, personEKID, PEOPLE, 0, STATUS, {}],
       [HAS, selectedCase, CRC_CASE, 0, STATUS, {}],
+      [RELATED_TO, 0, FORM, getEntityKeyId(referralRequest), REFERRAL_REQUEST, {}],
     ];
     const associationEntityData = processAssociationEntityData(associations, entitySetIds, propertyTypeIds);
     dispatch(submitIntake({ associationEntityData, entityData }));
