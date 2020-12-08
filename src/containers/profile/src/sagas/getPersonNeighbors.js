@@ -14,7 +14,6 @@ import type { Saga } from '@redux-saga/core';
 import type { UUID } from 'lattice';
 import type { SequenceAction } from 'redux-reqseq';
 
-import { getFormNeighborsWorker } from './getFormNeighbors';
 import { getPersonCaseNeighborsWorker } from './getPersonCaseNeighbors';
 
 import { AppTypes, PropertyTypes } from '../../../../core/edm/constants';
@@ -29,7 +28,6 @@ import {
 import { ERR_ACTION_VALUE_NOT_DEFINED } from '../../../../utils/error/constants';
 import {
   GET_PERSON_NEIGHBORS,
-  getFormNeighbors,
   getPersonCaseNeighbors,
   getPersonNeighbors,
 } from '../actions';
@@ -121,11 +119,6 @@ function* getPersonNeighborsWorker(action :SequenceAction) :Saga<*> {
       if (isDefined(forms)) {
         personNeighborMap = personNeighborMap
           .set(FORM, forms.sortBy((status :Map) => status.getIn([DATETIME_ADMINISTERED, 0])).reverse());
-
-        const formEKIDs :UUID[] = forms
-          .map((form :Map) => getEntityKeyId(form))
-          .toJS();
-        yield call(getFormNeighborsWorker, getFormNeighbors(formEKIDs));
       }
     }
 

@@ -17,9 +17,6 @@ const clearSearchedPeople = () => ({
   type: CLEAR_SEARCHED_PEOPLE
 });
 
-const GET_FORM_NEIGHBORS :'GET_FORM_NEIGHBORS' = 'GET_FORM_NEIGHBORS';
-const getFormNeighbors :RequestSequence = newRequestSequence(GET_FORM_NEIGHBORS);
-
 const GET_PERSON :'GET_PERSON' = 'GET_PERSON';
 const getPerson :RequestSequence = newRequestSequence(GET_PERSON);
 
@@ -49,7 +46,6 @@ export {
   ADD_CONTACT_ACTIVITY,
   ADD_PERSON_TO_CASE,
   CLEAR_SEARCHED_PEOPLE,
-  GET_FORM_NEIGHBORS,
   GET_PERSON,
   GET_PERSON_CASE_NEIGHBORS,
   GET_PERSON_NEIGHBORS,
@@ -61,7 +57,6 @@ export {
   addContactActivity,
   addPersonToCase,
   clearSearchedPeople,
-  getFormNeighbors,
   getPerson,
   getPersonCaseNeighbors,
   getPersonNeighbors,
