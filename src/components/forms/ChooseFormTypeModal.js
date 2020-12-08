@@ -21,6 +21,7 @@ import {
 } from '../../core/router/Routes';
 import { goToRoute } from '../../core/router/RoutingActions';
 import { getPersonName } from '../../utils/people';
+import { getRelativeRoot } from '../../utils/router';
 
 const { NEUTRAL } = Colors;
 const { getEntityKeyId } = DataUtils;
@@ -51,25 +52,28 @@ const ChooseFormTypeModal = ({ isVisible, onClose } :Props) => {
 
   const dispatch = useDispatch();
   const root = useSelector((store) => store.getIn(APP_PATHS.ROOT));
+  const match = useSelector((store) => store.getIn(APP_PATHS.MATCH));
+  const relativeRoot = getRelativeRoot(root, match);
+
   const goToReferral = () => {
-    if (personEKID) dispatch(goToRoute(`${root}/${REFERRAL_ROUTE_END}`.replace(PERSON_ID, personEKID)));
+    if (personEKID) dispatch(goToRoute(`${relativeRoot}/${REFERRAL_ROUTE_END}`.replace(PERSON_ID, personEKID)));
   };
   const goToIntake = () => {
-    if (personEKID) dispatch(goToRoute(`${root}/${INTAKE_ROUTE_END}`.replace(PERSON_ID, personEKID)));
+    if (personEKID) dispatch(goToRoute(`${relativeRoot}/${INTAKE_ROUTE_END}`.replace(PERSON_ID, personEKID)));
   };
   const goToRepairHarm = () => {
     if (personEKID) {
-      dispatch(goToRoute(`${root}/${REPAIR_HARM_AGREEMENT_ROUTE_END}`.replace(PERSON_ID, personEKID)));
+      dispatch(goToRoute(`${relativeRoot}/${REPAIR_HARM_AGREEMENT_ROUTE_END}`.replace(PERSON_ID, personEKID)));
     }
   };
   const goToRestitutionReferral = () => {
     if (personEKID) {
-      dispatch(goToRoute(`${root}/${RESTITUTION_REFERRAL_ROUTE_END}`.replace(PERSON_ID, personEKID)));
+      dispatch(goToRoute(`${relativeRoot}/${RESTITUTION_REFERRAL_ROUTE_END}`.replace(PERSON_ID, personEKID)));
     }
   };
   const goToPeacemakerInformation = () => {
     if (personEKID) {
-      dispatch(goToRoute(`${root}/${PEACEMAKER_INFORMATION_ROUTE_END}`.replace(PERSON_ID, personEKID)));
+      dispatch(goToRoute(`${relativeRoot}/${PEACEMAKER_INFORMATION_ROUTE_END}`.replace(PERSON_ID, personEKID)));
     }
   };
   return (
