@@ -36,6 +36,7 @@ const PROPERTY_TYPE_FQNS = {
   NOTES: FQN.of('ol.notes'),
   OL_DATE_TIME: FQN.of('ol.datetime'),
   OL_ID: FQN.of('ol.id'),
+  ORGANIZATION_NAME: FQN.of('ol.organizationname'),
   OUTCOME: FQN.of('ol.outcome'),
   PHONE_NUMBER: FQN.of('contact.phonenumber'),
   PRONOUN: FQN.of('ol.pronoun'),
