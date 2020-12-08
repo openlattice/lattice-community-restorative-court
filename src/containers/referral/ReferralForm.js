@@ -1,11 +1,12 @@
 // @flow
 import React, { useCallback, useEffect } from 'react';
 
-import { List, Map } from 'immutable';
+import { List, Map, setIn } from 'immutable';
 import { Constants } from 'lattice';
 import { DataProcessingUtils, Form } from 'lattice-fabricate';
 import { Button, CardSegment, Typography } from 'lattice-ui-kit';
 import { DataUtils, ReduxUtils } from 'lattice-utils';
+import { DateTime } from 'luxon';
 import type { UUID } from 'lattice';
 
 import { SUBMIT_REFERRAL_FORM, getCRCPeople, submitReferralForm } from './actions';
@@ -71,6 +72,7 @@ const {
 } = AppTypes;
 const {
   DATETIME_COMPLETED,
+  EFFECTIVE_DATE,
   GENERAL_DATETIME,
   GIVEN_NAME,
   ROLE,
@@ -121,6 +123,12 @@ const ReferralForm = ({ personId } :Props) => {
     updatedFormData = updateFormWithDateAsDateTime(updatedFormData, dateOfIncidentPath);
 
     updatedFormData = addCRCCaseNumberToFormData(updatedFormData);
+
+    updatedFormData = setIn(
+      updatedFormData,
+      [getPageSectionKey(1, 5), getEntityAddressKey(0, STATUS, EFFECTIVE_DATE)],
+      DateTime.local().toISO()
+    );
 
     const { existingVictimEKIDs, formDataWithoutVictimsArray } = getVictimInformation(updatedFormData);
     const { selectedStaffEKID, formDataWithoutStaff } = getStaffInformation(formDataWithoutVictimsArray);

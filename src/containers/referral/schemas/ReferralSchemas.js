@@ -197,7 +197,6 @@ const dataSchema = {
         [getEntityAddressKey(0, STATUS, EFFECTIVE_DATE)]: {
           type: 'string',
           title: 'Referral Date',
-          default: currentDateTime
         },
         [getEntityAddressKey(0, CRC_CASE, DATETIME_RECEIVED)]: {
           type: 'string',
