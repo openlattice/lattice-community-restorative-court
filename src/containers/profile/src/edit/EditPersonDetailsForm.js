@@ -28,7 +28,7 @@ const EditPersonDetailsForm = () => {
   const dispatch = useDispatch();
 
   const personDetailsList :List = useSelector((store) => store
-    .getIn([PROFILE, PERSON_NEIGHBOR_MAP, PERSON_DETAILS], List));
+    .getIn([PROFILE, PERSON_NEIGHBOR_MAP, PERSON_DETAILS], List()));
   const personDetails :Map = personDetailsList.get(0, Map());
 
   const populatedFormData = useMemo(() => ({
