@@ -43,7 +43,8 @@ const {
 } = ProfileReduxConstants;
 const { NEUTRAL } = Colors;
 const { FORM, REFERRAL_REQUEST, STATUS } = AppTypes;
-const { DATETIME_ADMINISTERED, EFFECTIVE_DATE } = PropertyTypes;
+// change to ORGANIZATION_NAME:
+const { DATETIME_ADMINISTERED, EFFECTIVE_DATE, NAME } = PropertyTypes;
 const { PEACEMAKER, RESPONDENT, VICTIM } = RoleConstants;
 const { CLOSED, RESOLUTION } = CaseStatusConstants;
 const { getEntityKeyId, getPropertyValue } = DataUtils;
@@ -135,22 +136,27 @@ const CaseDetailsModal = ({
     }
   };
 
-  const getNewProfileUrl = (personEKID :?UUID) => {
-    if (personEKID) {
+  const getNewProfileUrl = (personEKID :?UUID, isPerson :boolean) => {
+    if (personEKID && isPerson) {
       const currentlySelectedPersonEKID :?UUID = getEntityKeyId(person);
       if (currentlySelectedPersonEKID) return `${relativeRoot}`.replace(currentlySelectedPersonEKID, personEKID);
     }
     return relativeRoot;
   };
 
-  const renderParticipantTile = (participant :Map, role :string) => {
-    const participantEKID :?UUID = getEntityKeyId(participant);
+  const renderTile = (participantOrOrg :Map, role :string) => {
+    const participantOrOrgEKID :?UUID = getEntityKeyId(participantOrOrg);
+    // change to ORGANIZATION_NAME:
+    const isOrganization = participantOrOrg.has(NAME);
+    const name = isOrganization
+      ? getPropertyValue(participantOrOrg, [NAME, 0])
+      : getPersonName(participantOrOrg);
     return (
       <ParticipantTile
-          key={getEntityKeyId(participant)}
-          to={getNewProfileUrl(participantEKID)}>
+          key={getEntityKeyId(participantOrOrg)}
+          to={getNewProfileUrl(participantOrOrgEKID, !isOrganization)}>
         <Label subtle>Name</Label>
-        <Typography>{getPersonName(participant)}</Typography>
+        <Typography>{name}</Typography>
         <CRCTag background={role} borderRadius="31px" color={role} padding="10px 16px">
           <Typography color="inherit" variant="body2">{role}</Typography>
         </CRCTag>
@@ -194,9 +200,9 @@ const CaseDetailsModal = ({
             </IconButton>
           </header>
           <ParticipantsTileGrid>
-            { respondentList.map((respondent :Map) => renderParticipantTile(respondent, RESPONDENT)) }
-            { victimList.map((victim :Map) => renderParticipantTile(victim, VICTIM)) }
-            { peacemakerList.map((peacemaker :Map) => renderParticipantTile(peacemaker, PEACEMAKER)) }
+            { respondentList.map((respondent :Map) => renderTile(respondent, RESPONDENT)) }
+            { victimList.map((victim :Map) => renderTile(victim, VICTIM)) }
+            { peacemakerList.map((peacemaker :Map) => renderTile(peacemaker, PEACEMAKER)) }
           </ParticipantsTileGrid>
         </ModalSection>
         <ModalSection>
