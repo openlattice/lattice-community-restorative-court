@@ -12,6 +12,8 @@ const PERSON_ID :string = ':personId';
 const FORM_ID :string = ':formId';
 const CASE_ID :string = ':caseId';
 
+const EDIT_PROFILE_CONTAINER_ROUTE_END :string = `${PERSON_ID}/edit`;
+
 const ADD_PEOPLE_TO_CASE :string = `${CASE_ID}/addpeopletocase`;
 
 const INTAKE :string = 'intake';
@@ -60,6 +62,7 @@ export {
   COMPLETED_REPAIR_HARM_AGREEMENT_ROUTE_END,
   COMPLETED_RESTITUTION_REFERRAL,
   COMPLETED_RESTITUTION_REFERRAL_ROUTE_END,
+  EDIT_PROFILE_CONTAINER_ROUTE_END,
   FORM_ID,
   INTAKE,
   INTAKE_ROUTE_END,

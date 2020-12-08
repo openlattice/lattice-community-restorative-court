@@ -35,6 +35,7 @@ const {
   CONTACT_INFO,
   CRC_CASE,
   FORM,
+  LOCATION,
   PERSON_DETAILS,
 } = AppTypes;
 const { DST, SRC } = NEIGHBOR_DIRECTIONS;
@@ -62,6 +63,7 @@ function* loadProfileWorker(action :SequenceAction) :Saga<*> {
     const contactActivityESID :UUID = yield select(selectEntitySetId(CONTACT_ACTIVITY));
     const contactInfoESID :UUID = yield select(selectEntitySetId(CONTACT_INFO));
     const formESID :UUID = yield select(selectEntitySetId(FORM));
+    const locationESID = yield select(selectEntitySetId(LOCATION));
     const personDetailsESID = yield select(selectEntitySetId(PERSON_DETAILS));
 
     const neighborESIDs = [
@@ -71,6 +73,7 @@ function* loadProfileWorker(action :SequenceAction) :Saga<*> {
       { direction: DST, entitySetId: personDetailsESID },
       { direction: DST, entitySetId: communicationESID },
       { direction: DST, entitySetId: contactInfoESID },
+      { direction: DST, entitySetId: locationESID },
     ];
 
     const workerResponses :Object[] = yield all([

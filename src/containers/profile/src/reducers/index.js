@@ -7,7 +7,11 @@ import addContactActivityReducer from './addContactActivityReducer';
 import addPeacemakerInformationReducer from './addPeacemakerInformationReducer';
 import addPersonToCaseReducer from './addPersonToCaseReducer';
 import clearSearchedPeopleReducer from './clearSearchedPeopleReducer';
+import editAddressReducer from './editAddressReducer';
+import editContactReducer from './editContactReducer';
 import editPeacemakerInformationReducer from './editPeacemakerInformationReducer';
+import editPersonDetailsReducer from './editPersonDetailsReducer';
+import editPersonReducer from './editPersonReducer';
 import getPersonCaseNeighborsReducer from './getPersonCaseNeighborsReducer';
 import getPersonNeighborsReducer from './getPersonNeighborsReducer';
 import getPersonReducer from './getPersonReducer';
@@ -15,6 +19,8 @@ import getStaffReducer from './getStaffReducer';
 import loadProfileReducer from './loadProfileReducer';
 import searchPeopleReducer from './searchPeopleReducer';
 import selectCaseReducer from './selectCaseReducer';
+import submitAddressReducer from './submitAddressReducer';
+import submitContactReducer from './submitContactReducer';
 
 import { RESET_REQUEST_STATE } from '../../../../core/redux/actions';
 import { ProfileReduxConstants, RS_INITIAL_STATE } from '../../../../core/redux/constants';
@@ -30,6 +36,10 @@ import {
   ADD_CONTACT_ACTIVITY,
   ADD_PERSON_TO_CASE,
   CLEAR_SEARCHED_PEOPLE,
+  EDIT_ADDRESS,
+  EDIT_CONTACT,
+  EDIT_PERSON,
+  EDIT_PERSON_DETAILS,
   GET_PERSON,
   GET_PERSON_CASE_NEIGHBORS,
   GET_PERSON_NEIGHBORS,
@@ -37,15 +47,23 @@ import {
   LOAD_PROFILE,
   SEARCH_PEOPLE,
   SELECT_CASE,
+  SUBMIT_ADDRESS,
+  SUBMIT_CONTACT,
   addCaseStatus,
   addContactActivity,
   addPersonToCase,
+  editAddress,
+  editContact,
+  editPerson,
+  editPersonDetails,
   getPerson,
   getPersonCaseNeighbors,
   getPersonNeighbors,
   getStaff,
   loadProfile,
   searchPeople,
+  submitAddress,
+  submitContact,
 } from '../actions';
 
 const {
@@ -66,12 +84,18 @@ const INITIAL_STATE :Map = fromJS({
   [ADD_PEACEMAKER_INFORMATION]: RS_INITIAL_STATE,
   [ADD_PERSON_TO_CASE]: RS_INITIAL_STATE,
   [EDIT_PEACEMAKER_INFORMATION]: RS_INITIAL_STATE,
+  [EDIT_ADDRESS]: RS_INITIAL_STATE,
+  [EDIT_CONTACT]: RS_INITIAL_STATE,
+  [EDIT_PERSON]: RS_INITIAL_STATE,
+  [EDIT_PERSON_DETAILS]: RS_INITIAL_STATE,
   [GET_PERSON]: RS_INITIAL_STATE,
   [GET_PERSON_CASE_NEIGHBORS]: RS_INITIAL_STATE,
   [GET_PERSON_NEIGHBORS]: RS_INITIAL_STATE,
   [GET_STAFF]: RS_INITIAL_STATE,
   [LOAD_PROFILE]: RS_INITIAL_STATE,
   [SEARCH_PEOPLE]: RS_INITIAL_STATE,
+  [SUBMIT_ADDRESS]: RS_INITIAL_STATE,
+  [SUBMIT_CONTACT]: RS_INITIAL_STATE,
   // data
   [PERSON]: Map(),
   [PERSON_CASE_NEIGHBOR_MAP]: Map(),
@@ -114,6 +138,18 @@ export default function profileReducer(state :Map = INITIAL_STATE, action :Objec
     case editPeacemakerInformation.case(action.type):
       return editPeacemakerInformationReducer(state, action);
 
+    case editAddress.case(action.type):
+      return editAddressReducer(state, action);
+
+    case editContact.case(action.type):
+      return editContactReducer(state, action);
+
+    case editPerson.case(action.type):
+      return editPersonReducer(state, action);
+
+    case editPersonDetails.case(action.type):
+      return editPersonDetailsReducer(state, action);
+
     case getPerson.case(action.type):
       return getPersonReducer(state, action);
 
@@ -131,6 +167,12 @@ export default function profileReducer(state :Map = INITIAL_STATE, action :Objec
 
     case searchPeople.case(action.type):
       return searchPeopleReducer(state, action);
+
+    case submitAddress.case(action.type):
+      return submitAddressReducer(state, action);
+
+    case submitContact.case(action.type):
+      return submitContactReducer(state, action);
 
     default:
       return state;
