@@ -1,7 +1,7 @@
 // @flow
 import React, { useEffect, useMemo, useState } from 'react';
 
-import { List, Map } from 'immutable';
+import { List, Map, setIn } from 'immutable';
 import { DataProcessingUtils, Form } from 'lattice-fabricate';
 import { CardSegment, Typography } from 'lattice-ui-kit';
 import { DataUtils } from 'lattice-utils';
@@ -40,16 +40,16 @@ const EditPersonForm = () => {
 
   const person :Map = useSelector(selectPerson());
 
-  const populatedFormData = useMemo(() => ({
-    [getPageSectionKey(1, 1)]: {
-      [getEntityAddressKey(0, PEOPLE, GIVEN_NAME)]: getPropertyValue(person, [GIVEN_NAME, 0]),
-      [getEntityAddressKey(0, PEOPLE, MIDDLE_NAME)]: getPropertyValue(person, [MIDDLE_NAME, 0]),
-      [getEntityAddressKey(0, PEOPLE, SURNAME)]: getPropertyValue(person, [SURNAME, 0]),
-      [getEntityAddressKey(0, PEOPLE, DOB)]: getPropertyValue(person, [DOB, 0]),
-      [getEntityAddressKey(0, PEOPLE, RACE)]: getPropertyValue(person, [RACE, 0]),
-      [getEntityAddressKey(0, PEOPLE, ETHNICITY)]: getPropertyValue(person, [ETHNICITY, 0]),
-    }
-  }), [person]);
+  const populatedFormData = useMemo(() => {
+    const fqns = [GIVEN_NAME, MIDDLE_NAME, SURNAME, DOB, RACE, ETHNICITY];
+    let result = {};
+    const page1section1 = getPageSectionKey(1, 1);
+    fqns.forEach((fqn :FQN) => {
+      const entityAddressKey = getEntityAddressKey(0, PEOPLE, fqn);
+      result = setIn(result, [page1section1, entityAddressKey], getPropertyValue(person, [fqn, 0]));
+    });
+    return result;
+  }, [person]);
 
   const [formData, setFormData] = useState(populatedFormData);
 
