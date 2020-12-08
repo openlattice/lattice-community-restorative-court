@@ -100,7 +100,7 @@ const CaseDetailsModal = ({
 
   const staffMemberByStatusEKID :Map = useSelector((store) => store.getIn([PROFILE, STAFF_MEMBER_BY_STATUS_EKID]));
   const referralRequest :?Map = useSelector((store) => store
-    .getIn([PROFILE, PERSON_CASE_NEIGHBOR_MAP, REFERRAL_REQUEST], List())).get(0);
+    .getIn([PROFILE, PERSON_CASE_NEIGHBOR_MAP, REFERRAL_REQUEST, caseEKID], List())).get(0);
   const formMap :Map = useSelector((store) => store.getIn([PROFILE, PERSON_CASE_NEIGHBOR_MAP, FORM], Map()));
   const relevantForms :List = formMap.get(caseEKID, List())
     .sortBy((form :Map) => form.getIn([DATETIME_ADMINISTERED, 0])).reverse();
