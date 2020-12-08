@@ -13,6 +13,7 @@ import {
   get,
   getIn,
   removeIn,
+  setIn,
 } from 'immutable';
 import { Constants } from 'lattice';
 import { DataProcessingUtils, Form } from 'lattice-fabricate';
@@ -23,6 +24,7 @@ import {
   Typography,
 } from 'lattice-ui-kit';
 import { DataUtils, LangUtils, ReduxUtils } from 'lattice-utils';
+import { DateTime } from 'luxon';
 import type { UUID } from 'lattice';
 
 import { SUBMIT_INTAKE, submitIntake } from './actions';
@@ -74,6 +76,7 @@ const {
 } = AppTypes;
 const {
   DATETIME_ADMINISTERED,
+  EFFECTIVE_DATE,
   GIVEN_NAME,
   NOTES,
   ROLE,
@@ -161,6 +164,12 @@ const IntakeForm = () => {
       page1Section5,
       getEntityAddressKey(0, FORM, DATETIME_ADMINISTERED)
     ]);
+
+    formDataForSubmit = setIn(
+      formDataForSubmit,
+      [page1Section5, getEntityAddressKey(0, STATUS, EFFECTIVE_DATE)],
+      DateTime.local().toISO()
+    );
 
     const entityData = processEntityData(formDataForSubmit, entitySetIds, propertyTypeIds);
     const associations = [
