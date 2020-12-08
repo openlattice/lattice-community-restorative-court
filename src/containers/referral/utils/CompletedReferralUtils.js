@@ -48,14 +48,15 @@ const populateFormData = (
   referralRequestNeighborMap :Map
 ) :Object => {
 
+  const formEKID :?UUID = getEntityKeyId(form);
   const datetimeAdministered = getPropertyValue(form, [DATETIME_ADMINISTERED, 0], EMPTY_VALUE);
   const dateFormCompleted = DateTime.fromISO(datetimeAdministered).toISODate();
 
-  const crcCaseList :List = formNeighborMap.get(CRC_CASE, List());
+  const crcCaseList :List = formNeighborMap.getIn([formEKID, CRC_CASE], List());
   const crcCase :Map = crcCaseList.get(0, Map());
   const crcCaseEKID :?UUID = getEntityKeyId(crcCase);
 
-  const referralRequestList :List = formNeighborMap.get(REFERRAL_REQUEST, List());
+  const referralRequestList :List = formNeighborMap.getIn([formEKID, REFERRAL_REQUEST], List());
   const referralRequest :Map = referralRequestList.get(0, Map());
   const referralRequestEKID :?UUID = getEntityKeyId(referralRequest);
   const referringSource = getPropertyValue(referralRequest, [SOURCE, 0], EMPTY_VALUE);
@@ -96,7 +97,7 @@ const populateFormData = (
     };
   });
 
-  const staffList :List = formNeighborMap.get(STAFF, List());
+  const staffList :List = formNeighborMap.getIn([formEKID, STAFF], List());
   const staffMember :Map = staffList.get(0, Map());
   const staffMemberName :string = getPersonName(staffMember);
 

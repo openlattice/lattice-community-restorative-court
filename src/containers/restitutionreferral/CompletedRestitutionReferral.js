@@ -44,9 +44,9 @@ const CompletedRestitutionReferral = () => {
   const selectedRequest :Map = useSelector((store) => store
     .getIn([RESTITUTION_REFERRAL, SELECTED_RESTITUTION_REFERRAL]));
   const formEKID :?UUID = getEntityKeyId(selectedRequest);
-  const formNeighborMap :Map = useSelector((store) => store.getIn([PROFILE, FORM_NEIGHBOR_MAP, formEKID], Map()));
   const personNeighborMap :Map = useSelector((store) => store.getIn([PROFILE, PERSON_NEIGHBOR_MAP]));
   const personCaseNeighborMap :Map = useSelector((store) => store.getIn([PROFILE, PERSON_CASE_NEIGHBOR_MAP]));
+  const formNeighborMap = personCaseNeighborMap.get(FORM_NEIGHBOR_MAP, Map());
   const referralRequestNeighborMap :Map = useSelector((store) => store
     .getIn([REFERRAL, REFERRAL_REQUEST_NEIGHBOR_MAP]));
   const formData = populateCompletedForm(
