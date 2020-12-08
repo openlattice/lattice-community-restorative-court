@@ -203,14 +203,14 @@ const AddPeopleToCaseForm = () => {
       </Card>
       {
         (hasSearched && !data.isEmpty()) && (
-          <div>
+          <CardSegment>
             <Typography gutterBottom>Click on a participant to select a role and add them to the case.</Typography>
             <PaginationToolbar
                 count={totalHits}
                 onPageChange={onPageChange}
                 page={page}
                 rowsPerPage={MAX_HITS} />
-          </div>
+          </CardSegment>
         )
       }
       <SearchResults
