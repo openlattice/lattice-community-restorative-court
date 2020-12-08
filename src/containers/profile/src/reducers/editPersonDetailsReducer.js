@@ -1,5 +1,5 @@
 // @flow
-import { List, Map } from 'immutable';
+import { Map } from 'immutable';
 import { RequestStates } from 'redux-reqseq';
 import type { SequenceAction } from 'redux-reqseq';
 
@@ -16,10 +16,6 @@ export default function reducer(state :Map, action :SequenceAction) {
       .setIn([EDIT_PERSON_DETAILS, REQUEST_STATE], RequestStates.PENDING)
       .setIn([EDIT_PERSON_DETAILS, action.id], action),
     SUCCESS: () => {
-      // console.log('state.get(PERSON_NEIGHBOR_MAP) ', state.get(PERSON_NEIGHBOR_MAP));
-      // console.log('state.get(PERSON_NEIGHBOR_MAP).updateIn([PERSON_DETAILS, 0], Map(), (originalPersonDetails) => originalPersonDetails.merge(action.value)) ', state.get(PERSON_NEIGHBOR_MAP)
-      //   .updateIn([PERSON_DETAILS, 0], Map(), (originalPersonDetails) => originalPersonDetails.merge(action.value)));
-      // console.log('state.getIn([PERSON_NEIGHBOR_MAP, PERSON_DETAILS]) ', state.getIn([PERSON_NEIGHBOR_MAP, PERSON_DETAILS]));
       const personNeighborMap :Map = state.get(PERSON_NEIGHBOR_MAP)
         .updateIn([PERSON_DETAILS, 0], Map(), (originalPersonDetails) => originalPersonDetails.merge(action.value));
       return state

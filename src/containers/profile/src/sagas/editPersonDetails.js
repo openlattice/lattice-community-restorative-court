@@ -49,7 +49,6 @@ function* editPersonDetailsWorker(action :SequenceAction) :Saga<WorkerResponse> 
     const personDetailsEKID = personDetailsMap ? Object.keys(personDetailsMap)[0] : undefined;
     const personDetailsData = personDetailsMap && personDetailsEKID ? personDetailsMap[personDetailsEKID] : undefined;
     const newPersonDetails :Map = formatNewEntityData(personDetailsData, propertyFqnsByTypeId);
-    console.log('newPersonDetails ', newPersonDetails.toJS());
 
     workerResponse = { data: newPersonDetails };
     yield put(editPersonDetails.success(id, newPersonDetails));
