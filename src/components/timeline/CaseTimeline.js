@@ -22,6 +22,7 @@ import { MM_DD_YYYY } from '../../utils/datetime/constants';
 import { getPersonName } from '../../utils/people';
 
 const {
+  DATETIME_COMPLETED,
   DESCRIPTION,
   EFFECTIVE_DATE,
   SOURCE,
@@ -55,7 +56,11 @@ const CaseTimeline = ({ caseStatuses, referralRequest, staffMemberByStatusEKID }
         const description = getPropertyValue(caseStatus, [DESCRIPTION, 0]);
         const datetime = getPropertyValue(caseStatus, [EFFECTIVE_DATE, 0]);
         const status = getPropertyValue(caseStatus, [STATUS, 0]);
-        const date = DateTime.fromISO(datetime).toFormat(MM_DD_YYYY);
+        let date = DateTime.fromISO(datetime).toFormat(MM_DD_YYYY);
+        if (status === REFERRAL) {
+          const datetimeOfReferral = getPropertyValue(referralRequest, [DATETIME_COMPLETED, 0]);
+          date = DateTime.fromISO(datetimeOfReferral).toFormat(MM_DD_YYYY);
+        }
 
         const staffMemberWhoRecordedStatus :Map = staffMemberByStatusEKID.get(caseStatusEKID, Map());
         const referralSource = getPropertyValue(referralRequest, [SOURCE, 0]);

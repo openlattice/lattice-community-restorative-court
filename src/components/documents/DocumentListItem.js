@@ -15,6 +15,7 @@ import { APP_PATHS } from '../../core/redux/constants';
 import { selectPerson } from '../../core/redux/selectors';
 import { FORM_ID, PERSON_ID, ROUTES_FOR_COMPLETED_FORMS } from '../../core/router/Routes';
 import { goToRoute } from '../../core/router/RoutingActions';
+import { getRelativeRoot } from '../../utils/router';
 
 const { getEntityKeyId } = DataUtils;
 const { NEUTRAL } = Colors;
@@ -68,6 +69,8 @@ const DocumentListItem = ({
   const person :Map = useSelector(selectPerson());
   const personEKID :?UUID = getEntityKeyId(person);
   const root :string = useSelector((store) => store.getIn(APP_PATHS.ROOT));
+  const match = useSelector((store) => store.getIn(APP_PATHS.MATCH));
+  const relativeRoot = getRelativeRoot(root, match);
 
   const dispatch = useDispatch();
 
@@ -77,7 +80,7 @@ const DocumentListItem = ({
       if (selectForm) {
         dispatch(selectForm(form));
       }
-      dispatch(goToRoute(`${root}/${ROUTES_FOR_COMPLETED_FORMS[formName]}`
+      dispatch(goToRoute(`${relativeRoot}/${ROUTES_FOR_COMPLETED_FORMS[formName]}`
         .replace(PERSON_ID, personEKID)
         .replace(FORM_ID, formEKID)));
     }

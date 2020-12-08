@@ -14,7 +14,6 @@ import type { Saga } from '@redux-saga/core';
 import type { UUID } from 'lattice';
 import type { SequenceAction } from 'redux-reqseq';
 
-import { getFormNeighborsWorker } from './getFormNeighbors';
 import { getPersonCaseNeighborsWorker } from './getPersonCaseNeighbors';
 
 import { AppTypes, PropertyTypes } from '../../../../core/edm/constants';
@@ -29,7 +28,6 @@ import {
 import { ERR_ACTION_VALUE_NOT_DEFINED } from '../../../../utils/error/constants';
 import {
   GET_PERSON_NEIGHBORS,
-  getFormNeighbors,
   getPersonCaseNeighbors,
   getPersonNeighbors,
 } from '../actions';
@@ -77,51 +75,51 @@ function* getPersonNeighborsWorker(action :SequenceAction) :Saga<*> {
       if (neighbor.direction === SRC) filter.sourceEntitySetIds.push(neighbor.entitySetId);
     });
 
-    const response :Object = yield call(
-      searchEntityNeighborsWithFilterWorker,
-      searchEntityNeighborsWithFilter({ entitySetId: peopleESID, filter })
-    );
-    if (response.error) throw response.error;
+    let personNeighborMap :Map = Map();
 
-    const fqnsByESID :Map = yield select((store) => store.getIn(APP_PATHS.FQNS_BY_ESID));
-    const appearsInESID :UUID = yield select(selectEntitySetId(APPEARS_IN));
+    if (personEKID && personEKID.length) {
 
-    let personNeighborMap = Map().withMutations((mutator :Map) => {
-      fromJS(response.data).forEach((neighborList :List) => {
-        neighborList.forEach((neighbor :Map) => {
-          const entity :Map = getNeighborDetails(neighbor);
-          const caseEKID = getEntityKeyId(entity);
+      const response :Object = yield call(
+        searchEntityNeighborsWithFilterWorker,
+        searchEntityNeighborsWithFilter({ entitySetId: peopleESID, filter })
+      );
+      if (response.error) throw response.error;
 
-          const associationESID :UUID = getAssociationESID(neighbor);
-          if (associationESID === appearsInESID) {
-            const associationDetails :Map = getAssociationDetails(neighbor);
-            const role :string = getPropertyValue(associationDetails, [ROLE, 0]);
-            const roleMap = mutator.get(ROLE, Map()).set(caseEKID, role);
-            mutator.set(ROLE, roleMap);
-          }
-          const neighborESID :UUID = getNeighborESID(neighbor);
-          const neighborFqn :FQN = fqnsByESID.get(neighborESID);
-          const entityList = mutator.get(neighborFqn, List()).push(entity);
-          mutator.set(neighborFqn, entityList);
+      const fqnsByESID :Map = yield select((store) => store.getIn(APP_PATHS.FQNS_BY_ESID));
+      const appearsInESID :UUID = yield select(selectEntitySetId(APPEARS_IN));
+
+      personNeighborMap = Map().withMutations((mutator :Map) => {
+        fromJS(response.data).forEach((neighborList :List) => {
+          neighborList.forEach((neighbor :Map) => {
+            const entity :Map = getNeighborDetails(neighbor);
+            const caseEKID = getEntityKeyId(entity);
+
+            const associationESID :UUID = getAssociationESID(neighbor);
+            if (associationESID === appearsInESID) {
+              const associationDetails :Map = getAssociationDetails(neighbor);
+              const role :string = getPropertyValue(associationDetails, [ROLE, 0]);
+              const roleMap = mutator.get(ROLE, Map()).set(caseEKID, role);
+              mutator.set(ROLE, roleMap);
+            }
+            const neighborESID :UUID = getNeighborESID(neighbor);
+            const neighborFqn :FQN = fqnsByESID.get(neighborESID);
+            const entityList = mutator.get(neighborFqn, List()).push(entity);
+            mutator.set(neighborFqn, entityList);
+          });
         });
       });
-    });
-    if (isDefined(personNeighborMap.get(CRC_CASE))) {
-      const personCaseEKIDs :UUID[] = personNeighborMap.get(CRC_CASE)
-        .map((personCase :Map) => getEntityKeyId(personCase))
-        .toJS();
-      yield call(getPersonCaseNeighborsWorker, getPersonCaseNeighbors(personCaseEKIDs));
-    }
+      if (isDefined(personNeighborMap.get(CRC_CASE))) {
+        const personCaseEKIDs :UUID[] = personNeighborMap.get(CRC_CASE)
+          .map((personCase :Map) => getEntityKeyId(personCase))
+          .toJS();
+        yield call(getPersonCaseNeighborsWorker, getPersonCaseNeighbors(personCaseEKIDs));
+      }
 
-    const forms = personNeighborMap.get(FORM);
-    if (isDefined(forms)) {
-      personNeighborMap = personNeighborMap
-        .set(FORM, forms.sortBy((status :Map) => status.getIn([DATETIME_ADMINISTERED, 0])).reverse());
-
-      const formEKIDs :UUID[] = forms
-        .map((form :Map) => getEntityKeyId(form))
-        .toJS();
-      yield call(getFormNeighborsWorker, getFormNeighbors(formEKIDs));
+      const forms = personNeighborMap.get(FORM);
+      if (isDefined(forms)) {
+        personNeighborMap = personNeighborMap
+          .set(FORM, forms.sortBy((status :Map) => status.getIn([DATETIME_ADMINISTERED, 0])).reverse());
+      }
     }
 
     workerResponse.data = personNeighborMap;

@@ -8,7 +8,6 @@ import addPeacemakerInformationReducer from './addPeacemakerInformationReducer';
 import addPersonToCaseReducer from './addPersonToCaseReducer';
 import clearSearchedPeopleReducer from './clearSearchedPeopleReducer';
 import editPeacemakerInformationReducer from './editPeacemakerInformationReducer';
-import getFormNeighborsReducer from './getFormNeighborsReducer';
 import getPersonCaseNeighborsReducer from './getPersonCaseNeighborsReducer';
 import getPersonNeighborsReducer from './getPersonNeighborsReducer';
 import getPersonReducer from './getPersonReducer';
@@ -31,7 +30,6 @@ import {
   ADD_CONTACT_ACTIVITY,
   ADD_PERSON_TO_CASE,
   CLEAR_SEARCHED_PEOPLE,
-  GET_FORM_NEIGHBORS,
   GET_PERSON,
   GET_PERSON_CASE_NEIGHBORS,
   GET_PERSON_NEIGHBORS,
@@ -42,7 +40,6 @@ import {
   addCaseStatus,
   addContactActivity,
   addPersonToCase,
-  getFormNeighbors,
   getPerson,
   getPersonCaseNeighbors,
   getPersonNeighbors,
@@ -52,7 +49,6 @@ import {
 } from '../actions';
 
 const {
-  FORM_NEIGHBOR_MAP,
   PERSON,
   PERSON_CASE_NEIGHBOR_MAP,
   PERSON_NEIGHBOR_MAP,
@@ -70,7 +66,6 @@ const INITIAL_STATE :Map = fromJS({
   [ADD_PEACEMAKER_INFORMATION]: RS_INITIAL_STATE,
   [ADD_PERSON_TO_CASE]: RS_INITIAL_STATE,
   [EDIT_PEACEMAKER_INFORMATION]: RS_INITIAL_STATE,
-  [GET_FORM_NEIGHBORS]: RS_INITIAL_STATE,
   [GET_PERSON]: RS_INITIAL_STATE,
   [GET_PERSON_CASE_NEIGHBORS]: RS_INITIAL_STATE,
   [GET_PERSON_NEIGHBORS]: RS_INITIAL_STATE,
@@ -78,7 +73,6 @@ const INITIAL_STATE :Map = fromJS({
   [LOAD_PROFILE]: RS_INITIAL_STATE,
   [SEARCH_PEOPLE]: RS_INITIAL_STATE,
   // data
-  [FORM_NEIGHBOR_MAP]: Map(),
   [PERSON]: Map(),
   [PERSON_CASE_NEIGHBOR_MAP]: Map(),
   [PERSON_NEIGHBOR_MAP]: Map(),
@@ -119,9 +113,6 @@ export default function profileReducer(state :Map = INITIAL_STATE, action :Objec
 
     case editPeacemakerInformation.case(action.type):
       return editPeacemakerInformationReducer(state, action);
-
-    case getFormNeighbors.case(action.type):
-      return getFormNeighborsReducer(state, action);
 
     case getPerson.case(action.type):
       return getPersonReducer(state, action);

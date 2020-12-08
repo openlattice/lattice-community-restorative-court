@@ -16,7 +16,7 @@ const PROPERTY_TYPE_FQNS = {
   DA_CASE_NUMBER: FQN.of('justice.courtcasenumber'),
   DESCRIPTION: FQN.of('ol.description'),
   DOB: FQN.of('nc.PersonBirthDate'),
-  DUE_DATE: FQN.of('ol.duedate'),
+  DUE_DATE: FQN.of('ol.maximumdatetime'),
   EFFECTIVE_DATE: FQN.of('ol.effectivedate'),
   ETHNICITY: FQN.of('nc.PersonEthnicity'),
   EMAIL: FQN.of('staff.email'),

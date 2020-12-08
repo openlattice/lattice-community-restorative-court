@@ -4,8 +4,6 @@ import React from 'react';
 import { Map } from 'immutable';
 import { Form } from 'lattice-fabricate';
 import { CardSegment, Typography } from 'lattice-ui-kit';
-import { DataUtils } from 'lattice-utils';
-import type { UUID } from 'lattice';
 
 import { schema, uiSchema } from './schemas/CompletedRepairHarmSchemas';
 import { populateCompletedForm } from './utils/RepairHarmAgreementUtils';
@@ -19,7 +17,6 @@ import { useSelector } from '../app/AppProvider';
 
 const { FORM_NEIGHBOR_MAP, PERSON_CASE_NEIGHBOR_MAP, PROFILE } = ProfileReduxConstants;
 const { REPAIR_HARM, SELECTED_REPAIR_HARM_AGREEMENT } = RepairHarmReduxConstants;
-const { getEntityKeyId } = DataUtils;
 
 const CompletedRepairHarmAgreement = () => {
 
@@ -30,9 +27,8 @@ const CompletedRepairHarmAgreement = () => {
   const relativeRoot = getRelativeRoot(root, match);
 
   const selectedForm :Map = useSelector((store) => store.getIn([REPAIR_HARM, SELECTED_REPAIR_HARM_AGREEMENT]));
-  const formEKID :?UUID = getEntityKeyId(selectedForm);
-  const formNeighborMap :Map = useSelector((store) => store.getIn([PROFILE, FORM_NEIGHBOR_MAP, formEKID], Map()));
   const personCaseNeighborMap :Map = useSelector((store) => store.getIn([PROFILE, PERSON_CASE_NEIGHBOR_MAP]));
+  const formNeighborMap = personCaseNeighborMap.get(FORM_NEIGHBOR_MAP, Map());
   const formData = populateCompletedForm(selectedForm, formNeighborMap, person, personCaseNeighborMap);
   return (
     <>

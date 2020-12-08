@@ -67,7 +67,8 @@ const populateFormData = (
   const daCaseNumber = getPropertyValue(daCase, [DA_CASE_NUMBER, 0], EMPTY_VALUE);
   const caseNumber = getPropertyValue(daCase, [CASE_NUMBER, 0], EMPTY_VALUE);
   const datetimeOfIncident = getPropertyValue(daCase, [GENERAL_DATETIME, 0], EMPTY_VALUE);
-  const dateOfIncident = DateTime.fromISO(datetimeOfIncident).toISODate();
+  const dateOfIncidentDateTimeObj = DateTime.fromISO(datetimeOfIncident);
+  const dateOfIncident = dateOfIncidentDateTimeObj.isValid ? dateOfIncidentDateTimeObj.toISODate() : undefined;
 
   const offenseList = referralRequestNeighborMap.getIn([OFFENSE, referralRequestEKID], List());
   const offense :Map = offenseList.get(0, Map());
