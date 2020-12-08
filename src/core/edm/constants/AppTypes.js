@@ -23,6 +23,7 @@ const APP_TYPE_FQNS = {
   LOCATION: FQN.of('app.location'),
   OFFENSE: FQN.of('app.offense'),
   OFFICERS: FQN.of('app.officers'),
+  // ORGANIZATIONS: FQN.of('app.organizations'),
   PAYMENT: FQN.of('app.payment'),
   PEOPLE: FQN.of('app.people'),
   PERSON_DETAILS: FQN.of('app.persondetails'),
