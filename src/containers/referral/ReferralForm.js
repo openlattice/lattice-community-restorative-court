@@ -9,7 +9,12 @@ import { DataUtils, ReduxUtils } from 'lattice-utils';
 import { DateTime } from 'luxon';
 import type { UUID } from 'lattice';
 
-import { SUBMIT_REFERRAL_FORM, getCRCPeople, submitReferralForm } from './actions';
+import {
+  SUBMIT_REFERRAL_FORM,
+  getCRCPeople,
+  getOrganizations,
+  submitReferralForm,
+} from './actions';
 import { schema, uiSchema } from './schemas/ReferralFormSchemas';
 import {
   addCRCCaseNumberToFormData,
@@ -51,12 +56,13 @@ const {
 } = DataProcessingUtils;
 const { OPENLATTICE_ID_FQN } = Constants;
 const { RESPONDENT } = RoleConstants;
-const { CRC_PEOPLE, REFERRAL } = ReferralReduxConstants;
+const { CRC_ORGANIZATIONS, CRC_PEOPLE, REFERRAL } = ReferralReduxConstants;
 const { PROFILE, STAFF_MEMBERS } = ProfileReduxConstants;
 const {
   APPEARS_IN,
   CRC_CASE,
   DA_CASE,
+  ELECTRONIC_SIGNATURE, // change to ORGANIZATIONS
   FORM,
   HAS,
   PEOPLE,
@@ -75,6 +81,7 @@ const {
   EFFECTIVE_DATE,
   GENERAL_DATETIME,
   GIVEN_NAME,
+  NAME, // change to ORGANIZATION_NAME
   ROLE,
   SURNAME,
 } = PropertyTypes;
@@ -89,7 +96,10 @@ const ReferralForm = ({ personId } :Props) => {
 
   const appConfig = useSelector((store :Map) => store.getIn(APP_PATHS.APP_CONFIG));
   useEffect(() => {
-    if (appConfig) dispatch(getCRCPeople());
+    if (appConfig) {
+      dispatch(getCRCPeople());
+      dispatch(getOrganizations());
+    }
   }, [appConfig, dispatch, personId]);
 
   const crcPeople :List = useSelector((store) => store.getIn([REFERRAL, CRC_PEOPLE], List()));
@@ -104,7 +114,21 @@ const ReferralForm = ({ personId } :Props) => {
     hydratedSchema,
     staffMembers,
     [GIVEN_NAME, SURNAME],
-    ['properties', getPageSectionKey(1, 4), 'properties', getEntityAddressKey(0, STAFF, OPENLATTICE_ID_FQN)]
+    ['properties', getPageSectionKey(1, 6), 'properties', getEntityAddressKey(0, STAFF, OPENLATTICE_ID_FQN)]
+  );
+  const organizations :List = useSelector((store) => store.getIn([REFERRAL, CRC_ORGANIZATIONS]));
+  hydratedSchema = hydrateSchema(
+    hydratedSchema,
+    organizations,
+    [NAME], // change to ORGANIZATION_NAME
+    // change to ORGANIZATIONS:
+    [
+      'properties',
+      getPageSectionKey(1, 4),
+      'properties',
+      getEntityAddressKey(0, ELECTRONIC_SIGNATURE, OPENLATTICE_ID_FQN),
+      'items'
+    ]
   );
 
   const entitySetIds :Map = useSelector((store) => store.getIn([APP, APP_REDUX_CONSTANTS.ENTITY_SET_IDS]));
@@ -126,11 +150,15 @@ const ReferralForm = ({ personId } :Props) => {
 
     updatedFormData = setIn(
       updatedFormData,
-      [getPageSectionKey(1, 5), getEntityAddressKey(0, STATUS, EFFECTIVE_DATE)],
+      [getPageSectionKey(1, 7), getEntityAddressKey(0, STATUS, EFFECTIVE_DATE)],
       DateTime.local().toISO()
     );
 
-    const { existingVictimEKIDs, formDataWithoutVictimsArray } = getVictimInformation(updatedFormData);
+    const {
+      existingVictimEKIDs,
+      existingVictimOrgEKIDs,
+      formDataWithoutVictimsArray
+    } = getVictimInformation(updatedFormData);
     const { selectedStaffEKID, formDataWithoutStaff } = getStaffInformation(formDataWithoutVictimsArray);
 
     const entityData = processEntityData(formDataWithoutStaff, entitySetIds, propertyTypeIds);
@@ -150,9 +178,10 @@ const ReferralForm = ({ personId } :Props) => {
       [HAS, personEKID, PEOPLE, 0, STATUS, {}],
       [HAS, 0, CRC_CASE, 0, STATUS, {}],
     ];
-    associations = associations.concat(getVictimAssociations(formDataWithoutStaff, existingVictimEKIDs));
+    associations = associations.concat(
+      getVictimAssociations(formDataWithoutStaff, existingVictimEKIDs, existingVictimOrgEKIDs)
+    );
     associations = associations.concat(getOptionalAssociations(formDataWithoutStaff));
-
     const associationEntityData = processAssociationEntityData(associations, entitySetIds, propertyTypeIds);
     dispatch(submitReferralForm({ associationEntityData, entityData }));
   };
