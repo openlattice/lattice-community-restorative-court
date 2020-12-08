@@ -17,12 +17,18 @@ const { STAFF } = AppTypes;
 const { DATETIME_ADMINISTERED, NAME } = PropertyTypes;
 
 type Props = {
+  caseEKID :?UUID;
   caseIdentifier ?:string;
   forms :List;
-  formNeighborMap :Map;
+  personCaseNeighborMap :Map;
 };
 
-const DocumentList = ({ caseIdentifier, forms, formNeighborMap } :Props) => (
+const DocumentList = ({
+  caseEKID,
+  caseIdentifier,
+  forms,
+  personCaseNeighborMap,
+} :Props) => (
   <CardStack>
     {
       forms.map((form :Map) => {
@@ -30,8 +36,8 @@ const DocumentList = ({ caseIdentifier, forms, formNeighborMap } :Props) => (
         const formName = getPropertyValue(form, [NAME, 0]);
         const submittedDate = formatAsDate(datetime);
         const formEKID :?UUID = getEntityKeyId(form);
-        const staffMembers :List = formNeighborMap.getIn([formEKID, STAFF], List());
-        const staffMemberName = getPersonName(staffMembers.get(0, Map()));
+        const staffMember :Map = personCaseNeighborMap.getIn([STAFF, caseEKID, formEKID], Map());
+        const staffMemberName = getPersonName(staffMember);
         return (
           <DocumentListItem
               caseIdentifier={caseIdentifier}

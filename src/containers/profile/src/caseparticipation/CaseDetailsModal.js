@@ -34,7 +34,6 @@ import { selectCase } from '../actions';
 import { CaseStatusConstants, RoleConstants } from '../constants';
 
 const {
-  FORM_NEIGHBOR_MAP,
   PERSON_CASE_NEIGHBOR_MAP,
   PROFILE,
   STAFF_MEMBER_BY_STATUS_EKID,
@@ -104,7 +103,8 @@ const CaseDetailsModal = ({
   const formMap :Map = useSelector((store) => store.getIn([PROFILE, PERSON_CASE_NEIGHBOR_MAP, FORM], Map()));
   const relevantForms :List = formMap.get(caseEKID, List())
     .sortBy((form :Map) => form.getIn([DATETIME_ADMINISTERED, 0])).reverse();
-  const formNeighborMap :Map = useSelector((store) => store.getIn([PROFILE, FORM_NEIGHBOR_MAP], Map()));
+
+  const personCaseNeighborMap = useSelector((store) => store.getIn([PROFILE, PERSON_CASE_NEIGHBOR_MAP]));
 
   const respondentList :List = caseRoleMap.get(RESPONDENT, List());
   const victimList :List = caseRoleMap.get(VICTIM, List());
@@ -180,7 +180,11 @@ const CaseDetailsModal = ({
         </ModalSection>
         <ModalSection>
           <header><Typography color={NEUTRAL.N700} variant="h3">Documents</Typography></header>
-          <DocumentList caseIdentifier={caseIdentifier} forms={relevantForms} formNeighborMap={formNeighborMap} />
+          <DocumentList
+              caseEKID={caseEKID}
+              caseIdentifier={caseIdentifier}
+              forms={relevantForms}
+              personCaseNeighborMap={personCaseNeighborMap} />
         </ModalSection>
       </ModalInnerWrapper>
       <AddStatusModal

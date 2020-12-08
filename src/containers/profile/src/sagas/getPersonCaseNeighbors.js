@@ -77,10 +77,12 @@ function* getPersonCaseNeighborsWorker(action :SequenceAction) :Saga<*> {
 
     const statusEKIDs = [];
     const referralRequestEKIDs = [];
+    const formEKIDs = [];
+    const caseEKIDByformEKID = Map().asMutable();
 
     const fqnsByESID :Map = yield select((store) => store.getIn(APP_PATHS.FQNS_BY_ESID));
 
-    const personCaseNeighborMap = Map().withMutations((mutator :Map) => {
+    let personCaseNeighborMap = Map().withMutations((mutator :Map) => {
       fromJS(response.data).forEach((neighborList :List, caseEKID :UUID) => {
         neighborList.forEach((neighbor :Map) => {
           const neighborESID :UUID = getNeighborESID(neighbor);
@@ -106,6 +108,8 @@ function* getPersonCaseNeighborsWorker(action :SequenceAction) :Saga<*> {
                 (existingFormsForCase :List) => existingFormsForCase.push(entity)
               );
             mutator.set(FORM, formMap);
+            formEKIDs.push(entityEKID);
+            caseEKIDByformEKID.set(entityEKID, caseEKID);
           }
           else if (neighborESID === peopleESID) {
             const associationDetails = getAssociationDetails(neighbor);
@@ -142,6 +146,30 @@ function* getPersonCaseNeighborsWorker(action :SequenceAction) :Saga<*> {
     }
 
     const staffESID :UUID = yield select(selectEntitySetId(STAFF));
+
+    if (formEKIDs.length) {
+      filter = {
+        entityKeyIds: formEKIDs,
+        destinationEntitySetIds: [staffESID],
+        sourceEntitySetIds: [],
+      };
+      response = yield call(
+        searchEntityNeighborsWithFilterWorker,
+        searchEntityNeighborsWithFilter({ entitySetId: formESID, filter })
+      );
+      if (response.error) throw response.error;
+
+      const formStaffMap = personCaseNeighborMap.get(STAFF, Map()).withMutations((mutator :Map) => {
+        fromJS(response.data).forEach((neighborList :List, formEKID :UUID) => {
+          const staffNeighborWhoSubmittedForm = neighborList.get(0, Map());
+          const staffMember :Map = getNeighborDetails(staffNeighborWhoSubmittedForm);
+          const caseEKID = caseEKIDByformEKID.get(formEKID);
+          mutator.updateIn([caseEKID, formEKID], Map(), () => staffMember);
+        });
+      });
+      console.log('formStaffMap ', formStaffMap);
+      personCaseNeighborMap = personCaseNeighborMap.set(STAFF, formStaffMap);
+    }
 
     filter = {
       entityKeyIds: statusEKIDs,
