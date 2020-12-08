@@ -34,6 +34,10 @@ ui[getPageSectionKey(1, 3)]['ui:options'] = {
   removable: false,
 };
 
+// remove existing org dropdown from form since all victim orgs will be grouped together in next section
+delete data.properties[getPageSectionKey(1, 4)];
+delete ui[getPageSectionKey(1, 4)];
+
 data.properties[getPageSectionKey(1, 7)]
   .properties[getEntityAddressKey(0, FORM, DATETIME_ADMINISTERED)]
   .format = 'date';
