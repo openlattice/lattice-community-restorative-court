@@ -280,7 +280,7 @@ const uiSchema = {
   [getPageSectionKey(1, 3)]: {
     classNames: 'column-span-12',
     'ui:options': {
-      addButtonText: '+ Add New Victim Profile',
+      addButtonText: '+ Add New Victim Person',
       orderable: false,
       addActionKey: 'addVictim'
     },

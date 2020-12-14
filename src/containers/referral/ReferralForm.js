@@ -1,7 +1,13 @@
 // @flow
 import React, { useCallback, useEffect } from 'react';
 
-import { List, Map, setIn } from 'immutable';
+import {
+  List,
+  Map,
+  remove,
+  removeIn,
+  setIn,
+} from 'immutable';
 import { Constants } from 'lattice';
 import { DataProcessingUtils, Form } from 'lattice-fabricate';
 import { Button, CardSegment, Typography } from 'lattice-ui-kit';
@@ -102,6 +108,8 @@ const ReferralForm = ({ personId } :Props) => {
     }
   }, [appConfig, dispatch, personId]);
 
+  let editedUiSchema = uiSchema;
+
   const crcPeople :List = useSelector((store) => store.getIn([REFERRAL, CRC_PEOPLE], List()));
   let hydratedSchema = hydrateSchema(
     schema,
@@ -117,18 +125,24 @@ const ReferralForm = ({ personId } :Props) => {
     ['properties', getPageSectionKey(1, 6), 'properties', getEntityAddressKey(0, STAFF, OPENLATTICE_ID_FQN)]
   );
   const organizations :List = useSelector((store) => store.getIn([REFERRAL, CRC_ORGANIZATIONS]));
-  hydratedSchema = hydrateSchema(
-    hydratedSchema,
-    organizations,
-    [ORGANIZATION_NAME],
-    [
-      'properties',
-      getPageSectionKey(1, 4),
-      'properties',
-      getEntityAddressKey(0, ORGANIZATIONS, OPENLATTICE_ID_FQN),
-      'items'
-    ]
-  );
+  if (organizations.isEmpty()) {
+    hydratedSchema = removeIn(hydratedSchema, ['properties', getPageSectionKey(1, 4)]);
+    editedUiSchema = remove(editedUiSchema, getPageSectionKey(1, 4));
+  }
+  else {
+    hydratedSchema = hydrateSchema(
+      hydratedSchema,
+      organizations,
+      [ORGANIZATION_NAME],
+      [
+        'properties',
+        getPageSectionKey(1, 4),
+        'properties',
+        getEntityAddressKey(0, ORGANIZATIONS, OPENLATTICE_ID_FQN),
+        'items'
+      ]
+    );
+  }
 
   const entitySetIds :Map = useSelector((store) => store.getIn([APP, APP_REDUX_CONSTANTS.ENTITY_SET_IDS]));
   const propertyTypeIds :Map = useSelector((store) => store.getIn([EDM, PROPERTY_TYPE_IDS]));
@@ -223,7 +237,7 @@ const ReferralForm = ({ personId } :Props) => {
           isSubmitting={isPending(submitRequestState)}
           onSubmit={onSubmit}
           schema={hydratedSchema}
-          uiSchema={uiSchema} />
+          uiSchema={editedUiSchema} />
       {submitSuccessful && (
         <CardSegment>
           <SubmissionFieldsGrid>
