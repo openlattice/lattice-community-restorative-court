@@ -46,7 +46,7 @@ const EditAddressForm = () => {
   const address :Map = addressList.get(0, Map());
 
   const populatedFormData = useMemo(() => {
-    const fqns = [LOCATION, LOCATION_ADDRESS, LOCATION_ADDRESS_LINE_2, LOCATION_CITY, LOCATION_STATE, LOCATION_ZIP];
+    const fqns = [LOCATION_ADDRESS, LOCATION_ADDRESS_LINE_2, LOCATION_CITY, LOCATION_STATE, LOCATION_ZIP];
     let result = {};
     const page1section1 = getPageSectionKey(1, 1);
     fqns.forEach((fqn :FQN) => {
