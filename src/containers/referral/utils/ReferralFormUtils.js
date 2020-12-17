@@ -216,9 +216,11 @@ const getOptionalAssociations = (formData :Object, selectedChargeEKID :UUID) :Ar
   });
   if (isDefined(chargeEventKey)) {
     associations.push([APPEARS_IN, 0, CHARGE_EVENT, 0, DA_CASE, {}]);
+    associations.push([APPEARS_IN, 0, CHARGE_EVENT, 0, CRC_CASE, {}]);
 
     const chargeIndexOrEKID = isDefined(chargeKey) ? 0 : selectedChargeEKID;
     associations.push([APPEARS_IN, chargeIndexOrEKID, CHARGES, 0, DA_CASE, {}]);
+    associations.push([APPEARS_IN, chargeIndexOrEKID, CHARGES, 0, CRC_CASE, {}]);
     associations.push([REGISTERED_FOR, 0, CHARGE_EVENT, chargeIndexOrEKID, CHARGES, {}]);
   }
 
