@@ -82,7 +82,9 @@ function* initializeApplicationWorker(action :SequenceAction) :Saga<*> {
       });
     });
 
-    const entitySetIdsByFqn = fromJS(appConfig).get('config').map((fqnMap :Map) => fqnMap.get(ENTITY_SET_ID, ''));
+    const entitySetIdsByFqn = fromJS(appConfig)
+      .get('config', Map())
+      .map((fqnMap :Map) => fqnMap.get(ENTITY_SET_ID, ''));
 
     workerResponse.data = {
       appConfig,
