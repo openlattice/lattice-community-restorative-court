@@ -30,6 +30,8 @@ const { searchEntityNeighborsWithFilterWorker } = SearchApiSagas;
 const { FQN } = Models;
 const { ROLE } = PropertyTypes;
 const {
+  CHARGES,
+  CHARGE_EVENT,
   CRC_CASE,
   FORM,
   ORGANIZATIONS,
@@ -59,6 +61,8 @@ function* getPersonCaseNeighborsWorker(action :SequenceAction) :Saga<*> {
 
     const personCaseEKIDs :UUID[] = value;
 
+    const chargeEventESID :UUID = yield select(selectEntitySetId(CHARGE_EVENT));
+    const chargesESID :UUID = yield select(selectEntitySetId(CHARGES));
     const crcCaseESID :UUID = yield select(selectEntitySetId(CRC_CASE));
     const formESID :UUID = yield select(selectEntitySetId(FORM));
     const organizationsESID :UUID = yield select(selectEntitySetId(ORGANIZATIONS));
@@ -69,7 +73,7 @@ function* getPersonCaseNeighborsWorker(action :SequenceAction) :Saga<*> {
     let filter = {
       entityKeyIds: personCaseEKIDs,
       destinationEntitySetIds: [statusESID],
-      sourceEntitySetIds: [formESID, organizationsESID, peopleESID, referralRequestESID],
+      sourceEntitySetIds: [chargesESID, chargeEventESID, formESID, organizationsESID, peopleESID, referralRequestESID],
     };
 
     let response :Object = yield call(
@@ -135,6 +139,24 @@ function* getPersonCaseNeighborsWorker(action :SequenceAction) :Saga<*> {
               );
             mutator.set(REFERRAL_REQUEST, referralRequestMap);
             referralRequestEKIDs.push(entityEKID);
+          }
+          else if (neighborESID === chargesESID) {
+            const chargesMap = mutator.get(CHARGES, Map())
+              .update(
+                caseEKID,
+                List(),
+                (existingCharges :List) => existingCharges.push(entity)
+              );
+            mutator.set(CHARGES, chargesMap);
+          }
+          else if (neighborESID === chargeEventESID) {
+            const chargeEventMap = mutator.get(CHARGE_EVENT, Map())
+              .update(
+                caseEKID,
+                List(),
+                (existingChargeEvents :List) => existingChargeEvents.push(entity)
+              );
+            mutator.set(CHARGE_EVENT, chargeEventMap);
           }
           else {
             const entityList = mutator.get(neighborFqn, List()).push(entity);

@@ -10,8 +10,9 @@ import { EMPTY_VALUE, RoleConstants } from '../../profile/src/constants';
 
 const { VICTIM } = RoleConstants;
 const {
+  CHARGES,
+  CHARGE_EVENT,
   DA_CASE,
-  OFFENSE,
   OFFICERS,
   ORGANIZATIONS,
   PEOPLE,
@@ -21,12 +22,12 @@ const {
   CASE_NUMBER,
   DATETIME_COMPLETED,
   DA_CASE_NUMBER,
-  DESCRIPTION,
   DOB,
   ETHNICITY,
   GENERAL_DATETIME,
   GIVEN_NAME,
   MIDDLE_NAME,
+  NAME,
   ORGANIZATION_NAME,
   RACE,
   ROLE,
@@ -72,9 +73,15 @@ const populateFormData = (
   const dateOfIncidentDateTimeObj = DateTime.fromISO(datetimeOfIncident);
   const dateOfIncident = dateOfIncidentDateTimeObj.isValid ? dateOfIncidentDateTimeObj.toISODate() : undefined;
 
-  const offenseList = referralRequestNeighborMap.getIn([OFFENSE, referralRequestEKID], List());
-  const offense :Map = offenseList.get(0, Map());
-  const offenseDescription = getPropertyValue(offense, [DESCRIPTION, 0], EMPTY_VALUE);
+  const chargesList :List = personCaseNeighborMap.getIn([CHARGES, selectedCaseEKID], List());
+  const charge :Map = chargesList.get(0, Map());
+  const chargeName = getPropertyValue(charge, [NAME, 0], EMPTY_VALUE);
+
+  const chargeEventsList :List = personCaseNeighborMap.getIn([CHARGE_EVENT, selectedCaseEKID], List());
+  const chargeEvent :Map = chargeEventsList.get(0, Map());
+  const chargeEventDateTime = getPropertyValue(chargeEvent, [DATETIME_COMPLETED, 0]);
+  const chargeEventDateTimeObj = DateTime.fromISO(chargeEventDateTime);
+  const chargeEventDate = chargeEventDateTimeObj.isValid ? chargeEventDateTimeObj.toISODate() : undefined;
 
   const victims :List = personCaseNeighborMap.getIn([ROLE, selectedCaseEKID, VICTIM], List());
   const victimPeople :List = victims.filter((victim :Map) => !victim.has(ORGANIZATION_NAME));
@@ -99,7 +106,8 @@ const populateFormData = (
       [getEntityAddressKey(0, DA_CASE, DA_CASE_NUMBER)]: daCaseNumber,
       [getEntityAddressKey(0, DA_CASE, CASE_NUMBER)]: caseNumber,
       [getEntityAddressKey(0, DA_CASE, GENERAL_DATETIME)]: dateOfIncident,
-      [getEntityAddressKey(0, OFFENSE, DESCRIPTION)]: offenseDescription,
+      [getEntityAddressKey(0, CHARGES, NAME)]: chargeName,
+      [getEntityAddressKey(0, CHARGE_EVENT, DATETIME_COMPLETED)]: chargeEventDate,
     },
   };
 
