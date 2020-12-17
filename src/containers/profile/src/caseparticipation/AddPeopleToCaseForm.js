@@ -31,6 +31,7 @@ import { useDispatch, useSelector } from '../../../app/AppProvider';
 import {
   SEARCH_ORGANIZATIONS,
   SEARCH_PEOPLE,
+  clearSearchedOrganizations,
   clearSearchedPeople,
   searchOrganizations,
   searchPeople,
@@ -208,6 +209,14 @@ const AddPeopleToCaseForm = () => {
       dispatch(clearSearchedPeople());
     };
     return resetSearchedPeopleList;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    const resetSearchedOrgsList = () => {
+      dispatch(clearSearchedOrganizations());
+    };
+    return resetSearchedOrgsList;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
