@@ -1,38 +1,53 @@
 // @flow
 
 import {
+  List,
+  Map,
   get,
   getIn,
   remove,
+  removeIn,
   setIn,
 } from 'immutable';
 import { Constants } from 'lattice';
 import { DataProcessingUtils } from 'lattice-fabricate';
-import { LangUtils } from 'lattice-utils';
+import { DataUtils, LangUtils, ValidationUtils } from 'lattice-utils';
 import type { UUID } from 'lattice';
 
 import { AppTypes, PropertyTypes } from '../../../core/edm/constants';
+import { updateFormWithDateAsDateTime } from '../../../utils/form';
 import { RoleConstants } from '../../profile/src/constants';
 
 const { OPENLATTICE_ID_FQN } = Constants;
 const {
   APPEARS_IN,
+  CHARGES,
+  CHARGE_EVENT,
   CRC_CASE,
   DA_CASE,
   HAS,
-  OFFENSE,
   OFFICERS,
   ORGANIZATIONS,
   PEOPLE,
   PERSON_DETAILS,
   REFERRAL_REQUEST,
+  REGISTERED_FOR,
   SENT_FROM,
   STAFF,
 } = AppTypes;
-const { CASE_NUMBER, NOTES, ROLE } = PropertyTypes;
+const {
+  CASE_NUMBER,
+  DATETIME_COMPLETED,
+  GENERAL_DATETIME,
+  NAME,
+  NOTES,
+  ROLE,
+} = PropertyTypes;
 const { VICTIM } = RoleConstants;
 const { getEntityAddressKey, getPageSectionKey, parseEntityAddressKey } = DataProcessingUtils;
 const { isDefined } = LangUtils;
+const { getEntityKeyId } = DataUtils;
+const { isValidUUID } = ValidationUtils;
 
 /*
  * ReferralFormUtils.getStaffInformation
@@ -53,6 +68,52 @@ const getStaffInformation = (formData :Object) :Object => {
   const formDataWithoutStaff = remove(formData, getPageSectionKey(1, 6));
 
   return { formDataWithoutStaff, selectedStaffEKID };
+};
+
+/*
+ * ReferralFormUtils.updateFormWithCharges
+ */
+
+const updateFormWithCharges = (formData :Object, charges :List) => {
+
+  let updatedFormData = formData;
+
+  const chargeEKIDs = charges.map((charge :Map) => getEntityKeyId(charge));
+
+  const page1Section1 = getPageSectionKey(1, 1);
+  const chargesNamePath = [page1Section1, getEntityAddressKey(0, CHARGES, NAME)];
+  const chargeEventDatePath = [page1Section1, getEntityAddressKey(0, CHARGE_EVENT, DATETIME_COMPLETED)];
+  const datetimeOfIncidentPath = [page1Section1, getEntityAddressKey(0, DA_CASE, GENERAL_DATETIME)];
+
+  const chargeSelected = getIn(updatedFormData, chargesNamePath);
+  let selectedChargeEKID = '';
+  console.log('chargeSelected ', chargeSelected);
+  if (isDefined(chargeSelected)) {
+    if (isValidUUID(chargeSelected) && chargeEKIDs.includes(chargeSelected)) {
+      updatedFormData = removeIn(updatedFormData, chargesNamePath);
+      selectedChargeEKID = chargeSelected;
+    }
+
+    const chargeEventDate = getIn(updatedFormData, chargeEventDatePath);
+    console.log('chargeEventDate ', chargeEventDate);
+
+    if (!isDefined(chargeEventDate)) {
+      updatedFormData = setIn(
+        updatedFormData,
+        chargeEventDatePath,
+        getIn(updatedFormData, datetimeOfIncidentPath)
+      );
+    }
+    else {
+      updatedFormData = updateFormWithDateAsDateTime(updatedFormData, chargeEventDatePath);
+      console.log('updatedFormData ', updatedFormData);
+    }
+  }
+  else {
+    updatedFormData = removeIn(updatedFormData, chargesNamePath);
+    updatedFormData = removeIn(updatedFormData, chargeEventDatePath);
+  }
+  return { selectedChargeEKID, updatedFormData };
 };
 
 /*
@@ -132,7 +193,7 @@ const getVictimAssociations = (
  * ReferralFormUtils.getOptionalAssociations
  */
 
-const getOptionalAssociations = (formData :Object) :Array<Array<*>> => {
+const getOptionalAssociations = (formData :Object, selectedChargeEKID :UUID) :Array<Array<*>> => {
 
   const associations = [];
 
@@ -147,12 +208,20 @@ const getOptionalAssociations = (formData :Object) :Array<Array<*>> => {
     associations.push([SENT_FROM, 0, REFERRAL_REQUEST, 0, OFFICERS, {}]);
   }
 
-  const offenseKey = section1Keys.find((eak :string) => {
+  const chargeEventKey = section1Keys.find((eak :string) => {
     const { entitySetName } = parseEntityAddressKey(eak);
-    return entitySetName === OFFENSE.toString();
+    return entitySetName === CHARGE_EVENT.toString();
   });
-  if (isDefined(offenseKey)) {
-    associations.push([APPEARS_IN, 0, OFFENSE, 0, REFERRAL_REQUEST, {}]);
+  const chargeKey = section1Keys.find((eak :string) => {
+    const { entitySetName } = parseEntityAddressKey(eak);
+    return entitySetName === CHARGES.toString();
+  });
+  if (isDefined(chargeEventKey)) {
+    associations.push([APPEARS_IN, 0, CHARGE_EVENT, 0, DA_CASE, {}]);
+
+    const chargeIndexOrEKID = isDefined(chargeKey) ? 0 : selectedChargeEKID;
+    associations.push([APPEARS_IN, chargeIndexOrEKID, CHARGES, 0, DA_CASE, {}]);
+    associations.push([REGISTERED_FOR, 0, CHARGE_EVENT, chargeIndexOrEKID, CHARGES, {}]);
   }
 
   return associations;
@@ -184,4 +253,5 @@ export {
   getStaffInformation,
   getVictimAssociations,
   getVictimInformation,
+  updateFormWithCharges,
 };
