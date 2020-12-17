@@ -12,11 +12,13 @@ import { resetRequestState } from '../../../../core/redux/actions';
 import { ProfileReduxConstants, REQUEST_STATE } from '../../../../core/redux/constants';
 import { useDispatch, useSelector } from '../../../app/AppProvider';
 import { ADD_PERSON_TO_CASE, addPersonToCase } from '../actions';
+import { SearchContextConstants } from '../constants';
 import { schema, uiSchema } from '../schemas/AddPersonToCaseSchemas';
 
 const { APPEARS_IN } = AppTypes;
 const { NOTES, ROLE } = PropertyTypes;
 const { PROFILE, SELECTED_CASE } = ProfileReduxConstants;
+const { ORGS_CONTEXT } = SearchContextConstants;
 const { getEntityKeyId, getPropertyValue } = DataUtils;
 const { getEntityAddressKey, getPageSectionKey } = DataProcessingUtils;
 const { isPending, isSuccess } = ReduxUtils;
@@ -24,12 +26,16 @@ const { isPending, isSuccess } = ReduxUtils;
 type Props = {
   isVisible :boolean;
   onClose :() => void;
+  searchContext :string;
+  selectedOrganization :Map;
   selectedPerson :Map;
 };
 
 const AddPersonToCaseModal = ({
   isVisible,
   onClose,
+  searchContext,
+  selectedOrganization,
   selectedPerson,
 } :Props) => {
 
@@ -43,7 +49,9 @@ const AddPersonToCaseModal = ({
   const caseEKID :?UUID = getEntityKeyId(personCase);
   const caseNumber = getPropertyValue(personCase, [NOTES, 0]);
   const caseIdentifier = `Case #: ${caseNumber}`;
-  const personEKID :?UUID = getEntityKeyId(selectedPerson);
+  const entityEKID :?UUID = searchContext === ORGS_CONTEXT
+    ? getEntityKeyId(selectedOrganization)
+    : getEntityKeyId(selectedPerson);
 
   const dispatch = useDispatch();
 
@@ -52,8 +60,9 @@ const AddPersonToCaseModal = ({
     if (role) {
       dispatch(addPersonToCase({
         caseEKID,
-        personEKID,
+        entityEKID,
         role,
+        searchContext,
         selectedPerson,
       }));
     }
