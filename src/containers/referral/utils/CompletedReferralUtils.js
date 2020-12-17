@@ -13,10 +13,11 @@ import { EMPTY_VALUE, RoleConstants } from '../../profile/src/constants';
 const { OPENLATTICE_ID_FQN } = Constants;
 const { VICTIM } = RoleConstants;
 const {
+  CHARGES,
+  CHARGE_EVENT,
   CRC_CASE,
   DA_CASE,
   FORM,
-  OFFENSE,
   OFFICERS,
   ORGANIZATIONS,
   PEOPLE,
@@ -28,12 +29,12 @@ const {
   DATETIME_ADMINISTERED,
   DATETIME_COMPLETED,
   DA_CASE_NUMBER,
-  DESCRIPTION,
   DOB,
   ETHNICITY,
   GENERAL_DATETIME,
   GIVEN_NAME,
   MIDDLE_NAME,
+  NAME,
   ORGANIZATION_NAME,
   RACE,
   ROLE,
@@ -75,11 +76,18 @@ const populateFormData = (
   const daCaseNumber = getPropertyValue(daCase, [DA_CASE_NUMBER, 0], EMPTY_VALUE);
   const caseNumber = getPropertyValue(daCase, [CASE_NUMBER, 0], EMPTY_VALUE);
   const datetimeOfIncident = getPropertyValue(daCase, [GENERAL_DATETIME, 0], EMPTY_VALUE);
-  const dateOfIncident = DateTime.fromISO(datetimeOfIncident).toISODate();
+  const dateOfIncidentDateTimeObj = DateTime.fromISO(datetimeOfIncident);
+  const dateOfIncident = dateOfIncidentDateTimeObj.isValid ? dateOfIncidentDateTimeObj.toISODate() : undefined;
 
-  const offenseList = referralRequestNeighborMap.getIn([OFFENSE, referralRequestEKID], List());
-  const offense :Map = offenseList.get(0, Map());
-  const offenseDescription = getPropertyValue(offense, [DESCRIPTION, 0], EMPTY_VALUE);
+  const chargesList :List = personCaseNeighborMap.getIn([CHARGES, crcCaseEKID], List());
+  const charge :Map = chargesList.get(0, Map());
+  const chargeName = getPropertyValue(charge, [NAME, 0], EMPTY_VALUE);
+
+  const chargeEventsList :List = personCaseNeighborMap.getIn([CHARGE_EVENT, crcCaseEKID], List());
+  const chargeEvent :Map = chargeEventsList.get(0, Map());
+  const chargeEventDateTime = getPropertyValue(chargeEvent, [DATETIME_COMPLETED, 0]);
+  const chargeEventDateTimeObj = DateTime.fromISO(chargeEventDateTime);
+  const chargeEventDate = chargeEventDateTimeObj.isValid ? chargeEventDateTimeObj.toISODate() : undefined;
 
   const victims :List = personCaseNeighborMap.getIn([ROLE, crcCaseEKID, VICTIM], List());
   const victimPeople :List = victims.filter((victim :Map) => !victim.has(ORGANIZATION_NAME));
@@ -121,7 +129,8 @@ const populateFormData = (
       [getEntityAddressKey(0, DA_CASE, DA_CASE_NUMBER)]: daCaseNumber,
       [getEntityAddressKey(0, DA_CASE, CASE_NUMBER)]: caseNumber,
       [getEntityAddressKey(0, DA_CASE, GENERAL_DATETIME)]: dateOfIncident,
-      [getEntityAddressKey(0, OFFENSE, DESCRIPTION)]: offenseDescription,
+      [getEntityAddressKey(0, CHARGES, NAME)]: chargeName,
+      [getEntityAddressKey(0, CHARGE_EVENT, DATETIME_COMPLETED)]: chargeEventDate,
     },
     [getPageSectionKey(1, 3)]: victimPeopleFormData,
     [getPageSectionKey(1, 5)]: victimOrgsFormData,
