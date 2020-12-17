@@ -53,6 +53,7 @@ import { getPersonName } from '../../utils/people';
 import { getRelativeRoot } from '../../utils/router';
 import { useDispatch, useSelector } from '../app/AppProvider';
 import { RoleConstants } from '../profile/src/constants';
+import { getCharges } from '../referral/actions';
 
 const { INTAKE } = IntakeReduxConstants;
 const {
@@ -63,6 +64,7 @@ const {
 } = ProfileReduxConstants;
 const { REFERRAL, REFERRAL_REQUEST_NEIGHBOR_MAP } = ReferralReduxConstants;
 const {
+  CHARGES,
   CRC_CASE,
   FORM,
   HAS,
@@ -78,6 +80,7 @@ const {
   DATETIME_ADMINISTERED,
   EFFECTIVE_DATE,
   GIVEN_NAME,
+  NAME,
   NOTES,
   ROLE,
   SURNAME,
@@ -95,6 +98,15 @@ const { isPending, isSuccess } = ReduxUtils;
 const { isNonEmptyString } = LangUtils;
 
 const IntakeForm = () => {
+
+  const dispatch = useDispatch();
+
+  const appConfig = useSelector((store :Map) => store.getIn(APP_PATHS.APP_CONFIG));
+  useEffect(() => {
+    if (appConfig) {
+      dispatch(getCharges());
+    }
+  }, [appConfig, dispatch]);
 
   const [selectedCase, selectCase] = useState('');
   const [formData, setFormData] = useState({});
@@ -120,11 +132,18 @@ const IntakeForm = () => {
   }).toJS();
 
   const staffMembers :List = useSelector((store) => store.getIn([PROFILE, STAFF_MEMBERS]));
-  const hydratedSchema = hydrateSchema(
+  let hydratedSchema = hydrateSchema(
     schema,
     staffMembers,
     [GIVEN_NAME, SURNAME],
     ['properties', getPageSectionKey(1, 5), 'properties', getEntityAddressKey(0, STAFF, OPENLATTICE_ID_FQN)]
+  );
+  const charges :List = useSelector((store) => store.getIn([REFERRAL, ReferralReduxConstants.CHARGES], List()));
+  hydratedSchema = hydrateSchema(
+    hydratedSchema,
+    charges,
+    [NAME],
+    ['properties', getPageSectionKey(1, 4), 'properties', getEntityAddressKey(0, CHARGES, NAME)]
   );
 
   const prepopulatedFormData = useMemo(() => populateFormData(
@@ -142,8 +161,6 @@ const IntakeForm = () => {
   const onChange = ({ formData: updatedFormData } :Object) => {
     setFormData(updatedFormData);
   };
-
-  const dispatch = useDispatch();
 
   const entitySetIds :Map = useSelector((store) => store.getIn([APP, APP_REDUX_CONSTANTS.ENTITY_SET_IDS]));
   const propertyTypeIds :Map = useSelector((store) => store.getIn([EDM, PROPERTY_TYPE_IDS]));
