@@ -44,6 +44,9 @@ const getStaff :RequestSequence = newRequestSequence(GET_STAFF);
 const LOAD_PROFILE :'LOAD_PROFILE' = 'LOAD_PROFILE';
 const loadProfile :RequestSequence = newRequestSequence(LOAD_PROFILE);
 
+const SEARCH_ORGANIZATIONS :'SEARCH_ORGANIZATIONS' = 'SEARCH_ORGANIZATIONS';
+const searchOrganizations :RequestSequence = newRequestSequence(SEARCH_ORGANIZATIONS);
+
 const SEARCH_PEOPLE :'SEARCH_PEOPLE' = 'SEARCH_PEOPLE';
 const searchPeople :RequestSequence = newRequestSequence(SEARCH_PEOPLE);
 
@@ -73,6 +76,7 @@ export {
   GET_PERSON_NEIGHBORS,
   GET_STAFF,
   LOAD_PROFILE,
+  SEARCH_ORGANIZATIONS,
   SEARCH_PEOPLE,
   SELECT_CASE,
   SUBMIT_ADDRESS,
@@ -90,6 +94,7 @@ export {
   getPersonNeighbors,
   getStaff,
   loadProfile,
+  searchOrganizations,
   searchPeople,
   selectCase,
   submitAddress,
