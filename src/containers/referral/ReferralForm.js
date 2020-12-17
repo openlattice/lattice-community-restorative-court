@@ -18,6 +18,7 @@ import type { UUID } from 'lattice';
 import {
   SUBMIT_REFERRAL_FORM,
   getCRCPeople,
+  getCharges,
   getOrganizations,
   submitReferralForm,
 } from './actions';
@@ -28,6 +29,7 @@ import {
   getStaffInformation,
   getVictimAssociations,
   getVictimInformation,
+  updateFormWithCharges,
 } from './utils';
 
 import { CrumbItem, CrumbLink, Crumbs } from '../../components/crumbs';
@@ -66,6 +68,7 @@ const { CRC_ORGANIZATIONS, CRC_PEOPLE, REFERRAL } = ReferralReduxConstants;
 const { PROFILE, STAFF_MEMBERS } = ProfileReduxConstants;
 const {
   APPEARS_IN,
+  CHARGES,
   CRC_CASE,
   DA_CASE,
   FORM,
@@ -87,6 +90,7 @@ const {
   EFFECTIVE_DATE,
   GENERAL_DATETIME,
   GIVEN_NAME,
+  NAME,
   ORGANIZATION_NAME,
   ROLE,
   SURNAME,
@@ -104,6 +108,7 @@ const ReferralForm = ({ personId } :Props) => {
   useEffect(() => {
     if (appConfig) {
       dispatch(getCRCPeople());
+      dispatch(getCharges());
       dispatch(getOrganizations());
     }
   }, [appConfig, dispatch, personId]);
@@ -143,6 +148,13 @@ const ReferralForm = ({ personId } :Props) => {
       ]
     );
   }
+  const charges :List = useSelector((store) => store.getIn([REFERRAL, ReferralReduxConstants.CHARGES], List()));
+  hydratedSchema = hydrateSchema(
+    hydratedSchema,
+    charges,
+    [NAME],
+    ['properties', getPageSectionKey(1, 1), 'properties', getEntityAddressKey(0, CHARGES, NAME)]
+  );
 
   const entitySetIds :Map = useSelector((store) => store.getIn([APP, APP_REDUX_CONSTANTS.ENTITY_SET_IDS]));
   const propertyTypeIds :Map = useSelector((store) => store.getIn([EDM, PROPERTY_TYPE_IDS]));
@@ -159,6 +171,12 @@ const ReferralForm = ({ personId } :Props) => {
     let updatedFormData = updateFormWithDateAsDateTime(formData, dateOfReferralPath);
     updatedFormData = updateFormWithDateAsDateTime(updatedFormData, dateOfIncidentPath);
 
+    const { selectedChargeEKID, updatedFormData: formDataWithCharges } = updateFormWithCharges(
+      updatedFormData,
+      charges
+    );
+    updatedFormData = formDataWithCharges;
+
     updatedFormData = addCRCCaseNumberToFormData(updatedFormData);
 
     updatedFormData = setIn(
@@ -174,7 +192,9 @@ const ReferralForm = ({ personId } :Props) => {
     } = getVictimInformation(updatedFormData);
     const { selectedStaffEKID, formDataWithoutStaff } = getStaffInformation(formDataWithoutVictimsArray);
 
+    console.log('formDataWithoutStaff ', formDataWithoutStaff);
     const entityData = processEntityData(formDataWithoutStaff, entitySetIds, propertyTypeIds);
+    console.log('entityData ', entityData);
 
     let associations = [
       // $FlowFixMe
@@ -194,8 +214,10 @@ const ReferralForm = ({ personId } :Props) => {
     associations = associations.concat(
       getVictimAssociations(formDataWithoutStaff, existingVictimEKIDs, existingVictimOrgEKIDs)
     );
-    associations = associations.concat(getOptionalAssociations(formDataWithoutStaff));
+    associations = associations.concat(getOptionalAssociations(formDataWithoutStaff, selectedChargeEKID));
+    console.log('associations ', associations);
     const associationEntityData = processAssociationEntityData(associations, entitySetIds, propertyTypeIds);
+    console.log('associationEntityData ', associationEntityData);
     dispatch(submitReferralForm({ associationEntityData, entityData }));
   };
 
