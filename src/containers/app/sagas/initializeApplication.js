@@ -70,7 +70,7 @@ function* initializeApplicationWorker(action :SequenceAction) :Saga<*> {
     if (appConfigsResponse.error) throw appConfigsResponse.error;
     const appConfig = appConfigsResponse.data.reduce((acc, config) => {
       let selectedConfig = acc;
-      if (config.organization.id === organizationId) {
+      if (config?.organization?.id === organizationId) {
         selectedConfig = config;
       }
       return selectedConfig;
