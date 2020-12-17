@@ -7,6 +7,8 @@ const { FQN } = Models;
 const APP_TYPE_FQNS = {
   AGENCY: FQN.of('app.agency'),
   APPEARS_IN: FQN.of('app.appearsin'),
+  CHARGES: FQN.of('app.charges'),
+  CHARGE_EVENT: FQN.of('app.chargeevent'),
   COMMUNICATION: FQN.of('app.communication'),
   CONTACTED_VIA: FQN.of('app.contactedvia'),
   CONTACT_ACTIVITY: FQN.of('app.contactactivity'),
