@@ -192,9 +192,7 @@ const ReferralForm = ({ personId } :Props) => {
     } = getVictimInformation(updatedFormData);
     const { selectedStaffEKID, formDataWithoutStaff } = getStaffInformation(formDataWithoutVictimsArray);
 
-    console.log('formDataWithoutStaff ', formDataWithoutStaff);
     const entityData = processEntityData(formDataWithoutStaff, entitySetIds, propertyTypeIds);
-    console.log('entityData ', entityData);
 
     let associations = [
       // $FlowFixMe
@@ -215,9 +213,7 @@ const ReferralForm = ({ personId } :Props) => {
       getVictimAssociations(formDataWithoutStaff, existingVictimEKIDs, existingVictimOrgEKIDs)
     );
     associations = associations.concat(getOptionalAssociations(formDataWithoutStaff, selectedChargeEKID));
-    console.log('associations ', associations);
     const associationEntityData = processAssociationEntityData(associations, entitySetIds, propertyTypeIds);
-    console.log('associationEntityData ', associationEntityData);
     dispatch(submitReferralForm({ associationEntityData, entityData }));
   };
 

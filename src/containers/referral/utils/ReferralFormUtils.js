@@ -87,7 +87,6 @@ const updateFormWithCharges = (formData :Object, charges :List) => {
 
   const chargeSelected = getIn(updatedFormData, chargesNamePath);
   let selectedChargeEKID = '';
-  console.log('chargeSelected ', chargeSelected);
   if (isDefined(chargeSelected)) {
     if (isValidUUID(chargeSelected) && chargeEKIDs.includes(chargeSelected)) {
       updatedFormData = removeIn(updatedFormData, chargesNamePath);
@@ -95,7 +94,6 @@ const updateFormWithCharges = (formData :Object, charges :List) => {
     }
 
     const chargeEventDate = getIn(updatedFormData, chargeEventDatePath);
-    console.log('chargeEventDate ', chargeEventDate);
 
     if (!isDefined(chargeEventDate)) {
       updatedFormData = setIn(
@@ -106,7 +104,7 @@ const updateFormWithCharges = (formData :Object, charges :List) => {
     }
     else {
       updatedFormData = updateFormWithDateAsDateTime(updatedFormData, chargeEventDatePath);
-      console.log('updatedFormData ', updatedFormData);
+
     }
   }
   else {
