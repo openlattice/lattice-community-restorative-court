@@ -7,7 +7,7 @@ import { RoleConstants } from '../constants';
 const { getEntityAddressKey, getPageSectionKey } = DataProcessingUtils;
 const { APPEARS_IN } = AppTypes;
 const { ROLE } = PropertyTypes;
-const { PEACEMAKER, STAFF_MEMBER, VICTIM } = RoleConstants;
+const { CASE_MANAGER, PEACEMAKER, VICTIM } = RoleConstants;
 
 const schema = {
   type: 'object',
@@ -20,7 +20,7 @@ const schema = {
         [getEntityAddressKey(0, APPEARS_IN, ROLE)]: {
           type: 'string',
           title: 'Role',
-          enum: [PEACEMAKER, VICTIM, STAFF_MEMBER]
+          enum: [PEACEMAKER, VICTIM, CASE_MANAGER]
         },
       },
       required: [

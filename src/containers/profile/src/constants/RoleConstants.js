@@ -3,4 +3,4 @@
 export const PEACEMAKER :string = 'Peacemaker';
 export const RESPONDENT :string = 'Respondent';
 export const VICTIM :string = 'Victim';
-export const STAFF_MEMBER :string = 'Staff Member';
+export const CASE_MANAGER :string = 'Case Manager';
