@@ -23,8 +23,8 @@ import { getPersonName } from '../../utils/people';
 
 const {
   DATETIME_COMPLETED,
-  DESCRIPTION,
   EFFECTIVE_DATE,
+  NOTES,
   SOURCE,
   STATUS,
 } = PropertyTypes;
@@ -53,7 +53,7 @@ const CaseTimeline = ({ caseStatuses, referralRequest, staffMemberByStatusEKID }
     {
       caseStatuses.map((caseStatus :Map) => {
         const caseStatusEKID :?UUID = getEntityKeyId(caseStatus);
-        const description = getPropertyValue(caseStatus, [DESCRIPTION, 0]);
+        const description = getPropertyValue(caseStatus, [NOTES, 0]);
         const datetime = getPropertyValue(caseStatus, [EFFECTIVE_DATE, 0]);
         const status = getPropertyValue(caseStatus, [STATUS, 0]);
         let date = DateTime.fromISO(datetime).toFormat(MM_DD_YYYY);
