@@ -62,8 +62,9 @@ const {
   PROFILE,
   STAFF_MEMBERS,
 } = ProfileReduxConstants;
-const { REFERRAL, REFERRAL_REQUEST_NEIGHBOR_MAP } = ReferralReduxConstants;
+const { AGENCIES, REFERRAL, REFERRAL_REQUEST_NEIGHBOR_MAP } = ReferralReduxConstants;
 const {
+  AGENCY,
   CHARGES,
   CRC_CASE,
   FORM,
@@ -144,6 +145,13 @@ const IntakeForm = () => {
     charges,
     [NAME],
     ['properties', getPageSectionKey(1, 4), 'properties', getEntityAddressKey(0, CHARGES, NAME)]
+  );
+  const agencies :List = useSelector((store) => store.getIn([REFERRAL, AGENCIES], List()));
+  hydratedSchema = hydrateSchema(
+    hydratedSchema,
+    agencies,
+    [NAME],
+    ['properties', getPageSectionKey(1, 4), 'properties', getEntityAddressKey(0, AGENCY, NAME)]
   );
 
   const prepopulatedFormData = useMemo(() => populateFormData(
