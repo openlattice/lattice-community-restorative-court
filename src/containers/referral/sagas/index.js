@@ -1,4 +1,5 @@
 // @flow
+export * from './getAgencies';
 export * from './getCRCPeople';
 export * from './getCharges';
 export * from './getOrganizations';
