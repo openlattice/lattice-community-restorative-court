@@ -21,6 +21,7 @@ import { GET_REFERRAL_REQUEST_NEIGHBORS, getReferralRequestNeighbors } from '../
 
 const { FQN } = Models;
 const {
+  AGENCY,
   DA_CASE,
   OFFENSE,
   OFFICERS,
@@ -40,6 +41,7 @@ function* getReferralRequestNeighborsWorker(action :SequenceAction) :Saga<*> {
     const { value } = action;
     const referralRequestEKIDs :UUID[] = value;
 
+    const agencyESID :UUID = yield select(selectEntitySetId(AGENCY));
     const daCaseESID :UUID = yield select(selectEntitySetId(DA_CASE));
     const offenseESID :UUID = yield select(selectEntitySetId(OFFENSE));
     const officersESID :UUID = yield select(selectEntitySetId(OFFICERS));
@@ -47,7 +49,7 @@ function* getReferralRequestNeighborsWorker(action :SequenceAction) :Saga<*> {
 
     const filter = {
       entityKeyIds: referralRequestEKIDs,
-      destinationEntitySetIds: [officersESID],
+      destinationEntitySetIds: [agencyESID, officersESID],
       sourceEntitySetIds: [daCaseESID, offenseESID],
     };
 
