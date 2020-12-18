@@ -10,11 +10,12 @@ const { OPENLATTICE_ID_FQN } = Constants;
 
 const { getEntityAddressKey, getPageSectionKey } = DataProcessingUtils;
 const { STAFF, STATUS } = AppTypes;
-const { DESCRIPTION, EFFECTIVE_DATE } = PropertyTypes;
+const { EFFECTIVE_DATE, NOTES } = PropertyTypes;
 const {
   ACCEPTANCE,
   CIRCLE,
   CLOSED,
+  REASONS_FOR_CLOSED_CASE,
   RESOLUTION,
 } = CaseStatusConstants;
 
@@ -59,9 +60,10 @@ const schema = {
                 [STATUS_EAK]: {
                   enum: [CLOSED]
                 },
-                [getEntityAddressKey(0, STATUS, DESCRIPTION)]: {
+                [getEntityAddressKey(0, STATUS, NOTES)]: {
                   type: 'string',
                   title: 'Reason for closing case',
+                  enum: REASONS_FOR_CLOSED_CASE,
                 }
               }
             },
@@ -99,7 +101,7 @@ const uiSchema = {
     [STATUS_EAK]: {
       classNames: 'column-span-12',
     },
-    [getEntityAddressKey(0, STATUS, DESCRIPTION)]: {
+    [getEntityAddressKey(0, STATUS, NOTES)]: {
       classNames: 'column-span-12',
     },
     [getEntityAddressKey(0, STATUS, EFFECTIVE_DATE)]: {

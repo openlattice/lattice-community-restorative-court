@@ -12,9 +12,10 @@ const { OPENLATTICE_ID_FQN } = Constants;
 const { INTAKE_FORM } = FormConstants;
 const { INTAKE } = CaseStatusConstants;
 const {
+  CHARGES,
+  CHARGE_EVENT,
   DA_CASE,
   FORM,
-  OFFENSE,
   OFFICERS,
   ORGANIZATIONS,
   PEOPLE,
@@ -28,7 +29,6 @@ const {
   DATETIME_ADMINISTERED,
   DATETIME_COMPLETED,
   DA_CASE_NUMBER,
-  DESCRIPTION,
   DOB,
   EFFECTIVE_DATE,
   ETHNICITY,
@@ -178,10 +178,17 @@ const dataSchema = {
           title: 'Date of Incident',
           format: 'date'
         },
-        [getEntityAddressKey(0, OFFENSE, DESCRIPTION)]: {
+        [getEntityAddressKey(0, CHARGES, NAME)]: {
           type: 'string',
-          title: 'Offense',
+          title: 'Charge',
+          enum: [],
+          enumNames: []
         },
+        [getEntityAddressKey(0, CHARGE_EVENT, DATETIME_COMPLETED)]: {
+          type: 'string',
+          title: 'Charge date',
+          format: 'date'
+        }
       },
     },
     [getPageSectionKey(1, 5)]: {
@@ -325,9 +332,12 @@ const uiSchema = {
     [getEntityAddressKey(0, DA_CASE, GENERAL_DATETIME)]: {
       classNames: 'column-span-4'
     },
-    [getEntityAddressKey(0, OFFENSE, DESCRIPTION)]: {
-      classNames: 'column-span-4'
+    [getEntityAddressKey(0, CHARGES, NAME)]: {
+      classNames: 'column-span-4',
     },
+    [getEntityAddressKey(0, CHARGE_EVENT, DATETIME_COMPLETED)]: {
+      classNames: 'column-span-4'
+    }
   },
   [getPageSectionKey(1, 5)]: {
     classNames: 'column-span-12 grid-container',
