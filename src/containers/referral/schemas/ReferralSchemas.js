@@ -12,6 +12,7 @@ const { OPENLATTICE_ID_FQN } = Constants;
 const { REFERRAL_FORM } = FormConstants;
 const { REFERRAL } = CaseStatusConstants;
 const {
+  AGENCY,
   CHARGES,
   CHARGE_EVENT,
   CRC_CASE,
@@ -42,7 +43,6 @@ const {
   ORGANIZATION_NAME,
   PRONOUN,
   RACE,
-  SOURCE,
   SURNAME,
 } = PropertyTypes;
 
@@ -69,9 +69,11 @@ const dataSchema = {
           type: 'string',
           title: 'Officer Last Name',
         },
-        [getEntityAddressKey(0, REFERRAL_REQUEST, SOURCE)]: {
+        [getEntityAddressKey(0, AGENCY, NAME)]: {
           type: 'string',
           title: 'Referring Agency',
+          enum: [],
+          enumNames: []
         },
         [getEntityAddressKey(0, DA_CASE, DA_CASE_NUMBER)]: {
           type: 'string',
@@ -101,7 +103,7 @@ const dataSchema = {
       required: [
         getEntityAddressKey(0, REFERRAL_REQUEST, DATETIME_COMPLETED),
         getEntityAddressKey(0, DA_CASE, CASE_NUMBER),
-        getEntityAddressKey(0, REFERRAL_REQUEST, SOURCE),
+        getEntityAddressKey(0, AGENCY, NAME),
       ]
     },
     [getPageSectionKey(1, 2)]: {
@@ -261,8 +263,9 @@ const uiSchema = {
     [getEntityAddressKey(0, OFFICERS, SURNAME)]: {
       classNames: 'column-span-4'
     },
-    [getEntityAddressKey(0, REFERRAL_REQUEST, SOURCE)]: {
-      classNames: 'column-span-4'
+    [getEntityAddressKey(0, AGENCY, NAME)]: {
+      classNames: 'column-span-4',
+      'ui:options': { creatable: true }
     },
     [getEntityAddressKey(0, DA_CASE, DA_CASE_NUMBER)]: {
       classNames: 'column-span-4'

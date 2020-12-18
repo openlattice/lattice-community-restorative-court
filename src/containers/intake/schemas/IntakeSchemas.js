@@ -12,6 +12,7 @@ const { OPENLATTICE_ID_FQN } = Constants;
 const { INTAKE_FORM } = FormConstants;
 const { INTAKE } = CaseStatusConstants;
 const {
+  AGENCY,
   CHARGES,
   CHARGE_EVENT,
   DA_CASE,
@@ -40,7 +41,6 @@ const {
   ORGANIZATION_NAME,
   PRONOUN,
   RACE,
-  SOURCE,
   SURNAME,
 } = PropertyTypes;
 
@@ -161,7 +161,7 @@ const dataSchema = {
           type: 'string',
           title: 'Officer Last Name',
         },
-        [getEntityAddressKey(0, REFERRAL_REQUEST, SOURCE)]: {
+        [getEntityAddressKey(0, AGENCY, NAME)]: {
           type: 'string',
           title: 'Referring Agency',
         },
@@ -320,7 +320,7 @@ const uiSchema = {
     [getEntityAddressKey(0, OFFICERS, SURNAME)]: {
       classNames: 'column-span-4'
     },
-    [getEntityAddressKey(0, REFERRAL_REQUEST, SOURCE)]: {
+    [getEntityAddressKey(0, AGENCY, NAME)]: {
       classNames: 'column-span-4'
     },
     [getEntityAddressKey(0, DA_CASE, DA_CASE_NUMBER)]: {
