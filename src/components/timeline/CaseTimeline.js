@@ -25,7 +25,6 @@ const {
   DATETIME_COMPLETED,
   EFFECTIVE_DATE,
   NOTES,
-  SOURCE,
   STATUS,
 } = PropertyTypes;
 const { CLOSED, REFERRAL } = CaseStatusConstants;
@@ -43,12 +42,18 @@ const TimelineContentWrapper = styled.div`
 `;
 
 type Props = {
+  agencyName :string;
   caseStatuses :List;
   referralRequest :?Map;
   staffMemberByStatusEKID :Map;
 };
 
-const CaseTimeline = ({ caseStatuses, referralRequest, staffMemberByStatusEKID } :Props) => (
+const CaseTimeline = ({
+  agencyName,
+  caseStatuses,
+  referralRequest,
+  staffMemberByStatusEKID,
+} :Props) => (
   <Timeline>
     {
       caseStatuses.map((caseStatus :Map) => {
@@ -63,7 +68,6 @@ const CaseTimeline = ({ caseStatuses, referralRequest, staffMemberByStatusEKID }
         }
 
         const staffMemberWhoRecordedStatus :Map = staffMemberByStatusEKID.get(caseStatusEKID, Map());
-        const referralSource = getPropertyValue(referralRequest, [SOURCE, 0]);
 
         return (
           <TimelineItem key={caseStatusEKID}>
@@ -78,7 +82,7 @@ const CaseTimeline = ({ caseStatuses, referralRequest, staffMemberByStatusEKID }
                   <Typography variant="overline">{status}</Typography>
                   <Typography variant="body1">
                     {status === CLOSED && description}
-                    {(status === REFERRAL && isDefined(referralRequest)) && referralSource}
+                    {(status === REFERRAL && isDefined(referralRequest)) && agencyName}
                     {(status !== CLOSED
                         && status !== REFERRAL
                         && !staffMemberWhoRecordedStatus.isEmpty())
