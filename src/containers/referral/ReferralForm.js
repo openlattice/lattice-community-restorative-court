@@ -17,6 +17,7 @@ import type { UUID } from 'lattice';
 
 import {
   SUBMIT_REFERRAL_FORM,
+  getAgencies,
   getCRCPeople,
   getCharges,
   getOrganizations,
@@ -29,6 +30,7 @@ import {
   getStaffInformation,
   getVictimAssociations,
   getVictimInformation,
+  updateFormWithAgency,
   updateFormWithCharges,
 } from './utils';
 
@@ -64,9 +66,15 @@ const {
 } = DataProcessingUtils;
 const { OPENLATTICE_ID_FQN } = Constants;
 const { RESPONDENT } = RoleConstants;
-const { CRC_ORGANIZATIONS, CRC_PEOPLE, REFERRAL } = ReferralReduxConstants;
+const {
+  AGENCIES,
+  CRC_ORGANIZATIONS,
+  CRC_PEOPLE,
+  REFERRAL,
+} = ReferralReduxConstants;
 const { PROFILE, STAFF_MEMBERS } = ProfileReduxConstants;
 const {
+  AGENCY,
   APPEARS_IN,
   CHARGES,
   CRC_CASE,
@@ -81,6 +89,7 @@ const {
   RELATED_TO,
   RESULTS_IN,
   SCREENED_WITH,
+  SENT_FROM,
   STAFF,
   STATUS,
   SUBJECT_OF,
@@ -107,6 +116,7 @@ const ReferralForm = ({ personId } :Props) => {
   const appConfig = useSelector((store :Map) => store.getIn(APP_PATHS.APP_CONFIG));
   useEffect(() => {
     if (appConfig) {
+      dispatch(getAgencies());
       dispatch(getCRCPeople());
       dispatch(getCharges());
       dispatch(getOrganizations());
@@ -155,6 +165,15 @@ const ReferralForm = ({ personId } :Props) => {
     [NAME],
     ['properties', getPageSectionKey(1, 1), 'properties', getEntityAddressKey(0, CHARGES, NAME)]
   );
+  let agencies :List = useSelector((store) => store.getIn([REFERRAL, AGENCIES], List()));
+  // this is to prevent the fabricate error that prevents submission when a dropdown is empty:
+  if (agencies.isEmpty()) agencies = agencies.push(Map().set(NAME, List([''])));
+  hydratedSchema = hydrateSchema(
+    hydratedSchema,
+    agencies,
+    [NAME],
+    ['properties', getPageSectionKey(1, 1), 'properties', getEntityAddressKey(0, AGENCY, NAME)]
+  );
 
   const entitySetIds :Map = useSelector((store) => store.getIn([APP, APP_REDUX_CONSTANTS.ENTITY_SET_IDS]));
   const propertyTypeIds :Map = useSelector((store) => store.getIn([EDM, PROPERTY_TYPE_IDS]));
@@ -170,6 +189,9 @@ const ReferralForm = ({ personId } :Props) => {
 
     let updatedFormData = updateFormWithDateAsDateTime(formData, dateOfReferralPath);
     updatedFormData = updateFormWithDateAsDateTime(updatedFormData, dateOfIncidentPath);
+    const { selectedAgencyEKID, updatedFormData: formDataWithAgency } = updateFormWithAgency(updatedFormData, agencies);
+    updatedFormData = formDataWithAgency;
+    const agencyEKIDOrIndex = selectedAgencyEKID.length ? selectedAgencyEKID : 0;
 
     const { selectedChargeEKID, updatedFormData: formDataWithCharges } = updateFormWithCharges(
       updatedFormData,
@@ -201,6 +223,7 @@ const ReferralForm = ({ personId } :Props) => {
       [RESULTS_IN, 0, REFERRAL_REQUEST, 0, CRC_CASE, {}],
       [SUBJECT_OF, personEKID, PEOPLE, 0, REFERRAL_REQUEST, {}],
       [REGISTERED_FOR, 0, STATUS, 0, REFERRAL_REQUEST, {}],
+      [SENT_FROM, 0, REFERRAL_REQUEST, agencyEKIDOrIndex, AGENCY, {}],
       [SCREENED_WITH, personEKID, PEOPLE, 0, FORM, {}],
       [RELATED_TO, 0, FORM, 0, REFERRAL_REQUEST, {}],
       [RELATED_TO, 0, FORM, 0, CRC_CASE, {}],
