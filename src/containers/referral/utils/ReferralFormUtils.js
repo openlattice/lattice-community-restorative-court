@@ -20,6 +20,7 @@ import { RoleConstants } from '../../profile/src/constants';
 
 const { OPENLATTICE_ID_FQN } = Constants;
 const {
+  AGENCY,
   APPEARS_IN,
   CHARGES,
   CHARGE_EVENT,
@@ -112,6 +113,33 @@ const updateFormWithCharges = (formData :Object, charges :List) => {
     updatedFormData = removeIn(updatedFormData, chargeEventDatePath);
   }
   return { selectedChargeEKID, updatedFormData };
+};
+
+/*
+ * ReferralFormUtils.updateFormWithAgency
+ */
+
+const updateFormWithAgency = (formData :Object, agencies :List) => {
+
+  let updatedFormData = formData;
+
+  const agencyEKIDs = agencies.map((agency :Map) => getEntityKeyId(agency));
+
+  const page1Section1 = getPageSectionKey(1, 1);
+  const agencyNamePath = [page1Section1, getEntityAddressKey(0, AGENCY, NAME)];
+
+  const agencySelected = getIn(updatedFormData, agencyNamePath);
+  let selectedAgencyEKID = '';
+  if (isDefined(agencySelected)) {
+    if (isValidUUID(agencySelected) && agencyEKIDs.includes(agencySelected)) {
+      updatedFormData = removeIn(updatedFormData, agencyNamePath);
+      selectedAgencyEKID = agencySelected;
+    }
+  }
+  else {
+    updatedFormData = removeIn(updatedFormData, agencyNamePath);
+  }
+  return { selectedAgencyEKID, updatedFormData };
 };
 
 /*
@@ -253,5 +281,6 @@ export {
   getStaffInformation,
   getVictimAssociations,
   getVictimInformation,
+  updateFormWithAgency,
   updateFormWithCharges,
 };

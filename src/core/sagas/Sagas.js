@@ -62,6 +62,7 @@ export default function* sagas() :Saga<*> {
     fork(ProfileSagas.submitContactWatcher),
 
     // ReferralSagas
+    fork(ReferralSagas.getAgenciesWatcher),
     fork(ReferralSagas.getCRCPeopleWatcher),
     fork(ReferralSagas.getChargesWatcher),
     fork(ReferralSagas.getOrganizationsWatcher),
