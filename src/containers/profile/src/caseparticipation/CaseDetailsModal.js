@@ -26,7 +26,7 @@ import {
   ModalInnerWrapper,
 } from '../../../../components';
 import { AppTypes, PropertyTypes } from '../../../../core/edm/constants';
-import { APP_PATHS, ProfileReduxConstants } from '../../../../core/redux/constants';
+import { APP_PATHS, ProfileReduxConstants, ReferralReduxConstants } from '../../../../core/redux/constants';
 import { ADD_PEOPLE_TO_CASE, CASE_ID } from '../../../../core/router/Routes';
 import { goToRoute } from '../../../../core/router/RoutingActions';
 import { getPersonName } from '../../../../utils/people';
@@ -41,9 +41,20 @@ const {
   PROFILE,
   STAFF_MEMBER_BY_STATUS_EKID,
 } = ProfileReduxConstants;
+const { REFERRAL, REFERRAL_REQUEST_NEIGHBOR_MAP } = ReferralReduxConstants;
 const { NEUTRAL } = Colors;
-const { FORM, REFERRAL_REQUEST, STATUS } = AppTypes;
-const { DATETIME_ADMINISTERED, EFFECTIVE_DATE, ORGANIZATION_NAME } = PropertyTypes;
+const {
+  AGENCY,
+  FORM,
+  REFERRAL_REQUEST,
+  STATUS,
+} = AppTypes;
+const {
+  DATETIME_ADMINISTERED,
+  EFFECTIVE_DATE,
+  NAME,
+  ORGANIZATION_NAME,
+} = PropertyTypes;
 const { PEACEMAKER, RESPONDENT, VICTIM } = RoleConstants;
 const { CLOSED, RESOLUTION } = CaseStatusConstants;
 const { getEntityKeyId, getPropertyValue } = DataUtils;
@@ -110,6 +121,11 @@ const CaseDetailsModal = ({
     .sortBy((form :Map) => form.getIn([DATETIME_ADMINISTERED, 0])).reverse();
 
   const personCaseNeighborMap = useSelector((store) => store.getIn([PROFILE, PERSON_CASE_NEIGHBOR_MAP]));
+  const referralRequestNeighborMap = useSelector((store) => store.getIn([REFERRAL, REFERRAL_REQUEST_NEIGHBOR_MAP]));
+  const referralRequestEKID :?UUID = getEntityKeyId(referralRequest);
+  const agencyList = referralRequestNeighborMap.getIn([AGENCY, referralRequestEKID], List());
+  const agency :Map = agencyList.get(0, Map());
+  const agencyName = getPropertyValue(agency, [NAME, 0]);
 
   const respondentList :List = caseRoleMap.get(RESPONDENT, List());
   const victimList :List = caseRoleMap.get(VICTIM, List());
@@ -182,6 +198,7 @@ const CaseDetailsModal = ({
             </IconButton>
           </header>
           <CaseTimeline
+              agencyName={agencyName}
               caseStatuses={relevantStatuses}
               referralRequest={referralRequest}
               staffMemberByStatusEKID={staffMemberByStatusEKID} />

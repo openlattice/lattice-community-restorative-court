@@ -10,6 +10,7 @@ import { EMPTY_VALUE, RoleConstants } from '../../profile/src/constants';
 
 const { VICTIM } = RoleConstants;
 const {
+  AGENCY,
   CHARGES,
   CHARGE_EVENT,
   DA_CASE,
@@ -31,7 +32,6 @@ const {
   ORGANIZATION_NAME,
   RACE,
   ROLE,
-  SOURCE,
   SURNAME,
 } = PropertyTypes;
 const { getEntityAddressKey, getPageSectionKey } = DataProcessingUtils;
@@ -56,9 +56,12 @@ const populateFormData = (
 ) :Object => {
 
   const referralRequestEKID :?UUID = getEntityKeyId(referralRequest);
-  const referringSource = getPropertyValue(referralRequest, [SOURCE, 0], EMPTY_VALUE);
   const datetimeOfReferral = getPropertyValue(referralRequest, [DATETIME_COMPLETED, 0], EMPTY_VALUE);
   const dateOfReferral = DateTime.fromISO(datetimeOfReferral).toISODate();
+
+  const agencyList = referralRequestNeighborMap.getIn([AGENCY, referralRequestEKID], List());
+  const agency :Map = agencyList.get(0, Map());
+  const agencyName = getPropertyValue(agency, [NAME, 0], EMPTY_VALUE);
 
   const officerList = referralRequestNeighborMap.getIn([OFFICERS, referralRequestEKID], List());
   const officer :Map = officerList.get(0, Map());
@@ -102,7 +105,7 @@ const populateFormData = (
       [getEntityAddressKey(0, REFERRAL_REQUEST, DATETIME_COMPLETED)]: dateOfReferral,
       [getEntityAddressKey(0, OFFICERS, GIVEN_NAME)]: officerFirstName,
       [getEntityAddressKey(0, OFFICERS, SURNAME)]: officerLastName,
-      [getEntityAddressKey(0, REFERRAL_REQUEST, SOURCE)]: referringSource,
+      [getEntityAddressKey(0, AGENCY, NAME)]: agencyName,
       [getEntityAddressKey(0, DA_CASE, DA_CASE_NUMBER)]: daCaseNumber,
       [getEntityAddressKey(0, DA_CASE, CASE_NUMBER)]: caseNumber,
       [getEntityAddressKey(0, DA_CASE, GENERAL_DATETIME)]: dateOfIncident,
