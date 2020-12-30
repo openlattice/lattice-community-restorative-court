@@ -9,6 +9,7 @@ import { combineReducers } from 'redux-immutable';
 import {
   APP,
   AUTH,
+  DownloadsReduxConstants,
   EDM,
   IntakeReduxConstants,
   ProfileReduxConstants,
@@ -18,6 +19,7 @@ import {
 } from './constants';
 
 import AppReducer from '../../containers/app/reducers';
+import downloadsReducer from '../../containers/downloads/reducers';
 import intakeReducer from '../../containers/intake/reducers';
 import peacemakerReducer from '../../containers/peacemaker/reducers';
 import profileReducer from '../../containers/profile/src/reducers';
@@ -27,6 +29,7 @@ import restitutionReferralReducer from '../../containers/restitutionreferral/red
 import { PEACEMAKER } from '../../containers/peacemaker/reducers/constants';
 import { EDMReducer } from '../edm';
 
+const { DOWNLOADS } = DownloadsReduxConstants;
 const { INTAKE } = IntakeReduxConstants;
 const { PROFILE } = ProfileReduxConstants;
 const { REFERRAL } = ReferralReduxConstants;
@@ -38,6 +41,7 @@ export default function reducer(routerHistory :any) {
   return combineReducers({
     [APP]: AppReducer,
     [AUTH]: AuthReducer,
+    [DOWNLOADS]: downloadsReducer,
     [EDM]: EDMReducer,
     [INTAKE]: intakeReducer,
     [PEACEMAKER]: peacemakerReducer,
