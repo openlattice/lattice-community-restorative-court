@@ -6,6 +6,7 @@ import addCaseStatusReducer from './addCaseStatusReducer';
 import addContactActivityReducer from './addContactActivityReducer';
 import addPeacemakerInformationReducer from './addPeacemakerInformationReducer';
 import addPersonToCaseReducer from './addPersonToCaseReducer';
+import clearSearchedOrganizationsReducer from './clearSearchedOrganizationsReducer';
 import clearSearchedPeopleReducer from './clearSearchedPeopleReducer';
 import editAddressReducer from './editAddressReducer';
 import editContactReducer from './editContactReducer';
@@ -17,6 +18,7 @@ import getPersonNeighborsReducer from './getPersonNeighborsReducer';
 import getPersonReducer from './getPersonReducer';
 import getStaffReducer from './getStaffReducer';
 import loadProfileReducer from './loadProfileReducer';
+import searchOrganizationsReducer from './searchOrganizationsReducer';
 import searchPeopleReducer from './searchPeopleReducer';
 import selectCaseReducer from './selectCaseReducer';
 import submitAddressReducer from './submitAddressReducer';
@@ -35,6 +37,7 @@ import {
   ADD_CASE_STATUS,
   ADD_CONTACT_ACTIVITY,
   ADD_PERSON_TO_CASE,
+  CLEAR_SEARCHED_ORGANIZATIONS,
   CLEAR_SEARCHED_PEOPLE,
   EDIT_ADDRESS,
   EDIT_CONTACT,
@@ -45,6 +48,7 @@ import {
   GET_PERSON_NEIGHBORS,
   GET_STAFF,
   LOAD_PROFILE,
+  SEARCH_ORGANIZATIONS,
   SEARCH_PEOPLE,
   SELECT_CASE,
   SUBMIT_ADDRESS,
@@ -61,6 +65,7 @@ import {
   getPersonNeighbors,
   getStaff,
   loadProfile,
+  searchOrganizations,
   searchPeople,
   submitAddress,
   submitContact,
@@ -70,6 +75,7 @@ const {
   PERSON,
   PERSON_CASE_NEIGHBOR_MAP,
   PERSON_NEIGHBOR_MAP,
+  SEARCHED_ORGANIZATIONS,
   SEARCHED_PEOPLE,
   SELECTED_CASE,
   STAFF_MEMBERS,
@@ -93,6 +99,7 @@ const INITIAL_STATE :Map = fromJS({
   [GET_PERSON_NEIGHBORS]: RS_INITIAL_STATE,
   [GET_STAFF]: RS_INITIAL_STATE,
   [LOAD_PROFILE]: RS_INITIAL_STATE,
+  [SEARCH_ORGANIZATIONS]: RS_INITIAL_STATE,
   [SEARCH_PEOPLE]: RS_INITIAL_STATE,
   [SUBMIT_ADDRESS]: RS_INITIAL_STATE,
   [SUBMIT_CONTACT]: RS_INITIAL_STATE,
@@ -100,6 +107,7 @@ const INITIAL_STATE :Map = fromJS({
   [PERSON]: Map(),
   [PERSON_CASE_NEIGHBOR_MAP]: Map(),
   [PERSON_NEIGHBOR_MAP]: Map(),
+  [SEARCHED_ORGANIZATIONS]: List(),
   [SEARCHED_PEOPLE]: List(),
   [SELECTED_CASE]: Map(),
   [STAFF_MEMBERS]: List(),
@@ -110,6 +118,10 @@ const INITIAL_STATE :Map = fromJS({
 export default function profileReducer(state :Map = INITIAL_STATE, action :Object) {
 
   switch (action.type) {
+
+    case CLEAR_SEARCHED_ORGANIZATIONS: {
+      return clearSearchedOrganizationsReducer(state);
+    }
 
     case CLEAR_SEARCHED_PEOPLE: {
       return clearSearchedPeopleReducer(state);
@@ -164,6 +176,9 @@ export default function profileReducer(state :Map = INITIAL_STATE, action :Objec
 
     case loadProfile.case(action.type):
       return loadProfileReducer(state, action);
+
+    case searchOrganizations.case(action.type):
+      return searchOrganizationsReducer(state, action);
 
     case searchPeople.case(action.type):
       return searchPeopleReducer(state, action);

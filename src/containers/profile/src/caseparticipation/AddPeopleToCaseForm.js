@@ -12,6 +12,7 @@ import {
   Input,
   Label,
   PaginationToolbar,
+  Radio,
   SearchResults,
   Typography,
 } from 'lattice-ui-kit';
@@ -27,27 +28,55 @@ import { selectPerson } from '../../../../core/redux/selectors';
 import { getPersonName } from '../../../../utils/people';
 import { getRelativeRoot } from '../../../../utils/router';
 import { useDispatch, useSelector } from '../../../app/AppProvider';
-import { SEARCH_PEOPLE, clearSearchedPeople, searchPeople } from '../actions';
-import { RoleConstants } from '../constants';
+import {
+  SEARCH_ORGANIZATIONS,
+  SEARCH_PEOPLE,
+  clearSearchedOrganizations,
+  clearSearchedPeople,
+  searchOrganizations,
+  searchPeople,
+} from '../actions';
+import { RoleConstants, SearchContextConstants } from '../constants';
 
 const { getEntityKeyId, getPropertyValue } = DataUtils;
-const { isFailure, isPending, isSuccess } = ReduxUtils;
-const { DOB, NOTES, ROLE } = PropertyTypes;
+const {
+  isFailure,
+  isPending,
+  isSuccess,
+  reduceRequestStates,
+} = ReduxUtils;
+const {
+  DOB,
+  NOTES,
+  ORGANIZATION_NAME,
+  ROLE,
+} = PropertyTypes;
 const {
   PERSON_CASE_NEIGHBOR_MAP,
   PROFILE,
+  SEARCHED_ORGANIZATIONS,
   SEARCHED_PEOPLE,
   SELECTED_CASE,
   TOTAL_HITS,
 } = ProfileReduxConstants;
-const { PEACEMAKER, RESPONDENT, VICTIM } = RoleConstants;
+const {
+  CASE_MANAGER,
+  PEACEMAKER,
+  RESPONDENT,
+  VICTIM,
+} = RoleConstants;
+const { ORGS_CONTEXT, PEOPLE_CONTEXT, STAFF_CONTEXT } = SearchContextConstants;
 const { NEUTRAL } = Colors;
 
 const MAX_HITS = 10;
 
-const labels = Map({
+const personLabels = Map({
   name: 'Name',
   personDOB: 'Date of Birth',
+});
+
+const orgLabels = Map({
+  name: 'Organization Name',
 });
 
 const SearchGrid = styled.div`
@@ -69,6 +98,13 @@ const CaseRoleTextWrapper = styled.div`
   color: ${NEUTRAL.N500};
 `;
 
+const ButtonGrid = styled.div`
+  display: grid;
+  grid-gap: 15px;
+  grid-template-columns: repeat(3, 200px);
+  margin-bottom: 40px;
+`;
+
 const AddPeopleToCaseForm = () => {
 
   const personCase :Map = useSelector((store) => store.getIn([PROFILE, SELECTED_CASE]));
@@ -85,14 +121,25 @@ const AddPeopleToCaseForm = () => {
   const peacemakerPersonName = getPersonName(peacemakerPerson);
   const peacemakerText = `Peacemaker: ${peacemakerPersonName}`;
   const victims = caseRoleMap.get(VICTIM, List());
-  const victimNames = victims.map((victim) => getPersonName(victim)).toJS();
+  const victimNames = victims.map((victim) => {
+    if (victim.has(ORGANIZATION_NAME)) return getPropertyValue(victim, [ORGANIZATION_NAME, 0]);
+    return getPersonName(victim);
+  }).toJS();
   const victimText = `Victims: ${victimNames.join(', ')}`;
+  const caseManagers = caseRoleMap.get(CASE_MANAGER, List());
+  const caseManagerName = getPersonName(caseManagers.get(0, Map()));
+  const caseManagerText = `Case Manager: ${caseManagerName}`;
 
-  const [formInputs, setFormInputs] = useState({ firstName: '', lastName: '' });
+  const [searchContext, setSearchContext] = useState(PEOPLE_CONTEXT);
+  const [formInputs, setFormInputs] = useState({ firstName: '', lastName: '', organizationName: '' });
   const [dob, setDOB] = useState('');
   const [page, setPage] = useState(1);
   const [modalIsVisible, setModalVisibility] = useState(false);
   const [selectedPerson, selectPersonForModal] = useState(Map());
+  const [selectedOrganization, selectOrganizationForModal] = useState(Map());
+
+  const isPersonContext = searchContext === PEOPLE_CONTEXT || searchContext === STAFF_CONTEXT;
+  const isOrgContext = searchContext === ORGS_CONTEXT;
 
   const onInputChange = (e :SyntheticEvent<HTMLInputElement>) => {
     const { name, value } = e.currentTarget;
@@ -108,12 +155,23 @@ const AddPeopleToCaseForm = () => {
       firstName: formInputs.firstName,
       lastName: formInputs.lastName,
       maxHits: MAX_HITS,
+      searchContext,
       start,
     }));
   };
 
+  const searchOrganizationsForCase = (e :SyntheticEvent<HTMLInputElement> | void, startIndex :?number) => {
+    const start = startIndex || 0;
+    dispatch(searchOrganizations({ organizationName: formInputs.organizationName, maxHits: MAX_HITS, start }));
+  };
+
   const onPageChange = ({ page: newPage, start } :Object) => {
-    searchPeopleForCase(undefined, start);
+    if (isPersonContext) {
+      searchPeopleForCase(undefined, start);
+    }
+    if (isOrgContext) {
+      searchOrganizationsForCase(undefined, start);
+    }
     setPage(newPage);
   };
 
@@ -125,22 +183,40 @@ const AddPeopleToCaseForm = () => {
   const relativeRoot = getRelativeRoot(root, match);
 
   const searchedPeople :List = useSelector((store) => store.getIn([PROFILE, SEARCHED_PEOPLE]));
+  const searchedOrganizations :List = useSelector((store) => store.getIn([PROFILE, SEARCHED_ORGANIZATIONS]));
   const totalHits :List = useSelector((store) => store.getIn([PROFILE, TOTAL_HITS]));
-  const data = searchedPeople.map((searchedPerson :Map) => {
-    const name = getPersonName(searchedPerson);
-    const personDOB = getPropertyValue(searchedPerson, [DOB, 0]);
-    return Map({ name, person: searchedPerson, personDOB });
-  });
+
+  const data = (isPersonContext)
+    ? searchedPeople.map((searchedPerson :Map) => {
+      const name = getPersonName(searchedPerson);
+      const personDOB = getPropertyValue(searchedPerson, [DOB, 0]);
+      return Map({ name, person: searchedPerson, personDOB });
+    })
+    : searchedOrganizations.map((searchedOrg :Map) => {
+      const name = getPropertyValue(searchedOrg, [ORGANIZATION_NAME, 0]);
+      return Map({ name, organization: searchedOrg });
+    });
 
   const searchPeopleRequestState = useSelector((store) => store.getIn([PROFILE, SEARCH_PEOPLE, REQUEST_STATE]));
-  const isSearching :boolean = isPending(searchPeopleRequestState);
-  const hasSearched :boolean = isFailure(searchPeopleRequestState) || isSuccess(searchPeopleRequestState);
+  const searchOrganizationsRequestState = useSelector((store) => store
+    .getIn([PROFILE, SEARCH_ORGANIZATIONS, REQUEST_STATE]));
+  const reducedSearchRequestStates = reduceRequestStates([searchPeopleRequestState, searchOrganizationsRequestState]);
+  const isSearching :boolean = isPending(reducedSearchRequestStates);
+  const hasSearched :boolean = isFailure(reducedSearchRequestStates) || isSuccess(reducedSearchRequestStates);
 
   useEffect(() => {
     const resetSearchedPeopleList = () => {
       dispatch(clearSearchedPeople());
     };
     return resetSearchedPeopleList;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    const resetSearchedOrgsList = () => {
+      dispatch(clearSearchedOrganizations());
+    };
+    return resetSearchedOrgsList;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -157,7 +233,7 @@ const AddPeopleToCaseForm = () => {
         </Crumbs>
         <Typography variant="h1">Add People to Case</Typography>
         <Typography gutterBottom>
-          Search for someone to add as a victim or peacemaker to this case.
+          Search for someone to add as a victim, peacemaker, or case manager to this case.
         </Typography>
         <Typography variant="body2" gutterBottom>{ caseIdentifier }</Typography>
         <CaseRoleTextWrapper>
@@ -169,42 +245,88 @@ const AddPeopleToCaseForm = () => {
         <CaseRoleTextWrapper>
           <Typography color="inherit" variant="body2" gutterBottom>{ victimText }</Typography>
         </CaseRoleTextWrapper>
+        <CaseRoleTextWrapper>
+          <Typography color="inherit" variant="body2" gutterBottom>{ caseManagerText }</Typography>
+        </CaseRoleTextWrapper>
       </CardSegment>
       <Card>
         <CardSegment padding="30px">
-          <Typography variant="h5">Search People</Typography>
-          <SearchGrid>
-            <span>
-              <Label>First name</Label>
-              <Input
-                  name="firstName"
-                  onChange={onInputChange} />
-            </span>
-            <span>
-              <Label>Last name</Label>
-              <Input
-                  name="lastName"
-                  onChange={onInputChange} />
-            </span>
-            <span>
-              <Label>Date of birth</Label>
-              <DatePicker onChange={(date :string) => setDOB(date)} />
-            </span>
-            <span>
-              <Button
-                  arialabelledby="searchPeople"
-                  isLoading={isSearching}
-                  onClick={searchPeopleForCase}>
-                Search
-              </Button>
-            </span>
-          </SearchGrid>
+          <ButtonGrid>
+            <Radio
+                checked={searchContext === PEOPLE_CONTEXT}
+                label="Search People"
+                mode="button"
+                onChange={() => setSearchContext(PEOPLE_CONTEXT)}
+                name={PEOPLE_CONTEXT} />
+            <Radio
+                checked={isOrgContext}
+                label="Search Organizations"
+                mode="button"
+                onChange={() => setSearchContext(ORGS_CONTEXT)}
+                name={ORGS_CONTEXT} />
+            <Radio
+                checked={searchContext === STAFF_CONTEXT}
+                label="Search Staff"
+                mode="button"
+                onChange={() => setSearchContext(STAFF_CONTEXT)}
+                name={STAFF_CONTEXT} />
+          </ButtonGrid>
+          {
+            (isPersonContext) && (
+              <SearchGrid>
+                <span>
+                  <Label>First name</Label>
+                  <Input
+                      name="firstName"
+                      onChange={onInputChange} />
+                </span>
+                <span>
+                  <Label>Last name</Label>
+                  <Input
+                      name="lastName"
+                      onChange={onInputChange} />
+                </span>
+                <span>
+                  <Label>Date of birth</Label>
+                  <DatePicker onChange={(date :string) => setDOB(date)} />
+                </span>
+                <span>
+                  <Button
+                      arialabelledby="searchPeople"
+                      isLoading={isSearching}
+                      onClick={searchPeopleForCase}>
+                    Search
+                  </Button>
+                </span>
+              </SearchGrid>
+            )
+          }
+          {
+            isOrgContext && (
+              <SearchGrid>
+                <span>
+                  <Label>Organization Name</Label>
+                  <Input
+                      name="organizationName"
+                      onChange={onInputChange} />
+                </span>
+                <span>
+                  <Button
+                      arialabelledby="searchOrganizations"
+                      isLoading={isSearching}
+                      onClick={searchOrganizationsForCase}>
+                    Search
+                  </Button>
+                </span>
+              </SearchGrid>
+            )
+          }
         </CardSegment>
       </Card>
       {
         (hasSearched && !data.isEmpty()) && (
           <CardSegment>
-            <Typography gutterBottom>Click on a participant to select a role and add them to the case.</Typography>
+            <Typography gutterBottom>Click on a result to select a role and add them to the case.</Typography>
             <PaginationToolbar
                 count={totalHits}
                 onPageChange={onPageChange}
@@ -216,16 +338,23 @@ const AddPeopleToCaseForm = () => {
       <SearchResults
           hasSearched={hasSearched}
           isLoading={isSearching}
-          onResultClick={(clickedPerson :Map) => {
-            selectPersonForModal(clickedPerson.get('person'));
+          onResultClick={(clickedEntity :Map) => {
+            if (isPersonContext) {
+              selectPersonForModal(clickedEntity.get('person'));
+            }
+            if (isOrgContext) {
+              selectOrganizationForModal(clickedEntity.get('organization'));
+            }
             setModalVisibility(true);
           }}
-          resultLabels={labels}
+          resultLabels={isOrgContext ? orgLabels : personLabels}
           results={data} />
       <AddPersonToCaseModal
           isVisible={modalIsVisible}
           onClose={() => setModalVisibility(false)}
           personCase={personCase}
+          searchContext={searchContext}
+          selectedOrganization={selectedOrganization}
           selectedPerson={selectedPerson} />
     </>
   );

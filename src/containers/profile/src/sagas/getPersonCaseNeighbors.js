@@ -68,12 +68,21 @@ function* getPersonCaseNeighborsWorker(action :SequenceAction) :Saga<*> {
     const organizationsESID :UUID = yield select(selectEntitySetId(ORGANIZATIONS));
     const peopleESID :UUID = yield select(selectEntitySetId(PEOPLE));
     const referralRequestESID :UUID = yield select(selectEntitySetId(REFERRAL_REQUEST));
+    const staffESID :UUID = yield select(selectEntitySetId(STAFF));
     const statusESID :UUID = yield select(selectEntitySetId(STATUS));
 
     let filter = {
       entityKeyIds: personCaseEKIDs,
       destinationEntitySetIds: [statusESID],
-      sourceEntitySetIds: [chargesESID, chargeEventESID, formESID, organizationsESID, peopleESID, referralRequestESID],
+      sourceEntitySetIds: [
+        chargesESID,
+        chargeEventESID,
+        formESID,
+        organizationsESID,
+        peopleESID,
+        referralRequestESID,
+        staffESID
+      ],
     };
 
     let response :Object = yield call(
@@ -118,7 +127,7 @@ function* getPersonCaseNeighborsWorker(action :SequenceAction) :Saga<*> {
             formEKIDs.push(entityEKID);
             caseEKIDByFormEKID.set(entityEKID, caseEKID);
           }
-          else if (neighborESID === peopleESID || neighborESID === organizationsESID) {
+          else if (neighborESID === peopleESID || neighborESID === organizationsESID || neighborESID === staffESID) {
             const associationDetails = getAssociationDetails(neighbor);
             const role = getPropertyValue(associationDetails, [ROLE, 0]);
             const roleMap = mutator.get(ROLE, Map())
@@ -165,8 +174,6 @@ function* getPersonCaseNeighborsWorker(action :SequenceAction) :Saga<*> {
         });
       });
     });
-
-    const staffESID :UUID = yield select(selectEntitySetId(STAFF));
 
     if (formEKIDs.length) {
       filter = {

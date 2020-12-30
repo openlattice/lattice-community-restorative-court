@@ -12,6 +12,11 @@ const addContactActivity :RequestSequence = newRequestSequence(ADD_CONTACT_ACTIV
 const ADD_PERSON_TO_CASE :'ADD_PERSON_TO_CASE' = 'ADD_PERSON_TO_CASE';
 const addPersonToCase :RequestSequence = newRequestSequence(ADD_PERSON_TO_CASE);
 
+const CLEAR_SEARCHED_ORGANIZATIONS :'CLEAR_SEARCHED_ORGANIZATIONS' = 'CLEAR_SEARCHED_ORGANIZATIONS';
+const clearSearchedOrganizations = () => ({
+  type: CLEAR_SEARCHED_ORGANIZATIONS
+});
+
 const CLEAR_SEARCHED_PEOPLE :'CLEAR_SEARCHED_PEOPLE' = 'CLEAR_SEARCHED_PEOPLE';
 const clearSearchedPeople = () => ({
   type: CLEAR_SEARCHED_PEOPLE
@@ -44,6 +49,9 @@ const getStaff :RequestSequence = newRequestSequence(GET_STAFF);
 const LOAD_PROFILE :'LOAD_PROFILE' = 'LOAD_PROFILE';
 const loadProfile :RequestSequence = newRequestSequence(LOAD_PROFILE);
 
+const SEARCH_ORGANIZATIONS :'SEARCH_ORGANIZATIONS' = 'SEARCH_ORGANIZATIONS';
+const searchOrganizations :RequestSequence = newRequestSequence(SEARCH_ORGANIZATIONS);
+
 const SEARCH_PEOPLE :'SEARCH_PEOPLE' = 'SEARCH_PEOPLE';
 const searchPeople :RequestSequence = newRequestSequence(SEARCH_PEOPLE);
 
@@ -63,6 +71,7 @@ export {
   ADD_CASE_STATUS,
   ADD_CONTACT_ACTIVITY,
   ADD_PERSON_TO_CASE,
+  CLEAR_SEARCHED_ORGANIZATIONS,
   CLEAR_SEARCHED_PEOPLE,
   EDIT_ADDRESS,
   EDIT_CONTACT,
@@ -73,6 +82,7 @@ export {
   GET_PERSON_NEIGHBORS,
   GET_STAFF,
   LOAD_PROFILE,
+  SEARCH_ORGANIZATIONS,
   SEARCH_PEOPLE,
   SELECT_CASE,
   SUBMIT_ADDRESS,
@@ -80,6 +90,7 @@ export {
   addCaseStatus,
   addContactActivity,
   addPersonToCase,
+  clearSearchedOrganizations,
   clearSearchedPeople,
   editAddress,
   editContact,
@@ -90,6 +101,7 @@ export {
   getPersonNeighbors,
   getStaff,
   loadProfile,
+  searchOrganizations,
   searchPeople,
   selectCase,
   submitAddress,

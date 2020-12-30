@@ -15,9 +15,17 @@ import { createOrReplaceAssociationWorker } from '../../../../core/data/sagas';
 import { AppTypes, PropertyTypes } from '../../../../core/edm/constants';
 import { selectEntitySetId, selectPropertyTypeId } from '../../../../core/redux/selectors';
 import { ADD_PERSON_TO_CASE, addPersonToCase } from '../actions';
+import { SearchContextConstants } from '../constants';
 
-const { APPEARS_IN, CRC_CASE, PEOPLE } = AppTypes;
+const {
+  APPEARS_IN,
+  CRC_CASE,
+  ORGANIZATIONS,
+  PEOPLE,
+  STAFF,
+} = AppTypes;
 const { ROLE } = PropertyTypes;
+const { ORGS_CONTEXT, STAFF_CONTEXT } = SearchContextConstants;
 
 const LOG = new Logger('ProfileSagas');
 
@@ -28,11 +36,26 @@ function* addPersonToCaseWorker(action :SequenceAction) :Saga<WorkerResponse> {
 
   try {
     yield put(addPersonToCase.request(id));
-    const { caseEKID, personEKID, role } = value;
+    const {
+      caseEKID,
+      entityEKID,
+      role,
+      searchContext,
+    } = value;
 
     const appearsInESID = yield select(selectEntitySetId(APPEARS_IN));
     const crcCaseESID = yield select(selectEntitySetId(CRC_CASE));
     const peopleESID = yield select(selectEntitySetId(PEOPLE));
+    const staffESID = yield select(selectEntitySetId(STAFF));
+    const organizationsESID = yield select(selectEntitySetId(ORGANIZATIONS));
+
+    let srcESID = peopleESID;
+    if (searchContext === STAFF_CONTEXT) {
+      srcESID = staffESID;
+    }
+    if (searchContext === ORGS_CONTEXT) {
+      srcESID = organizationsESID;
+    }
 
     const rolePTID = yield select(selectPropertyTypeId(ROLE));
 
@@ -41,8 +64,8 @@ function* addPersonToCaseWorker(action :SequenceAction) :Saga<WorkerResponse> {
         {
           data: { [rolePTID]: [role] },
           src: {
-            entitySetId: peopleESID,
-            entityKeyId: personEKID
+            entitySetId: srcESID,
+            entityKeyId: entityEKID
           },
           dst: {
             entitySetId: crcCaseESID,
