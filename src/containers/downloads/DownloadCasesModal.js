@@ -29,9 +29,9 @@ type Props = {
 
 const DownloadCasesModal = ({ isVisible, onClose, staff } :Props) => {
 
-  const [selectedStaffMember, selectStaffMember] = useState('');
-  const [openCasesIncluded, includeOpenCases] = useState(false);
-  const [closedCasesIncluded, includeClosedCases] = useState(false);
+  const [selectedStaffMember, setStaffMember] = useState('');
+  const [hasOpenCases, setHasOpenCases] = useState(false);
+  const [hasClosedCases, setHasClosedCases] = useState(false);
 
   const staffOptions = staff.map((staffMember :Map) => {
     const staffMemberName = getPersonName(staffMember);
@@ -43,16 +43,16 @@ const DownloadCasesModal = ({ isVisible, onClose, staff } :Props) => {
 
   const dispatch = useDispatch();
   const downloadReport = () => {
-    dispatch(downloadCases({ closedCasesIncluded, openCasesIncluded, selectedStaffMember }));
+    dispatch(downloadCases({ hasClosedCases, hasOpenCases, selectedStaffMember }));
   };
 
   const downloadRequestState = useSelector((store) => store.getIn([DOWNLOADS, DOWNLOAD_CASES, REQUEST_STATE]));
 
   useEffect(() => {
     if (isSuccess(downloadRequestState)) {
-      selectStaffMember('');
-      includeOpenCases(false);
-      includeClosedCases(false);
+      setStaffMember('');
+      setHasOpenCases(false);
+      setHasClosedCases(false);
       dispatch(resetRequestState([DOWNLOAD_CASES]));
       onClose();
     }
@@ -73,12 +73,12 @@ const DownloadCasesModal = ({ isVisible, onClose, staff } :Props) => {
       <Label>Include:</Label>
       <Checkbox
           label="Open Cases"
-          onChange={() => includeOpenCases(!openCasesIncluded)} />
+          onChange={() => setHasOpenCases(!hasOpenCases)} />
       <Checkbox
           label="Closed Cases"
-          onChange={() => includeClosedCases(!closedCasesIncluded)} />
+          onChange={() => setHasClosedCases(!hasClosedCases)} />
       <Label>Optional: Choose a staff member to select only their cases.</Label>
-      <Select onChange={(option) => selectStaffMember(option.value)} options={staffOptions} />
+      <Select onChange={(option) => setStaffMember(option.value)} options={staffOptions} />
     </ActionModal>
   );
 };

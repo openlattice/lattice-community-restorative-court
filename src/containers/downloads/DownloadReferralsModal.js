@@ -39,9 +39,9 @@ type Props = {
 
 const DownloadReferralsByAgencyModal = ({ agencies, isVisible, onClose } :Props) => {
 
-  const [startDate, selectStartDate] = useState('');
-  const [endDate, selectEndDate] = useState('');
-  const [selectedAgency, selectAgency] = useState(Map());
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
+  const [selectedAgency, setAgency] = useState(Map());
 
   const agencyOptions = agencies.map((agency :Map) => {
     const agencyName = getPropertyValue(agency, [NAME, 0]);
@@ -60,9 +60,9 @@ const DownloadReferralsByAgencyModal = ({ agencies, isVisible, onClose } :Props)
     .getIn([DOWNLOADS, DOWNLOAD_REFERRALS, REQUEST_STATE]));
   useEffect(() => {
     if (isSuccess(downloadRequestState)) {
-      selectStartDate('');
-      selectEndDate('');
-      selectAgency(Map());
+      setStartDate('');
+      setEndDate('');
+      setAgency(Map());
       dispatch(resetRequestState([DOWNLOAD_REFERRALS]));
       onClose();
     }
@@ -81,11 +81,11 @@ const DownloadReferralsByAgencyModal = ({ agencies, isVisible, onClose } :Props)
         textTitle="Download Referrals"
         viewportScrolling>
       <Label>Optional: Choose an agency to download a report of all its referrals.</Label>
-      <Select onChange={(option) => selectAgency(option.value)} options={agencyOptions} />
+      <Select onChange={(option) => setAgency(option.value)} options={agencyOptions} />
       <Label>Optional: Date range for referral date:</Label>
       <DatePickerGrid>
-        <DatePicker onChange={(date) => selectStartDate(date)} />
-        <DatePicker onChange={(date) => selectEndDate(date)} />
+        <DatePicker onChange={(date) => setStartDate(date)} />
+        <DatePicker onChange={(date) => setEndDate(date)} />
       </DatePickerGrid>
     </ActionModal>
   );
