@@ -6,6 +6,7 @@ import { all, fork } from '@redux-saga/core/effects';
 import { AuthSagas } from 'lattice-auth';
 import type { Saga } from '@redux-saga/core';
 
+import * as DashboardSagas from '../../containers/dashboard/sagas';
 import * as DataSagas from '../data/sagas';
 import * as DownloadsSagas from '../../containers/downloads/sagas';
 import * as IntakeSagas from '../../containers/intake/sagas';
@@ -30,6 +31,9 @@ export default function* sagas() :Saga<*> {
 
     // AppSagas
     fork(AppSagas.initializeApplicationWatcher),
+
+    // DashboardSagas
+    fork(DashboardSagas.getStaffCasesDataWatcher),
 
     // DataSagas
     fork(DataSagas.submitDataGraphWatcher),
