@@ -85,7 +85,7 @@ function* downloadCasesWorker(action :SequenceAction) :Saga<*> {
   try {
     yield put(downloadCases.request(id));
 
-    const { closedCasesIncluded, openCasesIncluded, selectedStaffMember } = action.value;
+    const { hasClosedCases, hasOpenCases, selectedStaffMember } = action.value;
 
     const crcCaseESID :UUID = yield select(selectEntitySetId(CRC_CASE));
 
@@ -130,8 +130,8 @@ function* downloadCasesWorker(action :SequenceAction) :Saga<*> {
       const statusIndicatingCompletion = statusList
         .find((status :Map) => getPropertyValue(status, [PropertyTypes.STATUS, 0]) === CLOSED
         || getPropertyValue(status, [PropertyTypes.STATUS, 0]) === RESOLUTION);
-      if (!openCasesIncluded && closedCasesIncluded) return isDefined(statusIndicatingCompletion);
-      if (!closedCasesIncluded && openCasesIncluded) return !isDefined(statusIndicatingCompletion);
+      if (!hasOpenCases && hasClosedCases) return isDefined(statusIndicatingCompletion);
+      if (!hasClosedCases && hasOpenCases) return !isDefined(statusIndicatingCompletion);
       return crcCase;
     });
 
@@ -203,10 +203,10 @@ function* downloadCasesWorker(action :SequenceAction) :Saga<*> {
     });
 
     let fileName = '';
-    if ((openCasesIncluded && closedCasesIncluded)
-        || (!openCasesIncluded && !closedCasesIncluded)) fileName = 'CRC_All_Cases';
-    else if (!openCasesIncluded) fileName = 'CRC_Closed_Cases';
-    else if (!closedCasesIncluded) fileName = 'CRC_Open_Cases';
+    if ((hasOpenCases && hasClosedCases)
+        || (!hasOpenCases && !hasClosedCases)) fileName = 'CRC_All_Cases';
+    else if (!hasOpenCases) fileName = 'CRC_Closed_Cases';
+    else if (!hasClosedCases) fileName = 'CRC_Open_Cases';
     if (selectedStaffMember.length) fileName = `${fileName}_${selectedStaffMember.split(' ').join('_')}`;
 
     FS.saveAs(blob, fileName.concat('.csv'));
