@@ -268,7 +268,7 @@ function* downloadReferralsWorker(action :SequenceAction) :Saga<*> {
 
     const csv = Papa.unparse(dataTable.toJS());
     const blob = new Blob([csv], {
-      type: 'application/json'
+      type: 'text/csv'
     });
     let fileName = 'Referrals';
     if (agencyName) fileName = `${agencyName}_${fileName}`;

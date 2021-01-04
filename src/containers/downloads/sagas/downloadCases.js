@@ -199,7 +199,7 @@ function* downloadCasesWorker(action :SequenceAction) :Saga<*> {
 
     const csv = Papa.unparse(dataTable.toJS());
     const blob = new Blob([csv], {
-      type: 'application/json'
+      type: 'text/csv'
     });
 
     let fileName = '';
