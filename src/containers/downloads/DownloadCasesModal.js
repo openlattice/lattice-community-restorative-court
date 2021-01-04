@@ -14,7 +14,7 @@ import { RequestStates } from 'redux-reqseq';
 import { DOWNLOAD_CASES, downloadCases } from './actions';
 
 import { resetRequestState } from '../../core/redux/actions';
-import { DownloadsReduxConstants } from '../../core/redux/constants';
+import { DownloadsReduxConstants, REQUEST_STATE } from '../../core/redux/constants';
 import { getPersonName } from '../../utils/people';
 import { useDispatch, useSelector } from '../app/AppProvider';
 
@@ -46,7 +46,7 @@ const DownloadCasesModal = ({ isVisible, onClose, staff } :Props) => {
     dispatch(downloadCases({ closedCasesIncluded, openCasesIncluded, selectedStaffMember }));
   };
 
-  const downloadRequestState = useSelector((store) => store.getIn([DOWNLOADS, DOWNLOAD_CASES]));
+  const downloadRequestState = useSelector((store) => store.getIn([DOWNLOADS, DOWNLOAD_CASES, REQUEST_STATE]));
 
   useEffect(() => {
     if (isSuccess(downloadRequestState)) {
