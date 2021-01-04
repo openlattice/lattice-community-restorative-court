@@ -1,22 +1,35 @@
 // @flow
 import React, { useEffect, useState } from 'react';
 
-import { List } from 'immutable';
-import { ActionModal, Select } from 'lattice-ui-kit';
+import styled from 'styled-components';
+import { List, Map } from 'immutable';
+import {
+  ActionModal,
+  DatePicker,
+  Label,
+  Select,
+} from 'lattice-ui-kit';
 import { DataUtils, ReduxUtils } from 'lattice-utils';
 import { RequestStates } from 'redux-reqseq';
 
-import { DOWNLOAD_REFERRALS_BY_AGENCY, downloadReferralsByAgency } from './actions';
+import { DOWNLOAD_REFERRALS, downloadReferrals } from './actions';
 
 import { PropertyTypes } from '../../core/edm/constants';
 import { resetRequestState } from '../../core/redux/actions';
-import { DownloadsReduxConstants } from '../../core/redux/constants';
+import { DownloadsReduxConstants, REQUEST_STATE } from '../../core/redux/constants';
 import { useDispatch, useSelector } from '../app/AppProvider';
 
 const { getPropertyValue } = DataUtils;
 const { isSuccess } = ReduxUtils;
 const { DOWNLOADS } = DownloadsReduxConstants;
 const { NAME } = PropertyTypes;
+
+const DatePickerGrid = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 0 10px;
+  width: 100%;
+`;
 
 type Props = {
   agencies :List;
@@ -25,7 +38,11 @@ type Props = {
 };
 
 const DownloadReferralsByAgencyModal = ({ agencies, isVisible, onClose } :Props) => {
-  const [selectedAgency, selectAgency] = useState('');
+
+  const [startDate, selectStartDate] = useState('');
+  const [endDate, selectEndDate] = useState('');
+  const [selectedAgency, selectAgency] = useState(Map());
+
   const agencyOptions = agencies.map((agency :Map) => {
     const agencyName = getPropertyValue(agency, [NAME, 0]);
     return {
@@ -36,14 +53,17 @@ const DownloadReferralsByAgencyModal = ({ agencies, isVisible, onClose } :Props)
 
   const dispatch = useDispatch();
   const downloadReport = () => {
-    dispatch(downloadReferralsByAgency(selectedAgency));
+    dispatch(downloadReferrals({ endDate, selectedAgency, startDate }));
   };
 
-  const downloadRequestState = useSelector((store) => store.getIn([DOWNLOADS, DOWNLOAD_REFERRALS_BY_AGENCY]));
-
+  const downloadRequestState = useSelector((store) => store
+    .getIn([DOWNLOADS, DOWNLOAD_REFERRALS, REQUEST_STATE]));
   useEffect(() => {
     if (isSuccess(downloadRequestState)) {
-      dispatch(resetRequestState([DOWNLOAD_REFERRALS_BY_AGENCY]));
+      selectStartDate('');
+      selectEndDate('');
+      selectAgency(Map());
+      dispatch(resetRequestState([DOWNLOAD_REFERRALS]));
       onClose();
     }
   }, [downloadRequestState, dispatch, onClose]);
@@ -58,10 +78,15 @@ const DownloadReferralsByAgencyModal = ({ agencies, isVisible, onClose } :Props)
         requestStateComponents={{ [RequestStates.STANDBY]: <></> }}
         textPrimary="Download"
         textSecondary="Close"
-        textTitle="Download Referrals By Agency"
+        textTitle="Download Referrals"
         viewportScrolling>
-      <div>Choose an agency to download a report of all its referrals.</div>
+      <Label>Optional: Choose an agency to download a report of all its referrals.</Label>
       <Select onChange={(option) => selectAgency(option.value)} options={agencyOptions} />
+      <Label>Optional: Date range for referral date:</Label>
+      <DatePickerGrid>
+        <DatePicker onChange={(date) => selectStartDate(date)} />
+        <DatePicker onChange={(date) => selectEndDate(date)} />
+      </DatePickerGrid>
     </ActionModal>
   );
 };
