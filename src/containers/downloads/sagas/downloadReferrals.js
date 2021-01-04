@@ -137,12 +137,10 @@ function* downloadReferralsWorker(action :SequenceAction) :Saga<*> {
           const referralDateAsDateTime :DateTime = DateTime.fromISO(referralDate);
           let referralWithinRange = true;
           if (!startDateAsDateTime.isValid && !endDateAsDateTime.isValid) return referralWithinRange;
-          // $FlowFixMe
-          if (startDateAsDateTime.isValid && referralDateAsDateTime < startDateAsDateTime) {
+          if (startDateAsDateTime.isValid && referralDateAsDateTime.valueOf() < startDateAsDateTime.valueOf()) {
             referralWithinRange = false;
           }
-          // $FlowFixMe
-          if (endDateAsDateTime.isValid && endDateAsDateTime < referralDateAsDateTime) {
+          if (endDateAsDateTime.isValid && endDateAsDateTime.valueOf() < referralDateAsDateTime.valueOf()) {
             referralWithinRange = false;
           }
           return referralWithinRange;
