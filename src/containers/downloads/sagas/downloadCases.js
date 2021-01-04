@@ -202,7 +202,8 @@ function* downloadCasesWorker(action :SequenceAction) :Saga<*> {
     });
 
     let fileName = '';
-    if (openCasesIncluded && closedCasesIncluded) fileName = 'CRC_All_Cases';
+    if ((openCasesIncluded && closedCasesIncluded)
+        || (!openCasesIncluded && !closedCasesIncluded)) fileName = 'CRC_All_Cases';
     else if (!openCasesIncluded) fileName = 'CRC_Closed_Cases';
     else if (!closedCasesIncluded) fileName = 'CRC_Open_Cases';
     if (selectedStaffMember.length) fileName = `${fileName}_${selectedStaffMember.split(' ').join('_')}`;
