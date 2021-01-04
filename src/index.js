@@ -1,4 +1,6 @@
 import AppContainer from './containers/app/AppContainer';
+import Dashboard from './containers/dashboard/Dashboard';
+import DashboardContainer from './containers/dashboard/DashboardContainer';
 import Downloads from './containers/downloads/Downloads';
 import DownloadsContainer from './containers/downloads/DownloadsContainer';
 
@@ -7,6 +9,8 @@ import DownloadsContainer from './containers/downloads/DownloadsContainer';
 /* eslint-disable import/prefer-default-export */
 export {
   AppContainer,
+  Dashboard,
+  DashboardContainer,
   Downloads,
   DownloadsContainer,
 };
