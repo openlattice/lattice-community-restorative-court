@@ -29,7 +29,7 @@ type Props = {
 
 const DownloadCasesModal = ({ isVisible, onClose, staff } :Props) => {
 
-  const [selectedStaffMember, selectStaffMember] = useState('');
+  const [selectedStaffMember, setStaffMember] = useState('');
   const [hasOpenCases, setHasOpenCases] = useState(false);
   const [hasClosedCases, setHasClosedCases] = useState(false);
 
@@ -50,7 +50,7 @@ const DownloadCasesModal = ({ isVisible, onClose, staff } :Props) => {
 
   useEffect(() => {
     if (isSuccess(downloadRequestState)) {
-      selectStaffMember('');
+      setStaffMember('');
       setHasOpenCases(false);
       setHasClosedCases(false);
       dispatch(resetRequestState([DOWNLOAD_CASES]));
@@ -78,7 +78,7 @@ const DownloadCasesModal = ({ isVisible, onClose, staff } :Props) => {
           label="Closed Cases"
           onChange={() => setHasClosedCases(!hasClosedCases)} />
       <Label>Optional: Choose a staff member to select only their cases.</Label>
-      <Select onChange={(option) => selectStaffMember(option.value)} options={staffOptions} />
+      <Select onChange={(option) => setStaffMember(option.value)} options={staffOptions} />
     </ActionModal>
   );
 };
