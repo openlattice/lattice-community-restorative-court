@@ -36,6 +36,7 @@ export default function* sagas() :Saga<*> {
     fork(DataSagas.submitPartialReplaceWatcher),
 
     // DownloadsSagas
+    fork(DownloadsSagas.downloadCasesWatcher),
     fork(DownloadsSagas.downloadReferralsByAgencyWatcher),
 
     // EDMSagas
