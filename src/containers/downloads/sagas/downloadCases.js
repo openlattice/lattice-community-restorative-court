@@ -194,7 +194,8 @@ function* downloadCasesWorker(action :SequenceAction) :Saga<*> {
           .set(HEADERS.caseManager, staffPersonName);
         mutator.push(tableRow);
       });
-    });
+    })
+      .sortBy((row) => row.get(HEADERS.personName, '').split(' ')[1]);
 
     const csv = Papa.unparse(dataTable.toJS());
     const blob = new Blob([csv], {
