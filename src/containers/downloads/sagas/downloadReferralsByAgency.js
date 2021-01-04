@@ -21,6 +21,7 @@ import {
   Logger,
 } from 'lattice-utils';
 import type { Saga } from '@redux-saga/core';
+import type { UUID } from 'lattice';
 import type { SequenceAction } from 'redux-reqseq';
 
 import { AppTypes, PropertyTypes } from '../../../core/edm/constants';
@@ -88,9 +89,9 @@ function* downloadReferralsByAgencyWorker(action :SequenceAction) :Saga<*> {
     const referralRequestByEKID = Map().withMutations((mutator) => {
       fromJS(response.data[agencyEKID]).forEach((neighbor :Map) => {
         const referralRequest :Map = getNeighborDetails(neighbor);
-        const referralRequestEKID :UUID = getEntityKeyId(referralRequest);
+        const referralRequestEKID :?UUID = getEntityKeyId(referralRequest);
         mutator.set(referralRequestEKID, referralRequest);
-        referralRequestEKIDs.push(referralRequestEKID);
+        if (referralRequestEKID) referralRequestEKIDs.push(referralRequestEKID);
       });
     });
     console.log('referralRequestEKIDs ', referralRequestEKIDs);
@@ -115,7 +116,7 @@ function* downloadReferralsByAgencyWorker(action :SequenceAction) :Saga<*> {
         const crcCase :Map = getNeighborDetails(neighborsList.get(0));
         const crcCaseEKID :?UUID = getEntityKeyId(crcCase);
         mutator.set(referralRequestEKID, crcCaseEKID);
-        crcCaseEKIDs.push(crcCaseEKID);
+        if (crcCaseEKID) crcCaseEKIDs.push(crcCaseEKID);
       });
     });
 
