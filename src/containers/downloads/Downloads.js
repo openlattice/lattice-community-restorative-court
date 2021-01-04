@@ -15,7 +15,7 @@ import type { UUID } from 'lattice';
 import type { Match } from 'react-router';
 
 import DownloadCasesModal from './DownloadCasesModal';
-import DownloadReferralsByAgencyModal from './DownloadReferralsByAgencyModal';
+import DownloadReferralsModal from './DownloadReferralsModal';
 
 import { APP_PATHS, ProfileReduxConstants, ReferralReduxConstants } from '../../core/redux/constants';
 import { useDispatch, useSelector } from '../app/AppProvider';
@@ -66,7 +66,7 @@ const Downloads = ({ match, organizationId, root } :Props) => {
     }
   }, [appConfig, dispatch]);
 
-  const [referralsByAgencyModalIsOpen, openReferralsByAgencyModal] = useState(false);
+  const [referralsModalIsOpen, openReferralsModal] = useState(false);
   const [casesModalIsOpen, openCasesModal] = useState(false);
 
   const agencies :List = useSelector((store) => store.getIn([REFERRAL, AGENCIES], List()));
@@ -74,9 +74,9 @@ const Downloads = ({ match, organizationId, root } :Props) => {
 
   return (
     <CardStack>
-      <DownloadCard onClick={() => openReferralsByAgencyModal(true)}>
+      <DownloadCard onClick={() => openReferralsModal(true)}>
         <DownloadCardSegment padding="8px 16px" vertical={false}>
-          <div>Download Referrals by Agency Report</div>
+          <div>Download Referrals Report</div>
           <FontAwesomeIcon color={NEUTRAL.N700} icon={faDownload} />
         </DownloadCardSegment>
       </DownloadCard>
@@ -86,10 +86,10 @@ const Downloads = ({ match, organizationId, root } :Props) => {
           <FontAwesomeIcon color={NEUTRAL.N700} icon={faDownload} />
         </DownloadCardSegment>
       </DownloadCard>
-      <DownloadReferralsByAgencyModal
+      <DownloadReferralsModal
           agencies={agencies}
-          isVisible={referralsByAgencyModalIsOpen}
-          onClose={() => openReferralsByAgencyModal(false)} />
+          isVisible={referralsModalIsOpen}
+          onClose={() => openReferralsModal(false)} />
       <DownloadCasesModal
           isVisible={casesModalIsOpen}
           onClose={() => openCasesModal(false)}

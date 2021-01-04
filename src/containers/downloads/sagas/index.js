@@ -1,3 +1,3 @@
 // @flow
 export * from './downloadCases';
-export * from './downloadReferralsByAgency';
+export * from './downloadReferrals';

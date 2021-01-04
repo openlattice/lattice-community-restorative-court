@@ -37,7 +37,7 @@ export default function* sagas() :Saga<*> {
 
     // DownloadsSagas
     fork(DownloadsSagas.downloadCasesWatcher),
-    fork(DownloadsSagas.downloadReferralsByAgencyWatcher),
+    fork(DownloadsSagas.downloadReferralsWatcher),
 
     // EDMSagas
     fork(EDMSagas.getEntityDataModelTypesWatcher),
