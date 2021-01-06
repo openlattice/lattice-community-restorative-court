@@ -171,12 +171,12 @@ function* getStaffCasesDataWorker(action :SequenceAction) :Saga<*> {
         });
 
         const tableRow = Map({
-          [STAFF_CASES_TABLE_HEADERS[0]]: personName,
-          [STAFF_CASES_TABLE_HEADERS[1]]: pendingIntake,
-          [STAFF_CASES_TABLE_HEADERS[2]]: pendingCircle,
-          [STAFF_CASES_TABLE_HEADERS[3]]: repairHarmAgreementsCompleted,
-          [STAFF_CASES_TABLE_HEADERS[4]]: openCases,
-          [STAFF_CASES_TABLE_HEADERS[5]]: closedCases,
+          [STAFF_CASES_TABLE_HEADERS.get('STAFF')]: personName,
+          [STAFF_CASES_TABLE_HEADERS.get('PENDING_INTAKE')]: pendingIntake,
+          [STAFF_CASES_TABLE_HEADERS.get('PENDING_CIRCLE')]: pendingCircle,
+          [STAFF_CASES_TABLE_HEADERS.get('RH_AGREEMENT_COMPLETED')]: repairHarmAgreementsCompleted,
+          [STAFF_CASES_TABLE_HEADERS.get('TOTAL_OPEN_CASES')]: openCases,
+          [STAFF_CASES_TABLE_HEADERS.get('TOTAL_CLOSED_CASES')]: closedCases,
         });
         mutator.push(tableRow);
 
@@ -188,12 +188,12 @@ function* getStaffCasesDataWorker(action :SequenceAction) :Saga<*> {
       });
 
       mutator.push(Map({
-        [STAFF_CASES_TABLE_HEADERS[0]]: 'All Staff',
-        [STAFF_CASES_TABLE_HEADERS[1]]: totalPendingIntake,
-        [STAFF_CASES_TABLE_HEADERS[2]]: totalPendingCircle,
-        [STAFF_CASES_TABLE_HEADERS[3]]: totalRepairHarmAgreementsCompleted,
-        [STAFF_CASES_TABLE_HEADERS[4]]: totalOpenCases,
-        [STAFF_CASES_TABLE_HEADERS[5]]: totalClosedCases,
+        [STAFF_CASES_TABLE_HEADERS.get('STAFF')]: 'All Staff',
+        [STAFF_CASES_TABLE_HEADERS.get('PENDING_INTAKE')]: totalPendingIntake,
+        [STAFF_CASES_TABLE_HEADERS.get('PENDING_CIRCLE')]: totalPendingCircle,
+        [STAFF_CASES_TABLE_HEADERS.get('RH_AGREEMENT_COMPLETED')]: totalRepairHarmAgreementsCompleted,
+        [STAFF_CASES_TABLE_HEADERS.get('TOTAL_OPEN_CASES')]: totalOpenCases,
+        [STAFF_CASES_TABLE_HEADERS.get('TOTAL_CLOSED_CASES')]: totalClosedCases,
       }));
     });
 
