@@ -33,7 +33,7 @@ const {
   TOTAL_CASES,
 } = CASES_STATS_CONSTANTS;
 
-const staffCasesTableHeaders = generateTableHeaders(STAFF_CASES_TABLE_HEADERS);
+const staffCasesTableHeaders = generateTableHeaders(STAFF_CASES_TABLE_HEADERS.valueSeq().toList());
 
 const StatsGridRow = styled.div`
   display: grid;
