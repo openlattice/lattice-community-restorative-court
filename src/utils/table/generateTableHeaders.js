@@ -1,9 +1,10 @@
 // @flow
+import { List } from 'immutable';
 import { Colors } from 'lattice-ui-kit';
 
 const { NEUTRAL } = Colors;
 
-export default function generateTableHeaders(headers :string[]) :Object[] {
+export default function generateTableHeaders(headers :List | string[]) :Object[] {
 
   const tableHeaders = [];
   headers.forEach((header :string) => {
