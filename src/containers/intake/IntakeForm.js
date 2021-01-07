@@ -24,7 +24,6 @@ import {
   Typography,
 } from 'lattice-ui-kit';
 import { DataUtils, LangUtils, ReduxUtils } from 'lattice-utils';
-import { DateTime } from 'luxon';
 import type { UUID } from 'lattice';
 
 import { SUBMIT_INTAKE, submitIntake } from './actions';
@@ -137,21 +136,21 @@ const IntakeForm = () => {
     schema,
     staffMembers,
     [GIVEN_NAME, SURNAME],
-    ['properties', getPageSectionKey(1, 5), 'properties', getEntityAddressKey(0, STAFF, OPENLATTICE_ID_FQN)]
+    ['properties', getPageSectionKey(1, 6), 'properties', getEntityAddressKey(0, STAFF, OPENLATTICE_ID_FQN)]
   );
   const charges :List = useSelector((store) => store.getIn([REFERRAL, ReferralReduxConstants.CHARGES], List()));
   hydratedSchema = hydrateSchema(
     hydratedSchema,
     charges,
     [NAME],
-    ['properties', getPageSectionKey(1, 4), 'properties', getEntityAddressKey(0, CHARGES, NAME)]
+    ['properties', getPageSectionKey(1, 5), 'properties', getEntityAddressKey(0, CHARGES, NAME)]
   );
   const agencies :List = useSelector((store) => store.getIn([REFERRAL, AGENCIES], List()));
   hydratedSchema = hydrateSchema(
     hydratedSchema,
     agencies,
     [NAME],
-    ['properties', getPageSectionKey(1, 4), 'properties', getEntityAddressKey(0, AGENCY, NAME)]
+    ['properties', getPageSectionKey(1, 5), 'properties', getEntityAddressKey(0, AGENCY, NAME)]
   );
 
   const prepopulatedFormData = useMemo(() => populateFormData(
@@ -175,25 +174,31 @@ const IntakeForm = () => {
   const personEKID :?UUID = getEntityKeyId(person);
 
   const onSubmit = () => {
-    const page1Section5 = getPageSectionKey(1, 5);
+    const page1Section1 = getPageSectionKey(1, 1);
     const page1Section6 = getPageSectionKey(1, 6);
+    const page1Section7 = getPageSectionKey(1, 7);
     let formDataForSubmit = {
-      [page1Section5]: get(formData, page1Section5),
+      [page1Section1]: get(formData, page1Section1),
       [page1Section6]: get(formData, page1Section6),
+      [page1Section7]: get(formData, page1Section7),
     };
-    const staffEKIDPath = [page1Section5, getEntityAddressKey(0, STAFF, OPENLATTICE_ID_FQN)];
+    const staffEKIDPath = [page1Section6, getEntityAddressKey(0, STAFF, OPENLATTICE_ID_FQN)];
     const staffEKID = getIn(formDataForSubmit, staffEKIDPath);
     formDataForSubmit = removeIn(formDataForSubmit, staffEKIDPath);
 
     formDataForSubmit = updateFormWithDateAsDateTime(formDataForSubmit, [
-      page1Section6,
+      page1Section1,
+      getEntityAddressKey(0, FORM, DATETIME_ADMINISTERED)
+    ]);
+    const formDateTimeISO = getIn(formDataForSubmit, [
+      page1Section1,
       getEntityAddressKey(0, FORM, DATETIME_ADMINISTERED)
     ]);
 
     formDataForSubmit = setIn(
       formDataForSubmit,
-      [page1Section6, getEntityAddressKey(0, STATUS, EFFECTIVE_DATE)],
-      DateTime.local().toISO()
+      [page1Section7, getEntityAddressKey(0, STATUS, EFFECTIVE_DATE)],
+      formDateTimeISO
     );
 
     const entityData = processEntityData(formDataForSubmit, entitySetIds, propertyTypeIds);

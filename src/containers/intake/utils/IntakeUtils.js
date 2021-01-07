@@ -98,10 +98,10 @@ const populateFormData = (
   });
 
   const formData = {
-    [getPageSectionKey(1, 1)]: getPersonData(person, 0),
-    [getPageSectionKey(1, 2)]: victimPeopleFormData,
-    [getPageSectionKey(1, 3)]: victimOrgsFormData,
-    [getPageSectionKey(1, 4)]: {
+    [getPageSectionKey(1, 2)]: getPersonData(person, 0),
+    [getPageSectionKey(1, 3)]: victimPeopleFormData,
+    [getPageSectionKey(1, 4)]: victimOrgsFormData,
+    [getPageSectionKey(1, 5)]: {
       [getEntityAddressKey(0, REFERRAL_REQUEST, DATETIME_COMPLETED)]: dateOfReferral,
       [getEntityAddressKey(0, OFFICERS, GIVEN_NAME)]: officerFirstName,
       [getEntityAddressKey(0, OFFICERS, SURNAME)]: officerLastName,

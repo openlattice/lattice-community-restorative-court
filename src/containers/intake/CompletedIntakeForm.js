@@ -77,7 +77,7 @@ const CompletedIntakeForm = () => {
   const staffList :List = formNeighborMap.getIn([formEKID, STAFF], List());
   const staffMember :Map = staffList.get(0, Map());
   const staffMemberName :string = getPersonName(staffMember);
-  formData[getPageSectionKey(1, 5)] = {
+  formData[getPageSectionKey(1, 6)] = {
     [getEntityAddressKey(0, STAFF, OPENLATTICE_ID_FQN)]: staffMemberName,
   };
 
@@ -85,7 +85,7 @@ const CompletedIntakeForm = () => {
   const dateAdministered = isDefined(datetimeAdministered)
     ? DateTime.fromISO(datetimeAdministered).toISODate()
     : EMPTY_VALUE;
-  formData[getPageSectionKey(1, 6)] = {
+  formData[getPageSectionKey(1, 1)] = {
     [getEntityAddressKey(0, FORM, DATETIME_ADMINISTERED)]: dateAdministered,
   };
 
