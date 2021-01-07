@@ -44,8 +44,6 @@ const {
   SURNAME,
 } = PropertyTypes;
 
-const currentDateTime = DateTime.local().toISO();
-
 const dataSchema = {
   type: 'object',
   title: '',
@@ -58,7 +56,7 @@ const dataSchema = {
           type: 'string',
           title: 'Intake Date',
           format: 'date',
-          default: DateTime.fromISO(currentDateTime).toISODate()
+          default: DateTime.local().toISODate()
         },
       },
       required: [getEntityAddressKey(0, FORM, DATETIME_ADMINISTERED)]
@@ -234,7 +232,6 @@ const dataSchema = {
         [getEntityAddressKey(0, STATUS, EFFECTIVE_DATE)]: {
           type: 'string',
           title: 'Intake Date',
-          default: currentDateTime
         },
       }
     },
