@@ -9,8 +9,8 @@ const addCaseStatus :RequestSequence = newRequestSequence(ADD_CASE_STATUS);
 const ADD_CONTACT_ACTIVITY :'ADD_CONTACT_ACTIVITY' = 'ADD_CONTACT_ACTIVITY';
 const addContactActivity :RequestSequence = newRequestSequence(ADD_CONTACT_ACTIVITY);
 
-const ADD_PERSON_TO_CASE :'ADD_PERSON_TO_CASE' = 'ADD_PERSON_TO_CASE';
-const addPersonToCase :RequestSequence = newRequestSequence(ADD_PERSON_TO_CASE);
+const ADD_PERSON_OR_ORG_TO_CASE :'ADD_PERSON_OR_ORG_TO_CASE' = 'ADD_PERSON_OR_ORG_TO_CASE';
+const addPersonOrOrgToCase :RequestSequence = newRequestSequence(ADD_PERSON_OR_ORG_TO_CASE);
 
 const CLEAR_SEARCHED_ORGANIZATIONS :'CLEAR_SEARCHED_ORGANIZATIONS' = 'CLEAR_SEARCHED_ORGANIZATIONS';
 const clearSearchedOrganizations = () => ({
@@ -70,7 +70,7 @@ const submitContact :RequestSequence = newRequestSequence(SUBMIT_CONTACT);
 export {
   ADD_CASE_STATUS,
   ADD_CONTACT_ACTIVITY,
-  ADD_PERSON_TO_CASE,
+  ADD_PERSON_OR_ORG_TO_CASE,
   CLEAR_SEARCHED_ORGANIZATIONS,
   CLEAR_SEARCHED_PEOPLE,
   EDIT_ADDRESS,
@@ -89,7 +89,7 @@ export {
   SUBMIT_CONTACT,
   addCaseStatus,
   addContactActivity,
-  addPersonToCase,
+  addPersonOrOrgToCase,
   clearSearchedOrganizations,
   clearSearchedPeople,
   editAddress,
