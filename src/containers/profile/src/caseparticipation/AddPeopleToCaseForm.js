@@ -202,8 +202,9 @@ const AddPeopleToCaseForm = () => {
     .getIn([PROFILE, SEARCH_ORGANIZATIONS, REQUEST_STATE]));
   const reducedSearchRequestStates = reduceRequestStates([searchPeopleRequestState, searchOrganizationsRequestState]);
   const isSearching :boolean = isPending(reducedSearchRequestStates);
-  const hasSearched :boolean = isFailure(reducedSearchRequestStates) || isSuccess(reducedSearchRequestStates);
-
+  const hasSearched :boolean = isSuccess(searchPeopleRequestState)
+    || isSuccess(searchOrganizationsRequestState)
+    || isFailure(reducedSearchRequestStates);
   useEffect(() => {
     const resetSearchedPeopleList = () => {
       dispatch(clearSearchedPeople());
