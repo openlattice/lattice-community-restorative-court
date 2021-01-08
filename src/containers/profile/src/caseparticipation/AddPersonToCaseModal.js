@@ -1,26 +1,24 @@
 // @flow
 import React, { useEffect, useState } from 'react';
 
-import { Map, getIn } from 'immutable';
-import { DataProcessingUtils, Form } from 'lattice-fabricate';
+import { Map } from 'immutable';
+import { Form } from 'lattice-fabricate';
 import { Modal, ModalFooter, Typography } from 'lattice-ui-kit';
 import { DataUtils, ReduxUtils } from 'lattice-utils';
 import type { UUID } from 'lattice';
 
-import { AppTypes, PropertyTypes } from '../../../../core/edm/constants';
+import { PropertyTypes } from '../../../../core/edm/constants';
 import { resetRequestState } from '../../../../core/redux/actions';
 import { ProfileReduxConstants, REQUEST_STATE } from '../../../../core/redux/constants';
 import { useDispatch, useSelector } from '../../../app/AppProvider';
-import { ADD_PERSON_TO_CASE, addPersonToCase } from '../actions';
+import { ADD_PERSON_OR_ORG_TO_CASE, addPersonOrOrgToCase } from '../actions';
 import { SearchContextConstants } from '../constants';
 import { schema, uiSchema } from '../schemas/AddPersonToCaseSchemas';
 
-const { APPEARS_IN } = AppTypes;
-const { NOTES, ROLE } = PropertyTypes;
+const { NOTES } = PropertyTypes;
 const { PROFILE, SELECTED_CASE } = ProfileReduxConstants;
 const { ORGS_CONTEXT } = SearchContextConstants;
 const { getEntityKeyId, getPropertyValue } = DataUtils;
-const { getEntityAddressKey, getPageSectionKey } = DataProcessingUtils;
 const { isPending, isSuccess } = ReduxUtils;
 
 type Props = {
@@ -56,23 +54,20 @@ const AddPersonToCaseModal = ({
   const dispatch = useDispatch();
 
   const onSubmit = () => {
-    const role = getIn(formData, [getPageSectionKey(1, 1), getEntityAddressKey(0, APPEARS_IN, ROLE)]);
-    if (role) {
-      dispatch(addPersonToCase({
-        caseEKID,
-        entityEKID,
-        role,
-        searchContext,
-        selectedPerson,
-      }));
-    }
+    dispatch(addPersonOrOrgToCase({
+      caseEKID,
+      entityEKID,
+      formData,
+      searchContext,
+      selectedPerson,
+    }));
   };
 
-  const submitRequestState = useSelector((store) => store.getIn([PROFILE, ADD_PERSON_TO_CASE, REQUEST_STATE]));
+  const submitRequestState = useSelector((store) => store.getIn([PROFILE, ADD_PERSON_OR_ORG_TO_CASE, REQUEST_STATE]));
 
   useEffect(() => {
     if (isSuccess(submitRequestState)) {
-      dispatch(resetRequestState([ADD_PERSON_TO_CASE]));
+      dispatch(resetRequestState([ADD_PERSON_OR_ORG_TO_CASE]));
       onClose();
     }
   }, [dispatch, onClose, submitRequestState]);
