@@ -31,7 +31,7 @@ import type { SequenceAction } from 'redux-reqseq';
 
 import { AppTypes, PropertyTypes } from '../../../core/edm/constants';
 import { selectEntitySetId } from '../../../core/redux/selectors';
-import { getNeighborDetails, getNeighborESID } from '../../../utils/data';
+import { getAssociationDetails, getNeighborDetails, getNeighborESID } from '../../../utils/data';
 import { getPersonName } from '../../../utils/people';
 import { CaseStatusConstants, FormConstants } from '../../profile/src/constants';
 import { DOWNLOAD_CASES, downloadCases } from '../actions';
@@ -47,6 +47,7 @@ const {
   CIRCLE,
   CLOSED,
   INTAKE,
+  REFERRAL,
   RESOLUTION,
 } = CaseStatusConstants;
 const { REPAIR_HARM_AGREEMENT } = FormConstants;
@@ -58,9 +59,9 @@ const {
   STATUS,
 } = AppTypes;
 const {
-  DATETIME_RECEIVED,
   DUE_DATE,
   EFFECTIVE_DATE,
+  GENERAL_DATETIME,
   NAME,
   NOTES,
 } = PropertyTypes;
@@ -69,11 +70,12 @@ const LOG = new Logger('DashboardSagas');
 
 const HEADERS = {
   personName: 'Name',
+  referralDate: 'Referral Date',
   dateAssigned: 'Date Assigned',
   intake: 'Intake',
   circle: 'Circle',
   rhExpirationDate: 'RH Expiration Date',
-  notes: 'Notes',
+  caseNumber: 'Case Number',
   caseManager: 'Case Manager',
 };
 
@@ -120,9 +122,19 @@ function* downloadCasesWorker(action :SequenceAction) :Saga<*> {
       .filter((neighbor :Map) => getNeighborESID(neighbor) === statusESID)
       .map((neighbor :Map) => getNeighborDetails(neighbor)));
 
-    const staffByCRCEKID :Map = crcCaseNeighbors.map((neighborsList :List) => neighborsList
-      .filter((neighbor :Map) => getNeighborESID(neighbor) === staffESID)
-      .map((neighbor :Map) => getNeighborDetails(neighbor)));
+    const staffNeighbors :Map = crcCaseNeighbors.map((neighborsList :List) => neighborsList
+      .filter((neighbor :Map) => getNeighborESID(neighbor) === staffESID));
+    const dateStaffAssignedByCRCEKID = Map().withMutations((mutator) => {
+      staffNeighbors.forEach((neighborsList :List, crcCaseEKID) => {
+        const staffNeighbor = neighborsList.get(0, Map());
+        const associationDetails = getAssociationDetails(staffNeighbor);
+        const dateTimeAssigned = getPropertyValue(associationDetails, [GENERAL_DATETIME, 0]);
+        const dateAssigned = formatAsDate(dateTimeAssigned);
+        mutator.set(crcCaseEKID, dateAssigned);
+      });
+    });
+    const staffByCRCEKID :Map = staffNeighbors
+      .map((neighborsList) => neighborsList.map((neighbor :Map) => getNeighborDetails(neighbor)));
 
     let crcCasesToInclude :List = crcCases.filter((crcCase :Map) => {
       const crcCaseEKID :?UUID = getEntityKeyId(crcCase);
@@ -146,9 +158,7 @@ function* downloadCasesWorker(action :SequenceAction) :Saga<*> {
 
     const dataTable :List = List().withMutations((mutator :List) => {
       crcCasesToInclude.forEach((crcCase :Map) => {
-        const dateTimeCaseCreated = getPropertyValue(crcCase, [DATETIME_RECEIVED, 0]);
-        const dateCaseCreated = formatAsDate(dateTimeCaseCreated);
-        const notes = getPropertyValue(crcCase, [NOTES, 0]);
+        const caseNumber = getPropertyValue(crcCase, [NOTES, 0]);
 
         const crcCaseEKID :?UUID = getEntityKeyId(crcCase);
         const caseNeighbors = crcCaseNeighbors.get(crcCaseEKID, List());
@@ -159,7 +169,16 @@ function* downloadCasesWorker(action :SequenceAction) :Saga<*> {
         const staffList :List = staffByCRCEKID.get(crcCaseEKID, List());
         const staffPersonName :string = getPersonName(staffList.get(0));
 
+        const dateStaffAssigned = dateStaffAssignedByCRCEKID.get(crcCaseEKID, '');
+
         const statusList :List = statusesByCRCEKID.get(crcCaseEKID, List());
+        let referralDate = '';
+        const referral = statusList
+          .find((status :Map) => getPropertyValue(status, [PropertyTypes.STATUS, 0]) === REFERRAL);
+        if (isDefined(referral)) {
+          const referralDateTime = getPropertyValue(referral, [EFFECTIVE_DATE, 0]);
+          referralDate = formatAsDate(referralDateTime);
+        }
         const intake = statusList.find((status :Map) => getPropertyValue(status, [PropertyTypes.STATUS, 0]) === INTAKE);
         let intakeDate = '';
         if (isDefined(intake)) {
@@ -186,11 +205,12 @@ function* downloadCasesWorker(action :SequenceAction) :Saga<*> {
 
         const tableRow = OrderedMap()
           .set(HEADERS.personName, personName)
-          .set(HEADERS.dateAssigned, dateCaseCreated)
+          .set(HEADERS.referralDate, referralDate)
+          .set(HEADERS.dateAssigned, dateStaffAssigned)
           .set(HEADERS.intake, intakeDate)
           .set(HEADERS.circle, circleDate)
           .set(HEADERS.rhExpirationDate, rhExpirationDate)
-          .set(HEADERS.notes, notes)
+          .set(HEADERS.caseNumber, caseNumber)
           .set(HEADERS.caseManager, staffPersonName);
         mutator.push(tableRow);
       });
