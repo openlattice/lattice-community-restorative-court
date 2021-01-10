@@ -79,6 +79,8 @@ const HEADERS = {
   caseManager: 'Case Manager',
 };
 
+const getStatus = (status :Map) => getPropertyValue(status, [PropertyTypes.STATUS, 0]);
+
 function* downloadCasesWorker(action :SequenceAction) :Saga<*> {
 
   const { id } = action;
