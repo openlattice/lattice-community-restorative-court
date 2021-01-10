@@ -41,7 +41,7 @@ const ProfileContainer = ({ personId } :Props) => {
 
   const appConfig = useSelector((store :Map) => store.getIn(APP_PATHS.APP_CONFIG));
   useEffect(() => {
-    if (appConfig) dispatch(loadProfile(personId));
+    if (appConfig && personId) dispatch(loadProfile(personId));
   }, [appConfig, dispatch, personId]);
 
   const loadProfileRS :?RequestState = useSelector((store) => store.getIn([PROFILE, LOAD_PROFILE, REQUEST_STATE]));
