@@ -209,18 +209,18 @@ function* downloadCasesWorker(action :SequenceAction) :Saga<*> {
         const statusList :List = statusesByCRCEKID.get(crcCaseEKID, List());
         let referralDate = '';
         const referral = statusList
-          .find((status :Map) => getPropertyValue(status, [PropertyTypes.STATUS, 0]) === REFERRAL);
+          .find((status :Map) => getStatus(status) === REFERRAL);
         if (isDefined(referral)) {
           const referralDateTime = getPropertyValue(referral, [EFFECTIVE_DATE, 0]);
           referralDate = formatAsDate(referralDateTime);
         }
-        const intake = statusList.find((status :Map) => getPropertyValue(status, [PropertyTypes.STATUS, 0]) === INTAKE);
+        const intake = statusList.find((status :Map) => getStatus(status) === INTAKE);
         let intakeDate = '';
         if (isDefined(intake)) {
           const intakeDateTime = getPropertyValue(intake, [EFFECTIVE_DATE, 0]);
           intakeDate = formatAsDate(intakeDateTime);
         }
-        const circle = statusList.find((status :Map) => getPropertyValue(status, [PropertyTypes.STATUS, 0]) === CIRCLE);
+        const circle = statusList.find((status :Map) => getStatus(status) === CIRCLE);
         let circleDate = '';
         if (isDefined(circle)) {
           const circleDateTime = getPropertyValue(circle, [EFFECTIVE_DATE, 0]);
