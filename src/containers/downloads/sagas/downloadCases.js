@@ -253,10 +253,11 @@ function* downloadCasesWorker(action :SequenceAction) :Saga<*> {
     });
 
     let fileName = '';
-    if ((hasOpenCases && hasClosedCases)
-        || (!hasOpenCases && !hasClosedCases)) fileName = 'CRC_All_Cases';
-    else if (!hasOpenCases) fileName = 'CRC_Closed_Cases';
-    else if (!hasClosedCases) fileName = 'CRC_Open_Cases';
+    if (((hasOpenCases && hasClosedCases) || (!hasOpenCases && !hasClosedCases))
+        && !selectedStatus) fileName = 'CRC_All_Cases';
+    else if (!hasOpenCases && hasClosedCases) fileName = 'CRC_Closed_Cases';
+    else if (!hasClosedCases && hasOpenCases) fileName = 'CRC_Open_Cases';
+    else if (selectedStatus) fileName = `CRC_${selectedStatus}`;
     if (selectedStaffMember.length) fileName = `${fileName}_${selectedStaffMember.split(' ').join('_')}`;
 
     FS.saveAs(blob, fileName.concat('.csv'));
