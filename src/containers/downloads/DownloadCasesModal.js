@@ -17,9 +17,23 @@ import { resetRequestState } from '../../core/redux/actions';
 import { DownloadsReduxConstants, REQUEST_STATE } from '../../core/redux/constants';
 import { getPersonName } from '../../utils/people';
 import { useDispatch, useSelector } from '../app/AppProvider';
+import { CaseStatusConstants } from '../profile/src/constants';
 
 const { isSuccess } = ReduxUtils;
 const { DOWNLOADS } = DownloadsReduxConstants;
+const {
+  ACCEPTANCE,
+  CIRCLE,
+  INTAKE,
+  REFERRAL,
+} = CaseStatusConstants;
+
+const statusOptions = [
+  { label: `${REFERRAL} completed`, value: REFERRAL },
+  { label: `${INTAKE} completed`, value: INTAKE },
+  { label: 'Accepted', value: ACCEPTANCE },
+  { label: `${CIRCLE} completed`, value: CIRCLE },
+];
 
 type Props = {
   isVisible :boolean;
@@ -30,6 +44,7 @@ type Props = {
 const DownloadCasesModal = ({ isVisible, onClose, staff } :Props) => {
 
   const [selectedStaffMember, setStaffMember] = useState('');
+  const [selectedStatus, setStatus] = useState('');
   const [hasOpenCases, setHasOpenCases] = useState(false);
   const [hasClosedCases, setHasClosedCases] = useState(false);
 
@@ -43,7 +58,12 @@ const DownloadCasesModal = ({ isVisible, onClose, staff } :Props) => {
 
   const dispatch = useDispatch();
   const downloadReport = () => {
-    dispatch(downloadCases({ hasClosedCases, hasOpenCases, selectedStaffMember }));
+    dispatch(downloadCases({
+      hasClosedCases,
+      hasOpenCases,
+      selectedStaffMember,
+      selectedStatus,
+    }));
   };
 
   const downloadRequestState = useSelector((store) => store.getIn([DOWNLOADS, DOWNLOAD_CASES, REQUEST_STATE]));
@@ -77,6 +97,11 @@ const DownloadCasesModal = ({ isVisible, onClose, staff } :Props) => {
       <Checkbox
           label="Closed Cases"
           onChange={() => setHasClosedCases(!hasClosedCases)} />
+      <Label>
+        Alternatively, select a status to show cases for which that status is the most recent.
+      </Label>
+      <Label>(Do not check the open or closed boxes above.)</Label>
+      <Select onChange={(option) => setStatus(option.value)} options={statusOptions} />
       <Label>Optional: Choose a staff member to select only their cases.</Label>
       <Select onChange={(option) => setStaffMember(option.value)} options={staffOptions} />
     </ActionModal>
