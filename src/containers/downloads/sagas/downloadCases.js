@@ -44,6 +44,7 @@ const { getEntityKeyId, getPropertyValue } = DataUtils;
 const { formatAsDate } = DateTimeUtils;
 const { isDefined } = LangUtils;
 const {
+  ACCEPTANCE,
   CIRCLE,
   CLOSED,
   INTAKE,
@@ -144,6 +145,35 @@ function* downloadCasesWorker(action :SequenceAction) :Saga<*> {
         .find((status :Map) => getStatus(status) === CLOSED);
       if (!hasOpenCases && hasClosedCases) return isDefined(statusIndicatingCompletion);
       if (!hasClosedCases && hasOpenCases) return !isDefined(statusIndicatingCompletion);
+
+      if (selectedStatus) {
+        let hasReferral = false;
+        let hasIntake = false;
+        let hasAcceptance = false;
+        let hasCircle = false;
+        const hasClosed = isDefined(statusIndicatingCompletion);
+
+        statusList.forEach((status :Map) => {
+          const statusName = getStatus(status);
+          if (statusName === REFERRAL) hasReferral = true;
+          if (statusName === INTAKE) hasIntake = true;
+          if (statusName === ACCEPTANCE) hasAcceptance = true;
+          if (statusName === CIRCLE) hasCircle = true;
+        });
+
+        if (selectedStatus === REFERRAL) {
+          return hasReferral && !hasIntake && !hasAcceptance && !hasCircle && !hasClosed;
+        }
+        if (selectedStatus === INTAKE) {
+          return hasReferral && hasIntake && !hasAcceptance && !hasCircle && !hasClosed;
+        }
+        if (selectedStatus === ACCEPTANCE) {
+          return hasReferral && hasIntake && hasAcceptance && !hasCircle && !hasClosed;
+        }
+        if (selectedStatus === CIRCLE) {
+          return hasReferral && hasIntake && hasAcceptance && hasCircle && !hasClosed;
+        }
+      }
       return crcCase;
     });
 
