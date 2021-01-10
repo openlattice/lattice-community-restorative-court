@@ -65,18 +65,20 @@ const {
   GENERAL_DATETIME,
   NAME,
   NOTES,
+  ROLE,
 } = PropertyTypes;
 
 const LOG = new Logger('DashboardSagas');
 
 const HEADERS = {
   personName: 'Respondent Name',
+  caseNumber: 'Case Number',
   referralDate: 'Referral Date',
   dateAssigned: 'Date Assigned',
-  intake: 'Intake',
-  circle: 'Circle',
+  intake: 'Intake Date',
+  circle: 'Circle Date',
   rhExpirationDate: 'RH Expiration Date',
-  caseNumber: 'Case Number',
+  closedDate: 'Closed Date',
   caseManager: 'Case Manager',
 };
 
@@ -232,6 +234,12 @@ function* downloadCasesWorker(action :SequenceAction) :Saga<*> {
           const circleDateTime = getPropertyValue(circle, [EFFECTIVE_DATE, 0]);
           circleDate = formatAsDate(circleDateTime);
         }
+        const closed = statusList.find((status :Map) => getStatus(status) === CLOSED);
+        let closedDate = '';
+        if (isDefined(closed)) {
+          const closedDateTime = getPropertyValue(closed, [EFFECTIVE_DATE, 0]);
+          closedDate = formatAsDate(closedDateTime);
+        }
 
         const forms :List = caseNeighbors
           .filter((neighbor :Map) => getNeighborESID(neighbor) === formESID)
@@ -246,12 +254,13 @@ function* downloadCasesWorker(action :SequenceAction) :Saga<*> {
 
         const tableRow = OrderedMap()
           .set(HEADERS.personName, personName)
+          .set(HEADERS.caseNumber, caseNumber)
           .set(HEADERS.referralDate, referralDate)
           .set(HEADERS.dateAssigned, dateStaffAssigned)
           .set(HEADERS.intake, intakeDate)
           .set(HEADERS.circle, circleDate)
           .set(HEADERS.rhExpirationDate, rhExpirationDate)
-          .set(HEADERS.caseNumber, caseNumber)
+          .set(HEADERS.closedDate, closedDate)
           .set(HEADERS.caseManager, staffPersonName);
         mutator.push(tableRow);
       });
