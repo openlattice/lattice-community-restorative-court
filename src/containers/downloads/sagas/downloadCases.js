@@ -33,7 +33,7 @@ import { AppTypes, PropertyTypes } from '../../../core/edm/constants';
 import { selectEntitySetId } from '../../../core/redux/selectors';
 import { getAssociationDetails, getNeighborDetails, getNeighborESID } from '../../../utils/data';
 import { getPersonName } from '../../../utils/people';
-import { CaseStatusConstants, FormConstants } from '../../profile/src/constants';
+import { CaseStatusConstants, FormConstants, RoleConstants } from '../../profile/src/constants';
 import { DOWNLOAD_CASES, downloadCases } from '../actions';
 
 const { getEntitySetData } = DataApiActions;
@@ -51,6 +51,7 @@ const {
   REFERRAL,
 } = CaseStatusConstants;
 const { REPAIR_HARM_AGREEMENT } = FormConstants;
+const { RESPONDENT } = RoleConstants;
 const {
   CRC_CASE,
   FORM,
@@ -69,7 +70,7 @@ const {
 const LOG = new Logger('DashboardSagas');
 
 const HEADERS = {
-  personName: 'Name',
+  personName: 'Respondent Name',
   referralDate: 'Referral Date',
   dateAssigned: 'Date Assigned',
   intake: 'Intake',
@@ -198,8 +199,13 @@ function* downloadCasesWorker(action :SequenceAction) :Saga<*> {
         const crcCaseEKID :?UUID = getEntityKeyId(crcCase);
         const caseNeighbors = crcCaseNeighbors.get(crcCaseEKID, List());
 
-        const personNeighbor :Map = caseNeighbors.find((neighbor :Map) => getNeighborESID(neighbor) === peopleESID);
-        const personName :string = getPersonName(getNeighborDetails(personNeighbor));
+        const personNeighbors :List = caseNeighbors.filter((neighbor :Map) => getNeighborESID(neighbor) === peopleESID);
+        const respondentNeighbor :Map = personNeighbors.find((neighbor :Map) => {
+          const association = getAssociationDetails(neighbor);
+          const role = getPropertyValue(association, [ROLE, 0]);
+          return role === RESPONDENT;
+        });
+        const personName :string = getPersonName(getNeighborDetails(respondentNeighbor));
 
         const staffList :List = staffByCRCEKID.get(crcCaseEKID, List());
         const staffPersonName :string = getPersonName(staffList.get(0));
