@@ -48,7 +48,6 @@ const {
   CLOSED,
   INTAKE,
   REFERRAL,
-  RESOLUTION,
 } = CaseStatusConstants;
 const { REPAIR_HARM_AGREEMENT } = FormConstants;
 const {
@@ -142,8 +141,7 @@ function* downloadCasesWorker(action :SequenceAction) :Saga<*> {
       const crcCaseEKID :?UUID = getEntityKeyId(crcCase);
       const statusList :List = statusesByCRCEKID.get(crcCaseEKID, List());
       const statusIndicatingCompletion = statusList
-        .find((status :Map) => getPropertyValue(status, [PropertyTypes.STATUS, 0]) === CLOSED
-        || getPropertyValue(status, [PropertyTypes.STATUS, 0]) === RESOLUTION);
+        .find((status :Map) => getStatus(status) === CLOSED);
       if (!hasOpenCases && hasClosedCases) return isDefined(statusIndicatingCompletion);
       if (!hasClosedCases && hasOpenCases) return !isDefined(statusIndicatingCompletion);
       return crcCase;
