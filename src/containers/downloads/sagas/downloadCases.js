@@ -89,7 +89,12 @@ function* downloadCasesWorker(action :SequenceAction) :Saga<*> {
   try {
     yield put(downloadCases.request(id));
 
-    const { hasClosedCases, hasOpenCases, selectedStaffMember } = action.value;
+    const {
+      hasClosedCases,
+      hasOpenCases,
+      selectedStaffMember,
+      selectedStatus,
+    } = action.value;
 
     const crcCaseESID :UUID = yield select(selectEntitySetId(CRC_CASE));
 
