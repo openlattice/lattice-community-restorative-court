@@ -86,7 +86,7 @@ const CaseTimeline = ({
                     {(status !== CLOSED
                         && status !== REFERRAL
                         && !staffMemberWhoRecordedStatus.isEmpty())
-                        && `Case Manager: ${getPersonName(staffMemberWhoRecordedStatus)}`}
+                        && `Submitted by: ${getPersonName(staffMemberWhoRecordedStatus)}`}
                   </Typography>
                 </div>
               </TimelineContentWrapper>

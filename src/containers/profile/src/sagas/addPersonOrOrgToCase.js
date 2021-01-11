@@ -5,6 +5,8 @@ import {
   select,
   takeEvery,
 } from '@redux-saga/core/effects';
+import { getIn } from 'immutable';
+import { DataProcessingUtils } from 'lattice-fabricate';
 import { Logger } from 'lattice-utils';
 import type { Saga } from '@redux-saga/core';
 import type { WorkerResponse } from 'lattice-sagas';
@@ -14,7 +16,8 @@ import { createOrReplaceAssociation } from '../../../../core/data/actions';
 import { createOrReplaceAssociationWorker } from '../../../../core/data/sagas';
 import { AppTypes, PropertyTypes } from '../../../../core/edm/constants';
 import { selectEntitySetId, selectPropertyTypeId } from '../../../../core/redux/selectors';
-import { ADD_PERSON_TO_CASE, addPersonToCase } from '../actions';
+import { updateFormWithDateAsDateTime } from '../../../../utils/form';
+import { ADD_PERSON_OR_ORG_TO_CASE, addPersonOrOrgToCase } from '../actions';
 import { SearchContextConstants } from '../constants';
 
 const {
@@ -24,22 +27,23 @@ const {
   PEOPLE,
   STAFF,
 } = AppTypes;
-const { ROLE } = PropertyTypes;
+const { GENERAL_DATETIME, ROLE } = PropertyTypes;
 const { ORGS_CONTEXT, STAFF_CONTEXT } = SearchContextConstants;
+const { getEntityAddressKey, getPageSectionKey } = DataProcessingUtils;
 
 const LOG = new Logger('ProfileSagas');
 
-function* addPersonToCaseWorker(action :SequenceAction) :Saga<WorkerResponse> {
+function* addPersonOrOrgToCaseWorker(action :SequenceAction) :Saga<WorkerResponse> {
 
   const { id, value } = action;
   let workerResponse :WorkerResponse;
 
   try {
-    yield put(addPersonToCase.request(id));
+    yield put(addPersonOrOrgToCase.request(id));
     const {
       caseEKID,
       entityEKID,
-      role,
+      formData,
       searchContext,
     } = value;
 
@@ -57,12 +61,25 @@ function* addPersonToCaseWorker(action :SequenceAction) :Saga<WorkerResponse> {
       srcESID = organizationsESID;
     }
 
+    const generalDateTimePTID = yield select(selectPropertyTypeId(GENERAL_DATETIME));
     const rolePTID = yield select(selectPropertyTypeId(ROLE));
+
+    const dateAssignedPath = [
+      getPageSectionKey(1, 1),
+      getEntityAddressKey(0, APPEARS_IN, GENERAL_DATETIME)
+    ];
+
+    const formDataWithDateTime = updateFormWithDateAsDateTime(formData, dateAssignedPath);
+    const dateTimeAssigned = getIn(formDataWithDateTime, dateAssignedPath);
+    const role = getIn(formDataWithDateTime, [getPageSectionKey(1, 1), getEntityAddressKey(0, APPEARS_IN, ROLE)]);
 
     const associations = {
       [appearsInESID]: [
         {
-          data: { [rolePTID]: [role] },
+          data: {
+            [generalDateTimePTID]: [dateTimeAssigned],
+            [rolePTID]: [role]
+          },
           src: {
             entitySetId: srcESID,
             entityKeyId: entityEKID
@@ -84,25 +101,25 @@ function* addPersonToCaseWorker(action :SequenceAction) :Saga<WorkerResponse> {
 
     const { selectedPerson } = value;
 
-    yield put(addPersonToCase.success(id, { caseEKID, person: selectedPerson, role }));
+    yield put(addPersonOrOrgToCase.success(id, { caseEKID, person: selectedPerson, role }));
   }
   catch (error) {
     workerResponse = { error };
     LOG.error(action.type, error);
-    yield put(addPersonToCase.failure(id, error));
+    yield put(addPersonOrOrgToCase.failure(id, error));
   }
   finally {
-    yield put(addPersonToCase.finally(id));
+    yield put(addPersonOrOrgToCase.finally(id));
   }
   return workerResponse;
 }
 
-function* addPersonToCaseWatcher() :Saga<*> {
+function* addPersonOrOrgToCaseWatcher() :Saga<*> {
 
-  yield takeEvery(ADD_PERSON_TO_CASE, addPersonToCaseWorker);
+  yield takeEvery(ADD_PERSON_OR_ORG_TO_CASE, addPersonOrOrgToCaseWorker);
 }
 
 export {
-  addPersonToCaseWatcher,
-  addPersonToCaseWorker,
+  addPersonOrOrgToCaseWatcher,
+  addPersonOrOrgToCaseWorker,
 };

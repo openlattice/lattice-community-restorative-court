@@ -5,7 +5,7 @@ import { List, Map, fromJS } from 'immutable';
 import addCaseStatusReducer from './addCaseStatusReducer';
 import addContactActivityReducer from './addContactActivityReducer';
 import addPeacemakerInformationReducer from './addPeacemakerInformationReducer';
-import addPersonToCaseReducer from './addPersonToCaseReducer';
+import addPersonOrOrgToCaseReducer from './addPersonOrOrgToCaseReducer';
 import clearSearchedOrganizationsReducer from './clearSearchedOrganizationsReducer';
 import clearSearchedPeopleReducer from './clearSearchedPeopleReducer';
 import editAddressReducer from './editAddressReducer';
@@ -36,7 +36,7 @@ import {
 import {
   ADD_CASE_STATUS,
   ADD_CONTACT_ACTIVITY,
-  ADD_PERSON_TO_CASE,
+  ADD_PERSON_OR_ORG_TO_CASE,
   CLEAR_SEARCHED_ORGANIZATIONS,
   CLEAR_SEARCHED_PEOPLE,
   EDIT_ADDRESS,
@@ -55,7 +55,7 @@ import {
   SUBMIT_CONTACT,
   addCaseStatus,
   addContactActivity,
-  addPersonToCase,
+  addPersonOrOrgToCase,
   editAddress,
   editContact,
   editPerson,
@@ -88,7 +88,7 @@ const INITIAL_STATE :Map = fromJS({
   [ADD_CASE_STATUS]: RS_INITIAL_STATE,
   [ADD_CONTACT_ACTIVITY]: RS_INITIAL_STATE,
   [ADD_PEACEMAKER_INFORMATION]: RS_INITIAL_STATE,
-  [ADD_PERSON_TO_CASE]: RS_INITIAL_STATE,
+  [ADD_PERSON_OR_ORG_TO_CASE]: RS_INITIAL_STATE,
   [EDIT_PEACEMAKER_INFORMATION]: RS_INITIAL_STATE,
   [EDIT_ADDRESS]: RS_INITIAL_STATE,
   [EDIT_CONTACT]: RS_INITIAL_STATE,
@@ -144,8 +144,8 @@ export default function profileReducer(state :Map = INITIAL_STATE, action :Objec
     case addPeacemakerInformation.case(action.type):
       return addPeacemakerInformationReducer(state, action);
 
-    case addPersonToCase.case(action.type):
-      return addPersonToCaseReducer(state, action);
+    case addPersonOrOrgToCase.case(action.type):
+      return addPersonOrOrgToCaseReducer(state, action);
 
     case editPeacemakerInformation.case(action.type):
       return editPeacemakerInformationReducer(state, action);

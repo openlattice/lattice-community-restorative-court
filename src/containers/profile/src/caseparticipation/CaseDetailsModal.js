@@ -55,7 +55,12 @@ const {
   NAME,
   ORGANIZATION_NAME,
 } = PropertyTypes;
-const { PEACEMAKER, RESPONDENT, VICTIM } = RoleConstants;
+const {
+  CASE_MANAGER,
+  PEACEMAKER,
+  RESPONDENT,
+  VICTIM,
+} = RoleConstants;
 const { CLOSED, RESOLUTION } = CaseStatusConstants;
 const { getEntityKeyId, getPropertyValue } = DataUtils;
 const { isDefined } = LangUtils;
@@ -93,6 +98,7 @@ type Props = {
   caseEKID :?UUID;
   caseIdentifier :string;
   caseRoleMap :Map;
+  dateAssignedToCaseMap :Map;
   isVisible :boolean;
   onClose :() => void;
   personCase :Map;
@@ -102,6 +108,7 @@ const CaseDetailsModal = ({
   caseEKID,
   caseIdentifier,
   caseRoleMap,
+  dateAssignedToCaseMap,
   isVisible,
   onClose,
   personCase,
@@ -130,6 +137,13 @@ const CaseDetailsModal = ({
   const respondentList :List = caseRoleMap.get(RESPONDENT, List());
   const victimList :List = caseRoleMap.get(VICTIM, List());
   const peacemakerList :List = caseRoleMap.get(PEACEMAKER, List());
+
+  const caseManagerList :List = caseRoleMap.get(CASE_MANAGER, List());
+  const caseManager :Map = caseManagerList.get(0, Map());
+  const caseManagerName = getPersonName(caseManager);
+  const caseManagerEKID :?UUID = getEntityKeyId(caseManager);
+  const dateAssignedByPersonOrOrgEKID = dateAssignedToCaseMap.get(CASE_MANAGER, Map());
+  const dateAssigned = dateAssignedByPersonOrOrgEKID.get(caseManagerEKID, '');
 
   const caseIsResolvedOrClosed = relevantStatuses.find((caseStatus :Map) => {
     const statusType = getPropertyValue(caseStatus, [PropertyTypes.STATUS, 0]);
@@ -186,6 +200,9 @@ const CaseDetailsModal = ({
         withHeader={modalHeader}>
       <ModalInnerWrapper>
         <Typography variant="h2">{caseIdentifier}</Typography>
+        <Typography variant="h4" gutterBottom>
+          {`Case Manager: ${caseManagerName} (Date Assigned: ${dateAssigned})`}
+        </Typography>
         <ModalSection>
           <header>
             <Typography variant="h3">Status</Typography>
