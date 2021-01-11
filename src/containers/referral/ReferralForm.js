@@ -4,6 +4,7 @@ import React, { useCallback, useEffect } from 'react';
 import {
   List,
   Map,
+  getIn,
   remove,
   removeIn,
   setIn,
@@ -12,7 +13,6 @@ import { Constants } from 'lattice';
 import { DataProcessingUtils, Form } from 'lattice-fabricate';
 import { Button, CardSegment, Typography } from 'lattice-ui-kit';
 import { DataUtils, ReduxUtils } from 'lattice-utils';
-import { DateTime } from 'luxon';
 import type { UUID } from 'lattice';
 
 import {
@@ -201,10 +201,11 @@ const ReferralForm = ({ personId } :Props) => {
 
     updatedFormData = addCRCCaseNumberToFormData(updatedFormData);
 
+    const referralDateTime = getIn(updatedFormData, dateOfReferralPath);
     updatedFormData = setIn(
       updatedFormData,
       [getPageSectionKey(1, 7), getEntityAddressKey(0, STATUS, EFFECTIVE_DATE)],
-      DateTime.local().toISO()
+      referralDateTime
     );
 
     const {

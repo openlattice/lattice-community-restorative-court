@@ -31,9 +31,9 @@ import type { SequenceAction } from 'redux-reqseq';
 
 import { AppTypes, PropertyTypes } from '../../../core/edm/constants';
 import { selectEntitySetId } from '../../../core/redux/selectors';
-import { getNeighborDetails, getNeighborESID } from '../../../utils/data';
+import { getAssociationDetails, getNeighborDetails, getNeighborESID } from '../../../utils/data';
 import { getPersonName } from '../../../utils/people';
-import { CaseStatusConstants, FormConstants } from '../../profile/src/constants';
+import { CaseStatusConstants, FormConstants, RoleConstants } from '../../profile/src/constants';
 import { DOWNLOAD_CASES, downloadCases } from '../actions';
 
 const { getEntitySetData } = DataApiActions;
@@ -44,12 +44,14 @@ const { getEntityKeyId, getPropertyValue } = DataUtils;
 const { formatAsDate } = DateTimeUtils;
 const { isDefined } = LangUtils;
 const {
+  ACCEPTANCE,
   CIRCLE,
   CLOSED,
   INTAKE,
-  RESOLUTION,
+  REFERRAL,
 } = CaseStatusConstants;
 const { REPAIR_HARM_AGREEMENT } = FormConstants;
+const { RESPONDENT } = RoleConstants;
 const {
   CRC_CASE,
   FORM,
@@ -58,24 +60,29 @@ const {
   STATUS,
 } = AppTypes;
 const {
-  DATETIME_RECEIVED,
   DUE_DATE,
   EFFECTIVE_DATE,
+  GENERAL_DATETIME,
   NAME,
   NOTES,
+  ROLE,
 } = PropertyTypes;
 
 const LOG = new Logger('DashboardSagas');
 
 const HEADERS = {
-  personName: 'Name',
+  personName: 'Respondent Name',
+  caseNumber: 'Case Number',
+  referralDate: 'Referral Date',
   dateAssigned: 'Date Assigned',
-  intake: 'Intake',
-  circle: 'Circle',
+  intake: 'Intake Date',
+  circle: 'Circle Date',
   rhExpirationDate: 'RH Expiration Date',
-  notes: 'Notes',
+  closedDate: 'Closed Date',
   caseManager: 'Case Manager',
 };
+
+const getStatus = (status :Map) => getPropertyValue(status, [PropertyTypes.STATUS, 0]);
 
 function* downloadCasesWorker(action :SequenceAction) :Saga<*> {
 
@@ -85,7 +92,12 @@ function* downloadCasesWorker(action :SequenceAction) :Saga<*> {
   try {
     yield put(downloadCases.request(id));
 
-    const { hasClosedCases, hasOpenCases, selectedStaffMember } = action.value;
+    const {
+      hasClosedCases,
+      hasOpenCases,
+      selectedStaffMember,
+      selectedStatus,
+    } = action.value;
 
     const crcCaseESID :UUID = yield select(selectEntitySetId(CRC_CASE));
 
@@ -120,18 +132,56 @@ function* downloadCasesWorker(action :SequenceAction) :Saga<*> {
       .filter((neighbor :Map) => getNeighborESID(neighbor) === statusESID)
       .map((neighbor :Map) => getNeighborDetails(neighbor)));
 
-    const staffByCRCEKID :Map = crcCaseNeighbors.map((neighborsList :List) => neighborsList
-      .filter((neighbor :Map) => getNeighborESID(neighbor) === staffESID)
-      .map((neighbor :Map) => getNeighborDetails(neighbor)));
+    const staffNeighbors :Map = crcCaseNeighbors.map((neighborsList :List) => neighborsList
+      .filter((neighbor :Map) => getNeighborESID(neighbor) === staffESID));
+    const dateStaffAssignedByCRCEKID = Map().withMutations((mutator) => {
+      staffNeighbors.forEach((neighborsList :List, crcCaseEKID) => {
+        const staffNeighbor = neighborsList.get(0, Map());
+        const associationDetails = getAssociationDetails(staffNeighbor);
+        const dateTimeAssigned = getPropertyValue(associationDetails, [GENERAL_DATETIME, 0]);
+        const dateAssigned = formatAsDate(dateTimeAssigned);
+        mutator.set(crcCaseEKID, dateAssigned);
+      });
+    });
+    const staffByCRCEKID :Map = staffNeighbors
+      .map((neighborsList) => neighborsList.map((neighbor :Map) => getNeighborDetails(neighbor)));
 
     let crcCasesToInclude :List = crcCases.filter((crcCase :Map) => {
       const crcCaseEKID :?UUID = getEntityKeyId(crcCase);
       const statusList :List = statusesByCRCEKID.get(crcCaseEKID, List());
       const statusIndicatingCompletion = statusList
-        .find((status :Map) => getPropertyValue(status, [PropertyTypes.STATUS, 0]) === CLOSED
-        || getPropertyValue(status, [PropertyTypes.STATUS, 0]) === RESOLUTION);
+        .find((status :Map) => getStatus(status) === CLOSED);
       if (!hasOpenCases && hasClosedCases) return isDefined(statusIndicatingCompletion);
       if (!hasClosedCases && hasOpenCases) return !isDefined(statusIndicatingCompletion);
+
+      if (selectedStatus) {
+        let hasReferral = false;
+        let hasIntake = false;
+        let hasAcceptance = false;
+        let hasCircle = false;
+        const hasClosed = isDefined(statusIndicatingCompletion);
+
+        statusList.forEach((status :Map) => {
+          const statusName = getStatus(status);
+          if (statusName === REFERRAL) hasReferral = true;
+          if (statusName === INTAKE) hasIntake = true;
+          if (statusName === ACCEPTANCE) hasAcceptance = true;
+          if (statusName === CIRCLE) hasCircle = true;
+        });
+
+        if (selectedStatus === REFERRAL) {
+          return hasReferral && !hasIntake && !hasAcceptance && !hasCircle && !hasClosed;
+        }
+        if (selectedStatus === INTAKE) {
+          return hasReferral && hasIntake && !hasAcceptance && !hasCircle && !hasClosed;
+        }
+        if (selectedStatus === ACCEPTANCE) {
+          return hasReferral && hasIntake && hasAcceptance && !hasCircle && !hasClosed;
+        }
+        if (selectedStatus === CIRCLE) {
+          return hasReferral && hasIntake && hasAcceptance && hasCircle && !hasClosed;
+        }
+      }
       return crcCase;
     });
 
@@ -146,31 +196,49 @@ function* downloadCasesWorker(action :SequenceAction) :Saga<*> {
 
     const dataTable :List = List().withMutations((mutator :List) => {
       crcCasesToInclude.forEach((crcCase :Map) => {
-        const dateTimeCaseCreated = getPropertyValue(crcCase, [DATETIME_RECEIVED, 0]);
-        const dateCaseCreated = formatAsDate(dateTimeCaseCreated);
-        const notes = getPropertyValue(crcCase, [NOTES, 0]);
+        const caseNumber = getPropertyValue(crcCase, [NOTES, 0]);
 
         const crcCaseEKID :?UUID = getEntityKeyId(crcCase);
         const caseNeighbors = crcCaseNeighbors.get(crcCaseEKID, List());
 
-        const personNeighbor :Map = caseNeighbors.find((neighbor :Map) => getNeighborESID(neighbor) === peopleESID);
-        const personName :string = getPersonName(getNeighborDetails(personNeighbor));
+        const personNeighbors :List = caseNeighbors.filter((neighbor :Map) => getNeighborESID(neighbor) === peopleESID);
+        const respondentNeighbor :Map = personNeighbors.find((neighbor :Map) => {
+          const association = getAssociationDetails(neighbor);
+          const role = getPropertyValue(association, [ROLE, 0]);
+          return role === RESPONDENT;
+        });
+        const personName :string = getPersonName(getNeighborDetails(respondentNeighbor));
 
         const staffList :List = staffByCRCEKID.get(crcCaseEKID, List());
         const staffPersonName :string = getPersonName(staffList.get(0));
 
+        const dateStaffAssigned = dateStaffAssignedByCRCEKID.get(crcCaseEKID, '');
+
         const statusList :List = statusesByCRCEKID.get(crcCaseEKID, List());
-        const intake = statusList.find((status :Map) => getPropertyValue(status, [PropertyTypes.STATUS, 0]) === INTAKE);
+        let referralDate = '';
+        const referral = statusList
+          .find((status :Map) => getStatus(status) === REFERRAL);
+        if (isDefined(referral)) {
+          const referralDateTime = getPropertyValue(referral, [EFFECTIVE_DATE, 0]);
+          referralDate = formatAsDate(referralDateTime);
+        }
+        const intake = statusList.find((status :Map) => getStatus(status) === INTAKE);
         let intakeDate = '';
         if (isDefined(intake)) {
           const intakeDateTime = getPropertyValue(intake, [EFFECTIVE_DATE, 0]);
           intakeDate = formatAsDate(intakeDateTime);
         }
-        const circle = statusList.find((status :Map) => getPropertyValue(status, [PropertyTypes.STATUS, 0]) === CIRCLE);
+        const circle = statusList.find((status :Map) => getStatus(status) === CIRCLE);
         let circleDate = '';
         if (isDefined(circle)) {
           const circleDateTime = getPropertyValue(circle, [EFFECTIVE_DATE, 0]);
           circleDate = formatAsDate(circleDateTime);
+        }
+        const closed = statusList.find((status :Map) => getStatus(status) === CLOSED);
+        let closedDate = '';
+        if (isDefined(closed)) {
+          const closedDateTime = getPropertyValue(closed, [EFFECTIVE_DATE, 0]);
+          closedDate = formatAsDate(closedDateTime);
         }
 
         const forms :List = caseNeighbors
@@ -186,11 +254,13 @@ function* downloadCasesWorker(action :SequenceAction) :Saga<*> {
 
         const tableRow = OrderedMap()
           .set(HEADERS.personName, personName)
-          .set(HEADERS.dateAssigned, dateCaseCreated)
+          .set(HEADERS.caseNumber, caseNumber)
+          .set(HEADERS.referralDate, referralDate)
+          .set(HEADERS.dateAssigned, dateStaffAssigned)
           .set(HEADERS.intake, intakeDate)
           .set(HEADERS.circle, circleDate)
           .set(HEADERS.rhExpirationDate, rhExpirationDate)
-          .set(HEADERS.notes, notes)
+          .set(HEADERS.closedDate, closedDate)
           .set(HEADERS.caseManager, staffPersonName);
         mutator.push(tableRow);
       });
@@ -203,10 +273,11 @@ function* downloadCasesWorker(action :SequenceAction) :Saga<*> {
     });
 
     let fileName = '';
-    if ((hasOpenCases && hasClosedCases)
-        || (!hasOpenCases && !hasClosedCases)) fileName = 'CRC_All_Cases';
-    else if (!hasOpenCases) fileName = 'CRC_Closed_Cases';
-    else if (!hasClosedCases) fileName = 'CRC_Open_Cases';
+    if (((hasOpenCases && hasClosedCases) || (!hasOpenCases && !hasClosedCases))
+        && !selectedStatus) fileName = 'CRC_All_Cases';
+    else if (!hasOpenCases && hasClosedCases) fileName = 'CRC_Closed_Cases';
+    else if (!hasClosedCases && hasOpenCases) fileName = 'CRC_Open_Cases';
+    else if (selectedStatus) fileName = `CRC_${selectedStatus}`;
     if (selectedStaffMember.length) fileName = `${fileName}_${selectedStaffMember.split(' ').join('_')}`;
 
     FS.saveAs(blob, fileName.concat('.csv'));
