@@ -6,6 +6,8 @@ import { Map, fromJS } from 'immutable';
 import { ReduxConstants } from 'lattice-utils';
 import { RequestStates } from 'redux-reqseq';
 
+import * as DashboardReduxConstants from './DashboardReduxConstants';
+import * as DownloadsReduxConstants from './DownloadsReduxConstants';
 import * as IntakeReduxConstants from './IntakeReduxConstants';
 import * as ProfileReduxConstants from './ProfileReduxConstants';
 import * as ReferralReduxConstants from './ReferralReduxConstants';
@@ -72,6 +74,8 @@ const APP_PATHS = {
 export {
   APP_PATHS,
   APP_REDUX_CONSTANTS,
+  DashboardReduxConstants,
+  DownloadsReduxConstants,
   INITIAL_SEARCH_RESULTS,
   IntakeReduxConstants,
   NEIGHBOR_DIRECTIONS,

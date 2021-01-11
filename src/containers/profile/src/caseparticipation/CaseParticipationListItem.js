@@ -23,6 +23,7 @@ import { RoleConstants } from '../constants';
 
 const {
   DATETIME_RECEIVED,
+  GENERAL_DATETIME,
   NOTES,
   ROLE,
 } = PropertyTypes;
@@ -67,6 +68,8 @@ const CaseParticipationListItem = ({ personCase } :Props) => {
   const caseDate :string = formatAsDate(dateTimeReceived);
 
   const personRoleInCase = useSelector((store) => store.getIn([PROFILE, PERSON_NEIGHBOR_MAP, ROLE, caseEKID], ''));
+  const dateAssignedToCaseMap :Map = useSelector((store) => store
+    .getIn([PROFILE, PERSON_CASE_NEIGHBOR_MAP, GENERAL_DATETIME, caseEKID], Map()));
 
   const caseIdentifier = `Case #: ${caseNumber} - ${respondentPersonName}`;
 
@@ -87,6 +90,7 @@ const CaseParticipationListItem = ({ personCase } :Props) => {
           caseEKID={caseEKID}
           caseIdentifier={caseIdentifier}
           caseRoleMap={caseRoleMap}
+          dateAssignedToCaseMap={dateAssignedToCaseMap}
           isVisible={modalIsVisible}
           onClose={() => setModalVisibility(false)}
           personCase={personCase} />

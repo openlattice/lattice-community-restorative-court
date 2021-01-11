@@ -6,7 +6,9 @@ import { all, fork } from '@redux-saga/core/effects';
 import { AuthSagas } from 'lattice-auth';
 import type { Saga } from '@redux-saga/core';
 
+import * as DashboardSagas from '../../containers/dashboard/sagas';
 import * as DataSagas from '../data/sagas';
+import * as DownloadsSagas from '../../containers/downloads/sagas';
 import * as IntakeSagas from '../../containers/intake/sagas';
 import * as PeacemakerSagas from '../../containers/peacemaker/sagas';
 import * as ProfileSagas from '../../containers/profile/src/sagas';
@@ -30,9 +32,17 @@ export default function* sagas() :Saga<*> {
     // AppSagas
     fork(AppSagas.initializeApplicationWatcher),
 
+    // DashboardSagas
+    fork(DashboardSagas.getCasesStatsWatcher),
+    fork(DashboardSagas.getStaffCasesDataWatcher),
+
     // DataSagas
     fork(DataSagas.submitDataGraphWatcher),
     fork(DataSagas.submitPartialReplaceWatcher),
+
+    // DownloadsSagas
+    fork(DownloadsSagas.downloadCasesWatcher),
+    fork(DownloadsSagas.downloadReferralsWatcher),
 
     // EDMSagas
     fork(EDMSagas.getEntityDataModelTypesWatcher),
@@ -47,7 +57,7 @@ export default function* sagas() :Saga<*> {
     // ProfileSagas
     fork(ProfileSagas.addCaseStatusWatcher),
     fork(ProfileSagas.addContactActivityWatcher),
-    fork(ProfileSagas.addPersonToCaseWatcher),
+    fork(ProfileSagas.addPersonOrOrgToCaseWatcher),
     fork(ProfileSagas.editAddressWatcher),
     fork(ProfileSagas.editContactWatcher),
     fork(ProfileSagas.editPersonWatcher),
@@ -57,6 +67,7 @@ export default function* sagas() :Saga<*> {
     fork(ProfileSagas.getPersonWatcher),
     fork(ProfileSagas.getStaffWatcher),
     fork(ProfileSagas.loadProfileWatcher),
+    fork(ProfileSagas.searchOrganizationsWatcher),
     fork(ProfileSagas.searchPeopleWatcher),
     fork(ProfileSagas.submitAddressWatcher),
     fork(ProfileSagas.submitContactWatcher),

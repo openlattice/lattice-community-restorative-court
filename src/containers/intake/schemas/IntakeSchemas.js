@@ -44,13 +44,24 @@ const {
   SURNAME,
 } = PropertyTypes;
 
-const currentDateTime = DateTime.local().toISO();
-
 const dataSchema = {
   type: 'object',
   title: '',
   properties: {
     [getPageSectionKey(1, 1)]: {
+      type: 'object',
+      title: '',
+      properties: {
+        [getEntityAddressKey(0, FORM, DATETIME_ADMINISTERED)]: {
+          type: 'string',
+          title: 'Intake Date',
+          format: 'date',
+          default: DateTime.local().toISODate()
+        },
+      },
+      required: [getEntityAddressKey(0, FORM, DATETIME_ADMINISTERED)]
+    },
+    [getPageSectionKey(1, 2)]: {
       type: 'object',
       title: 'Client Information',
       properties: {
@@ -83,7 +94,7 @@ const dataSchema = {
         },
       }
     },
-    [getPageSectionKey(1, 2)]: {
+    [getPageSectionKey(1, 3)]: {
       type: 'array',
       title: 'Victim Information',
       items: {
@@ -128,7 +139,7 @@ const dataSchema = {
         },
       }
     },
-    [getPageSectionKey(1, 3)]: {
+    [getPageSectionKey(1, 4)]: {
       type: 'array',
       title: '',
       items: {
@@ -144,7 +155,7 @@ const dataSchema = {
         ]
       }
     },
-    [getPageSectionKey(1, 4)]: {
+    [getPageSectionKey(1, 5)]: {
       type: 'object',
       title: 'Respondent Information',
       properties: {
@@ -191,7 +202,7 @@ const dataSchema = {
         }
       },
     },
-    [getPageSectionKey(1, 5)]: {
+    [getPageSectionKey(1, 6)]: {
       type: 'object',
       title: '',
       properties: {
@@ -204,16 +215,10 @@ const dataSchema = {
       },
       required: [getEntityAddressKey(0, STAFF, OPENLATTICE_ID_FQN)]
     },
-    [getPageSectionKey(1, 6)]: {
+    [getPageSectionKey(1, 7)]: {
       type: 'object',
       title: '',
       properties: {
-        [getEntityAddressKey(0, FORM, DATETIME_ADMINISTERED)]: {
-          type: 'string',
-          title: 'Date of Form Completion',
-          format: 'date',
-          default: DateTime.fromISO(currentDateTime).toISODate()
-        },
         [getEntityAddressKey(0, FORM, NAME)]: {
           type: 'string',
           title: 'Form Name',
@@ -227,7 +232,6 @@ const dataSchema = {
         [getEntityAddressKey(0, STATUS, EFFECTIVE_DATE)]: {
           type: 'string',
           title: 'Intake Date',
-          default: currentDateTime
         },
       }
     },
@@ -236,6 +240,12 @@ const dataSchema = {
 
 const uiSchema = {
   [getPageSectionKey(1, 1)]: {
+    classNames: 'column-span-12 grid-container',
+    [getEntityAddressKey(0, FORM, DATETIME_ADMINISTERED)]: {
+      classNames: 'column-span-4'
+    },
+  },
+  [getPageSectionKey(1, 2)]: {
     'ui:disabled': true,
     classNames: 'column-span-12 grid-container',
     [getEntityAddressKey(0, PEOPLE, GIVEN_NAME)]: {
@@ -257,7 +267,7 @@ const uiSchema = {
       classNames: 'column-span-4'
     },
   },
-  [getPageSectionKey(1, 2)]: {
+  [getPageSectionKey(1, 3)]: {
     'ui:disabled': true,
     classNames: 'column-span-12',
     'ui:options': {
@@ -293,7 +303,7 @@ const uiSchema = {
       },
     }
   },
-  [getPageSectionKey(1, 3)]: {
+  [getPageSectionKey(1, 4)]: {
     'ui:disabled': true,
     classNames: 'column-span-12',
     'ui:options': {
@@ -308,7 +318,7 @@ const uiSchema = {
       },
     }
   },
-  [getPageSectionKey(1, 4)]: {
+  [getPageSectionKey(1, 5)]: {
     'ui:disabled': true,
     classNames: 'column-span-12 grid-container',
     [getEntityAddressKey(0, REFERRAL_REQUEST, DATETIME_COMPLETED)]: {
@@ -339,17 +349,14 @@ const uiSchema = {
       classNames: 'column-span-4'
     }
   },
-  [getPageSectionKey(1, 5)]: {
+  [getPageSectionKey(1, 6)]: {
     classNames: 'column-span-12 grid-container',
     [getEntityAddressKey(0, STAFF, OPENLATTICE_ID_FQN)]: {
       classNames: 'column-span-4'
     },
   },
-  [getPageSectionKey(1, 6)]: {
+  [getPageSectionKey(1, 7)]: {
     classNames: 'column-span-12 grid-container',
-    [getEntityAddressKey(0, FORM, DATETIME_ADMINISTERED)]: {
-      classNames: 'column-span-4'
-    },
     [getEntityAddressKey(0, FORM, NAME)]: {
       'ui:widget': 'hidden',
     },

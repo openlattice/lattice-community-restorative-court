@@ -21,7 +21,7 @@ import { SEARCH_PEOPLE, searchPeople } from '../actions';
 const { isNonEmptyString } = LangUtils;
 const { searchEntitySetData } = SearchApiActions;
 const { searchEntitySetDataWorker } = SearchApiSagas;
-const { PEOPLE } = AppTypes;
+const { PEOPLE, STAFF } = AppTypes;
 const { DOB, GIVEN_NAME, SURNAME } = PropertyTypes;
 
 const LOG = new Logger('ProfileSagas');
@@ -40,10 +40,14 @@ function* searchPeopleWorker(action :SequenceAction) :Saga<*> {
       firstName,
       lastName,
       maxHits,
+      searchContext,
       start,
     } = value;
 
-    const peopleESID :UUID = yield select(selectEntitySetId(PEOPLE));
+    const crcPeopleESID :UUID = yield select(selectEntitySetId(PEOPLE));
+    const staffESID :UUID = yield select(selectEntitySetId(STAFF));
+    const peopleESID = searchContext === 'crcPeople' ? crcPeopleESID : staffESID;
+
     const firstNamePTID :UUID = yield select(selectPropertyTypeId(GIVEN_NAME));
     const lastNamePTID :UUID = yield select(selectPropertyTypeId(SURNAME));
     const dobPTID :UUID = yield select(selectPropertyTypeId(DOB));

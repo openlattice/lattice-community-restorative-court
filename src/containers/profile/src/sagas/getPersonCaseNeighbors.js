@@ -9,7 +9,12 @@ import {
 import { List, Map, fromJS } from 'immutable';
 import { Models } from 'lattice';
 import { SearchApiActions, SearchApiSagas } from 'lattice-sagas';
-import { DataUtils, LangUtils, Logger } from 'lattice-utils';
+import {
+  DataUtils,
+  DateTimeUtils,
+  LangUtils,
+  Logger,
+} from 'lattice-utils';
 import type { Saga } from '@redux-saga/core';
 import type { UUID } from 'lattice';
 import type { SequenceAction } from 'redux-reqseq';
@@ -25,10 +30,11 @@ import { GET_PERSON_CASE_NEIGHBORS, getPersonCaseNeighbors } from '../actions';
 
 const { isDefined } = LangUtils;
 const { getEntityKeyId, getPropertyValue } = DataUtils;
+const { formatAsDate } = DateTimeUtils;
 const { searchEntityNeighborsWithFilter } = SearchApiActions;
 const { searchEntityNeighborsWithFilterWorker } = SearchApiSagas;
 const { FQN } = Models;
-const { ROLE } = PropertyTypes;
+const { GENERAL_DATETIME, ROLE } = PropertyTypes;
 const {
   CHARGES,
   CHARGE_EVENT,
@@ -68,12 +74,21 @@ function* getPersonCaseNeighborsWorker(action :SequenceAction) :Saga<*> {
     const organizationsESID :UUID = yield select(selectEntitySetId(ORGANIZATIONS));
     const peopleESID :UUID = yield select(selectEntitySetId(PEOPLE));
     const referralRequestESID :UUID = yield select(selectEntitySetId(REFERRAL_REQUEST));
+    const staffESID :UUID = yield select(selectEntitySetId(STAFF));
     const statusESID :UUID = yield select(selectEntitySetId(STATUS));
 
     let filter = {
       entityKeyIds: personCaseEKIDs,
       destinationEntitySetIds: [statusESID],
-      sourceEntitySetIds: [chargesESID, chargeEventESID, formESID, organizationsESID, peopleESID, referralRequestESID],
+      sourceEntitySetIds: [
+        chargesESID,
+        chargeEventESID,
+        formESID,
+        organizationsESID,
+        peopleESID,
+        referralRequestESID,
+        staffESID
+      ],
     };
 
     let response :Object = yield call(
@@ -118,7 +133,7 @@ function* getPersonCaseNeighborsWorker(action :SequenceAction) :Saga<*> {
             formEKIDs.push(entityEKID);
             caseEKIDByFormEKID.set(entityEKID, caseEKID);
           }
-          else if (neighborESID === peopleESID || neighborESID === organizationsESID) {
+          else if (neighborESID === peopleESID || neighborESID === organizationsESID || neighborESID === staffESID) {
             const associationDetails = getAssociationDetails(neighbor);
             const role = getPropertyValue(associationDetails, [ROLE, 0]);
             const roleMap = mutator.get(ROLE, Map())
@@ -129,6 +144,18 @@ function* getPersonCaseNeighborsWorker(action :SequenceAction) :Saga<*> {
                   .set(role, existingRolesForCase.get(role, List()).push(entity))
               );
             mutator.set(ROLE, roleMap);
+
+            const dateTimeAssigned = getPropertyValue(associationDetails, [GENERAL_DATETIME, 0]);
+            const dateAssigned = formatAsDate(dateTimeAssigned);
+            const entityKeyId = getEntityKeyId(entity);
+            const dateAssignedMap = mutator.get(GENERAL_DATETIME, Map())
+              .update(
+                caseEKID,
+                Map(),
+                (datesByRoleMap) => datesByRoleMap
+                  .update(role, Map(), (dateByPersonOrOrgEKID) => dateByPersonOrOrgEKID.set(entityKeyId, dateAssigned))
+              );
+            mutator.set(GENERAL_DATETIME, dateAssignedMap);
           }
           else if (neighborESID === referralRequestESID) {
             const referralRequestMap = mutator.get(REFERRAL_REQUEST, Map())
@@ -165,8 +192,6 @@ function* getPersonCaseNeighborsWorker(action :SequenceAction) :Saga<*> {
         });
       });
     });
-
-    const staffESID :UUID = yield select(selectEntitySetId(STAFF));
 
     if (formEKIDs.length) {
       filter = {
