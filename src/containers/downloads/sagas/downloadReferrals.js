@@ -45,17 +45,26 @@ const { searchEntityNeighborsWithFilterWorker, searchEntitySetDataWorker } = Sea
 const { getEntityKeyId, getPropertyValue } = DataUtils;
 const { formatAsDate } = DateTimeUtils;
 const { isDefined } = LangUtils;
-const { INTAKE } = CaseStatusConstants;
+const { CLOSED, INTAKE } = CaseStatusConstants;
 const {
   AGENCY,
   CHARGES,
   CRC_CASE,
   PEOPLE,
+  PERSON_DETAILS,
   REFERRAL_REQUEST,
   STAFF,
   STATUS,
 } = AppTypes;
-const { DATETIME_COMPLETED, EFFECTIVE_DATE, NAME } = PropertyTypes;
+const {
+  DATETIME_COMPLETED,
+  DOB,
+  EFFECTIVE_DATE,
+  GENDER,
+  NAME,
+  NOTES,
+  RACE,
+} = PropertyTypes;
 
 const LOG = new Logger('DashboardSagas');
 
@@ -65,6 +74,10 @@ const HEADERS = {
   dateReferred: 'Date Referred',
   charge: 'Charge',
   dateOfIntake: 'Date of Intake',
+  outcome: 'Case Outcome',
+  personRace: 'Race',
+  personGender: 'Gender',
+  ageAtReferral: 'Age of Time of Referral',
   staff: 'CRC Staff Assigned',
 };
 
@@ -167,6 +180,7 @@ function* downloadReferralsWorker(action :SequenceAction) :Saga<*> {
     const agencyNameByReferralRequestEKID :Map = Map().asMutable();
     let crcCaseEKIDByReferralRequestEKID :Map = Map();
     let crcCaseNeighborMap :Map = Map();
+    let personGenderByPersonEKID :Map = Map();
 
     if (referralRequestEKIDs.length) {
       let filter = {
@@ -207,6 +221,33 @@ function* downloadReferralsWorker(action :SequenceAction) :Saga<*> {
       );
       if (response.error) throw response.error;
       crcCaseNeighborMap = fromJS(response.data);
+
+      const personEKIDs :UUID[] = [];
+      crcCaseNeighborMap.forEach((neighborsList :List) => {
+        const personNeighbor = neighborsList.find((neighbor) => getNeighborESID(neighbor) === peopleESID);
+        if (isDefined(personNeighbor)) {
+          const personEKID :?UUID = getEntityKeyId(getNeighborDetails(personNeighbor));
+          if (personEKID) personEKIDs.push(personEKID);
+        }
+      });
+
+      const personDetailsESID :UUID = yield select(selectEntitySetId(PERSON_DETAILS));
+
+      filter = {
+        entityKeyIds: personEKIDs,
+        destinationEntitySetIds: [personDetailsESID],
+        sourceEntitySetIds: [],
+      };
+      response = yield call(
+        searchEntityNeighborsWithFilterWorker,
+        searchEntityNeighborsWithFilter({ entitySetId: peopleESID, filter })
+      );
+      if (response.error) throw response.error;
+      personGenderByPersonEKID = fromJS(response.data).map((neighborsList :List) => {
+        const personDetails = getNeighborDetails(neighborsList.get(0, Map()));
+        const gender = getPropertyValue(personDetails, [GENDER, 0]);
+        return gender;
+      });
     }
 
     const dataTable :List = List().withMutations((mutator :List) => {
@@ -228,9 +269,18 @@ function* downloadReferralsWorker(action :SequenceAction) :Saga<*> {
 
         const personNeighbor = crcCaseNeighbors.find((neighbor) => getNeighborESID(neighbor) === peopleESID);
         let personName = '';
+        let personRace = '';
+        let ageAtReferral = '';
+        let personGender = '';
         if (isDefined(personNeighbor)) {
           const person = getNeighborDetails(personNeighbor);
           personName = getPersonName(person);
+          personRace = getPropertyValue(person, [RACE, 0]);
+          const dob = getPropertyValue(person, [DOB, 0]);
+          const { years } = DateTime.fromISO(dateTimeReferred).diff(DateTime.fromISO(dob), 'years').toObject();
+          if (years) ageAtReferral = Math.floor(years);
+          const personEKID :?UUID = getEntityKeyId(person);
+          personGender = personGenderByPersonEKID.get(personEKID, '');
         }
 
         const staffNeighbor = crcCaseNeighbors.find((neighbor) => getNeighborESID(neighbor) === staffESID);
@@ -249,6 +299,12 @@ function* downloadReferralsWorker(action :SequenceAction) :Saga<*> {
           const dateTimeOfIntake = getPropertyValue(intakeStatus, [EFFECTIVE_DATE, 0]);
           dateOfIntake = formatAsDate(dateTimeOfIntake);
         }
+        let outcome = '';
+        const closedStatus = statuses.find((status) => getPropertyValue(status, [PropertyTypes.STATUS, 0]) === CLOSED);
+        if (isDefined(closedStatus)) {
+          const reasonForClosingCase = getPropertyValue(closedStatus, [NOTES, 0]);
+          outcome = reasonForClosingCase;
+        }
 
         let referralAgency = '';
         if (agencyName) referralAgency = agencyName;
@@ -260,6 +316,10 @@ function* downloadReferralsWorker(action :SequenceAction) :Saga<*> {
           .set(HEADERS.dateReferred, dateReferred)
           .set(HEADERS.charge, chargeName)
           .set(HEADERS.dateOfIntake, dateOfIntake)
+          .set(HEADERS.outcome, outcome)
+          .set(HEADERS.personRace, personRace)
+          .set(HEADERS.personGender, personGender)
+          .set(HEADERS.ageAtReferral, ageAtReferral)
           .set(HEADERS.staff, staffName);
         mutator.push(tableRow);
       });
