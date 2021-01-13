@@ -26,6 +26,7 @@ import {
 } from '../../core/redux/constants';
 import { selectPerson } from '../../core/redux/selectors';
 import { goToRoute } from '../../core/router/RoutingActions';
+import { updateFormWithDateAsDateTime } from '../../utils/form';
 import { getPersonName } from '../../utils/people';
 import { getRelativeRoot } from '../../utils/router';
 import { useDispatch, useSelector } from '../app/AppProvider';
@@ -39,10 +40,15 @@ const {
   PERSON_DETAILS,
   SCREENED_WITH,
 } = AppTypes;
-const { NAME } = PropertyTypes;
+const { GENERAL_DATETIME, NAME } = PropertyTypes;
 const { PERSON_NEIGHBOR_MAP, PROFILE } = ProfileReduxConstants;
 const { PEACEMAKER_INFORMATION_FORM } = FormConstants;
-const { processAssociationEntityData, processEntityData } = DataProcessingUtils;
+const {
+  getEntityAddressKey,
+  getPageSectionKey,
+  processAssociationEntityData,
+  processEntityData,
+} = DataProcessingUtils;
 const { isPending, isSuccess } = ReduxUtils;
 const { getEntityKeyId, getPropertyValue } = DataUtils;
 const { isDefined } = LangUtils;
@@ -77,7 +83,11 @@ const PeacemakerInformationForm = () => {
   const personEKID :?UUID = getEntityKeyId(person);
 
   const onSubmit = () => {
-    const entityData = processEntityData(formData, entitySetIds, propertyTypeIds);
+    const updatedFormData = updateFormWithDateAsDateTime(
+      formData,
+      [getPageSectionKey(1, 1), getEntityAddressKey(0, FORM, GENERAL_DATETIME)]
+    );
+    const entityData = processEntityData(updatedFormData, entitySetIds, propertyTypeIds);
     const associations = [
       [SCREENED_WITH, personEKID, PEOPLE, 0, FORM, {}],
       [HAS, personEKID, PEOPLE, 0, PERSON_DETAILS, {}],
@@ -88,7 +98,7 @@ const PeacemakerInformationForm = () => {
   };
 
   const handleEdit = (params) => {
-    dispatch(editPeacemakerInformation(params));
+    dispatch(editPeacemakerInformation({ ...params, formEKID }));
   };
 
   const communication :List = useSelector((store) => store
