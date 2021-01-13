@@ -42,6 +42,7 @@ export default function* sagas() :Saga<*> {
 
     // DownloadsSagas
     fork(DownloadsSagas.downloadCasesWatcher),
+    fork(DownloadsSagas.downloadPeacemakersWatcher),
     fork(DownloadsSagas.downloadReferralsWatcher),
 
     // EDMSagas
