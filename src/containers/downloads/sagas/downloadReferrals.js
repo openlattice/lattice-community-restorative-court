@@ -88,9 +88,16 @@ function* downloadReferralsWorker(action :SequenceAction) :Saga<*> {
 
   try {
     yield put(downloadReferrals.request(id));
-    const { endDate, selectedAgency: agency, startDate } :Map = action.value;
+    const {
+      endDate,
+      selectedAgency: agency,
+      selectedCharge,
+      startDate,
+    } :Map = action.value;
+
     const agencyName = getPropertyValue(agency, [NAME, 0]);
     const agencyEKID :?UUID = getEntityKeyId(agency);
+    const selectedChargeName = getPropertyValue(selectedCharge, [NAME, 0]);
     const startDateAsDateTime :DateTime = DateTime.fromISO(startDate);
     const endDateAsDateTime :DateTime = DateTime.fromISO(endDate);
 
@@ -161,7 +168,7 @@ function* downloadReferralsWorker(action :SequenceAction) :Saga<*> {
       }
     }
 
-    const referralRequestEKIDs :UUID[] = [];
+    let referralRequestEKIDs :UUID[] = [];
 
     const referralRequestByEKID = Map().withMutations((mutator) => {
       referralRequests.forEach((referralRequest :Map) => {
@@ -249,6 +256,17 @@ function* downloadReferralsWorker(action :SequenceAction) :Saga<*> {
         return gender;
       });
     }
+
+    referralRequestEKIDs = referralRequestEKIDs.filter((referralRequestEKID :UUID) => {
+      const crcCaseEKID = crcCaseEKIDByReferralRequestEKID.get(referralRequestEKID, '');
+      const crcCaseNeighbors :List = crcCaseNeighborMap.get(crcCaseEKID, List());
+      const chargeNeighbor = crcCaseNeighbors.find((neighbor) => getNeighborESID(neighbor) === chargesESID);
+      if (isDefined(chargeNeighbor)) {
+        const charge = getNeighborDetails(chargeNeighbor);
+        if (selectedChargeName) return getPropertyValue(charge, [NAME, 0]) === selectedChargeName;
+      }
+      return true;
+    });
 
     const dataTable :List = List().withMutations((mutator :List) => {
       referralRequestEKIDs.forEach((referralRequestEKID :UUID) => {
