@@ -2,14 +2,17 @@
 import { List, Map } from 'immutable';
 import { DataProcessingUtils } from 'lattice-fabricate';
 import { DataUtils } from 'lattice-utils';
+import { DateTime } from 'luxon';
 
 import { AppTypes, PropertyTypes } from '../../../core/edm/constants';
 import { FormConstants } from '../../profile/src/constants';
 
 const { getEntityAddressKey, getPageSectionKey } = DataProcessingUtils;
+const { getPropertyValue } = DataUtils;
 const { COMMUNICATION, FORM, PERSON_DETAILS } = AppTypes;
 const {
   DATETIME_ADMINISTERED,
+  GENERAL_DATETIME,
   LANGUAGE,
   INTERESTS_AND_HOBBIES,
   NAME,
@@ -17,11 +20,12 @@ const {
   TEXT,
 } = PropertyTypes;
 const { PEACEMAKER_INFORMATION_FORM } = FormConstants;
-const { getPropertyValue } = DataUtils;
 
 export default function populateForm(personInformationForm :Map, personNeighborMap :Map) :Object {
 
   const datetimeAdministered = getPropertyValue(personInformationForm, [DATETIME_ADMINISTERED, 0]);
+  const dateTimeTrained = getPropertyValue(personInformationForm, [GENERAL_DATETIME, 0]);
+  const dateTrained = DateTime.fromISO(dateTimeTrained).toISODate();
   const text = getPropertyValue(personInformationForm, [TEXT, 0]);
 
   const communication :Map = personNeighborMap.getIn([COMMUNICATION, 0], Map());
@@ -39,6 +43,7 @@ export default function populateForm(personInformationForm :Map, personNeighborM
       [getEntityAddressKey(0, COMMUNICATION, LANGUAGE)]: languageAsJSArray,
       [getEntityAddressKey(0, PERSON_DETAILS, INTERESTS_AND_HOBBIES)]: interestsAndHobbies,
       [getEntityAddressKey(0, PERSON_DETAILS, RELIGION)]: religion,
+      [getEntityAddressKey(0, FORM, GENERAL_DATETIME)]: dateTrained,
       [getEntityAddressKey(0, FORM, TEXT)]: text,
     },
     [getPageSectionKey(1, 2)]: {
