@@ -44,11 +44,10 @@ const {
 const { NAME } = PropertyTypes;
 const { REPAIR_HARM_AGREEMENT } = FormConstants;
 const {
-  ACCEPTANCE,
   CIRCLE,
   CLOSED,
   INTAKE,
-  RESOLUTION,
+  REFERRAL,
 } = CaseStatusConstants;
 
 const LOG = new Logger('DashboardSagas');
@@ -148,24 +147,24 @@ function* getStaffCasesDataWorker(action :SequenceAction) :Saga<*> {
         crcCases.forEach((crcCase :Map) => {
           const crcCaseEKID :?UUID = getEntityKeyId(crcCase);
           const statuses :List = statusesByCRCEKID.get(crcCaseEKID, List());
+          const referral :Map = statuses
+            .find((status) => getPropertyValue(status, [PropertyTypes.STATUS, 0]) === REFERRAL);
           const intake :Map = statuses
             .find((status) => getPropertyValue(status, [PropertyTypes.STATUS, 0]) === INTAKE);
-          const acceptance :Map = statuses
-            .find((status) => getPropertyValue(status, [PropertyTypes.STATUS, 0]) === ACCEPTANCE);
           const circle :Map = statuses
             .find((status) => getPropertyValue(status, [PropertyTypes.STATUS, 0]) === CIRCLE);
           const closed :Map = statuses
             .find((status) => getPropertyValue(status, [PropertyTypes.STATUS, 0]) === CLOSED);
-          const resolution :Map = statuses
-            .find((status) => getPropertyValue(status, [PropertyTypes.STATUS, 0]) === RESOLUTION);
 
-          if (isDefined(intake) && !isDefined(acceptance)) pendingIntake += 1;
-          if (isDefined(acceptance) && !isDefined(circle)) pendingCircle += 1;
-          if (!isDefined(closed) && !isDefined(resolution)) openCases += 1;
-          if (isDefined(closed) || isDefined(resolution)) closedCases += 1;
+          if (isDefined(referral) && !isDefined(intake)) pendingIntake += 1;
+          if (isDefined(referral) && isDefined(intake) && !isDefined(circle)) {
+            pendingCircle += 1;
+          }
+          if (!isDefined(closed)) openCases += 1;
+          if (isDefined(closed)) closedCases += 1;
 
           const repairHarmAgreement = repairHarmAgreementByCRCEKID.get(crcCaseEKID, Map());
-          if (isDefined(repairHarmAgreement) && !repairHarmAgreement.isEmpty()) {
+          if (isDefined(repairHarmAgreement) && !repairHarmAgreement.isEmpty() && !isDefined(closed)) {
             repairHarmAgreementsCompleted += 1;
           }
         });
