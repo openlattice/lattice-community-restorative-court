@@ -33,15 +33,22 @@ const DatePickerGrid = styled.div`
 
 type Props = {
   agencies :List;
+  charges :List;
   isVisible :boolean;
   onClose :() => void;
 };
 
-const DownloadReferralsByAgencyModal = ({ agencies, isVisible, onClose } :Props) => {
+const DownloadReferralsByAgencyModal = ({
+  agencies,
+  charges,
+  isVisible,
+  onClose,
+} :Props) => {
 
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
   const [selectedAgency, setAgency] = useState(Map());
+  const [selectedCharge, setCharge] = useState(Map());
 
   const agencyOptions = agencies.map((agency :Map) => {
     const agencyName = getPropertyValue(agency, [NAME, 0]);
@@ -51,9 +58,22 @@ const DownloadReferralsByAgencyModal = ({ agencies, isVisible, onClose } :Props)
     };
   });
 
+  const chargeOptions = charges.map((charge :Map) => {
+    const chargeName = getPropertyValue(charge, [NAME, 0]);
+    return {
+      label: chargeName,
+      value: charge,
+    };
+  });
+
   const dispatch = useDispatch();
   const downloadReport = () => {
-    dispatch(downloadReferrals({ endDate, selectedAgency, startDate }));
+    dispatch(downloadReferrals({
+      endDate,
+      selectedAgency,
+      selectedCharge,
+      startDate,
+    }));
   };
 
   const downloadRequestState = useSelector((store) => store
@@ -87,6 +107,8 @@ const DownloadReferralsByAgencyModal = ({ agencies, isVisible, onClose } :Props)
         <DatePicker onChange={(date) => setStartDate(date)} />
         <DatePicker onChange={(date) => setEndDate(date)} />
       </DatePickerGrid>
+      <Label>Optional: Choose a charge to download all referrals with that charge.</Label>
+      <Select onChange={(option) => setCharge(option.value)} options={chargeOptions} />
     </ActionModal>
   );
 };
