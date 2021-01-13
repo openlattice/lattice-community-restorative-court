@@ -37,6 +37,7 @@ import { getPersonName } from '../../../utils/people';
 import { getUTCDateRangeSearchString } from '../../../utils/search';
 import { CaseStatusConstants } from '../../profile/src/constants';
 import { DOWNLOAD_REFERRALS, downloadReferrals } from '../actions';
+import { DownloadReferralsUtils } from '../utils';
 
 const { getEntitySetData } = DataApiActions;
 const { getEntitySetDataWorker } = DataApiSagas;
@@ -45,6 +46,13 @@ const { searchEntityNeighborsWithFilterWorker, searchEntitySetDataWorker } = Sea
 const { getEntityKeyId, getPropertyValue } = DataUtils;
 const { formatAsDate } = DateTimeUtils;
 const { isDefined } = LangUtils;
+const {
+  filterReferralRequestsByCharge,
+  filterReferralRequestsByGender,
+  filterReferralRequestsByPeople,
+  filterReferralRequestsByRace,
+  getPersonEKIDsWithMultipleReferrals,
+} = DownloadReferralsUtils;
 const { CLOSED, INTAKE } = CaseStatusConstants;
 const {
   AGENCY,
@@ -90,8 +98,11 @@ function* downloadReferralsWorker(action :SequenceAction) :Saga<*> {
     yield put(downloadReferrals.request(id));
     const {
       endDate,
+      onlyRepeatReferrals,
       selectedAgency: agency,
       selectedCharge,
+      selectedGender,
+      selectedRace,
       startDate,
     } :Map = action.value;
 
@@ -257,16 +268,49 @@ function* downloadReferralsWorker(action :SequenceAction) :Saga<*> {
       });
     }
 
-    referralRequestEKIDs = referralRequestEKIDs.filter((referralRequestEKID :UUID) => {
-      const crcCaseEKID = crcCaseEKIDByReferralRequestEKID.get(referralRequestEKID, '');
-      const crcCaseNeighbors :List = crcCaseNeighborMap.get(crcCaseEKID, List());
-      const chargeNeighbor = crcCaseNeighbors.find((neighbor) => getNeighborESID(neighbor) === chargesESID);
-      if (isDefined(chargeNeighbor)) {
-        const charge = getNeighborDetails(chargeNeighbor);
-        if (selectedChargeName) return getPropertyValue(charge, [NAME, 0]) === selectedChargeName;
-      }
-      return true;
+    const personByCRCCaseEKID :Map = Map().withMutations((mutator) => {
+      crcCaseNeighborMap.forEach((neighborsList :List, crcCaseEKID :UUID) => {
+        const personNeighbor = neighborsList.find((neighbor) => getNeighborESID(neighbor) === peopleESID);
+        if (isDefined(personNeighbor)) {
+          mutator.set(crcCaseEKID, getNeighborDetails(personNeighbor));
+        }
+      });
     });
+
+    referralRequestEKIDs = filterReferralRequestsByCharge(
+      selectedChargeName,
+      referralRequestEKIDs,
+      crcCaseEKIDByReferralRequestEKID,
+      crcCaseNeighborMap,
+      chargesESID,
+    );
+
+    referralRequestEKIDs = filterReferralRequestsByRace(
+      selectedRace,
+      referralRequestEKIDs,
+      crcCaseEKIDByReferralRequestEKID,
+      personByCRCCaseEKID,
+    );
+
+    referralRequestEKIDs = filterReferralRequestsByGender(
+      selectedGender,
+      referralRequestEKIDs,
+      crcCaseEKIDByReferralRequestEKID,
+      personByCRCCaseEKID,
+      personGenderByPersonEKID,
+    );
+
+    if (onlyRepeatReferrals) {
+      const people :List = personByCRCCaseEKID.valueSeq().toList();
+      const personEKIDsToInclude :UUID[] = getPersonEKIDsWithMultipleReferrals(people);
+
+      referralRequestEKIDs = filterReferralRequestsByPeople(
+        personEKIDsToInclude,
+        referralRequestEKIDs,
+        crcCaseEKIDByReferralRequestEKID,
+        personByCRCCaseEKID,
+      );
+    }
 
     const dataTable :List = List().withMutations((mutator :List) => {
       referralRequestEKIDs.forEach((referralRequestEKID :UUID) => {
@@ -285,21 +329,15 @@ function* downloadReferralsWorker(action :SequenceAction) :Saga<*> {
           chargeName = getPropertyValue(charge, [NAME, 0]);
         }
 
-        const personNeighbor = crcCaseNeighbors.find((neighbor) => getNeighborESID(neighbor) === peopleESID);
-        let personName = '';
-        let personRace = '';
+        const person = personByCRCCaseEKID.get(crcCaseEKID, Map());
+        const personEKID :?UUID = getEntityKeyId(person);
+        const personName = getPersonName(person);
+        const personRace = getPropertyValue(person, [RACE, 0]);
+        const personGender = personGenderByPersonEKID.get(personEKID, '');
         let ageAtReferral = '';
-        let personGender = '';
-        if (isDefined(personNeighbor)) {
-          const person = getNeighborDetails(personNeighbor);
-          personName = getPersonName(person);
-          personRace = getPropertyValue(person, [RACE, 0]);
-          const dob = getPropertyValue(person, [DOB, 0]);
-          const { years } = DateTime.fromISO(dateTimeReferred).diff(DateTime.fromISO(dob), 'years').toObject();
-          if (years) ageAtReferral = Math.floor(years);
-          const personEKID :?UUID = getEntityKeyId(person);
-          personGender = personGenderByPersonEKID.get(personEKID, '');
-        }
+        const dob = getPropertyValue(person, [DOB, 0]);
+        const { years } = DateTime.fromISO(dateTimeReferred).diff(DateTime.fromISO(dob), 'years').toObject();
+        if (years) ageAtReferral = Math.floor(years);
 
         const staffNeighbor = crcCaseNeighbors.find((neighbor) => getNeighborESID(neighbor) === staffESID);
         let staffName = '';
@@ -320,8 +358,7 @@ function* downloadReferralsWorker(action :SequenceAction) :Saga<*> {
         let outcome = '';
         const closedStatus = statuses.find((status) => getPropertyValue(status, [PropertyTypes.STATUS, 0]) === CLOSED);
         if (isDefined(closedStatus)) {
-          const reasonForClosingCase = getPropertyValue(closedStatus, [NOTES, 0]);
-          outcome = reasonForClosingCase;
+          outcome = getPropertyValue(closedStatus, [NOTES, 0]);
         }
 
         let referralAgency = '';
