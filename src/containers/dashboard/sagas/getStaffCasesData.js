@@ -165,7 +165,7 @@ function* getStaffCasesDataWorker(action :SequenceAction) :Saga<*> {
           if (!isDefined(closed)) openCases += 1;
           if (isDefined(closed)) {
             const reasonForClosingCase = getPropertyValue(closed, [NOTES, 0]);
-            if (reasonForClosingCase.includes('successful')) successfulCases += 1;
+            if (reasonForClosingCase.includes('Successful')) successfulCases += 1;
             else unsuccessfulCases += 1;
           }
 
