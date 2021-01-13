@@ -10,6 +10,7 @@ const { getEntityAddressKey, getPageSectionKey } = DataProcessingUtils;
 const { COMMUNICATION, FORM, PERSON_DETAILS } = AppTypes;
 const {
   DATETIME_ADMINISTERED,
+  GENERAL_DATETIME,
   LANGUAGE,
   INTERESTS_AND_HOBBIES,
   NAME,
@@ -42,6 +43,11 @@ const schema = {
         [getEntityAddressKey(0, PERSON_DETAILS, RELIGION)]: {
           type: 'string',
           title: 'Faith Information',
+        },
+        [getEntityAddressKey(0, FORM, GENERAL_DATETIME)]: {
+          type: 'string',
+          title: 'Date Trained',
+          format: 'date',
         },
         [getEntityAddressKey(0, FORM, TEXT)]: {
           type: 'string',
@@ -83,14 +89,17 @@ const uiSchema = {
     classNames: 'column-span-12 grid-container',
     'ui:options': { editable: true },
     [getEntityAddressKey(0, COMMUNICATION, LANGUAGE)]: {
-      classNames: 'column-span-4',
+      classNames: 'column-span-6',
       'ui:options': { multiple: true }
     },
     [getEntityAddressKey(0, PERSON_DETAILS, INTERESTS_AND_HOBBIES)]: {
-      classNames: 'column-span-4',
+      classNames: 'column-span-6',
     },
     [getEntityAddressKey(0, PERSON_DETAILS, RELIGION)]: {
-      classNames: 'column-span-4',
+      classNames: 'column-span-6',
+    },
+    [getEntityAddressKey(0, FORM, GENERAL_DATETIME)]: {
+      classNames: 'column-span-6',
     },
     [getEntityAddressKey(0, FORM, TEXT)]: {
       classNames: 'column-span-12',
