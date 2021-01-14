@@ -17,9 +17,11 @@ import { resetRequestState } from '../../core/redux/actions';
 import { DownloadsReduxConstants, REQUEST_STATE } from '../../core/redux/constants';
 import { RACES } from '../../utils/people/constants';
 import { useDispatch, useSelector } from '../app/AppProvider';
+import { PeacemakerStatusConstants } from '../peacemaker/constants';
 
 const { isSuccess } = ReduxUtils;
 const { DOWNLOADS } = DownloadsReduxConstants;
+const { ACTIVE, INACTIVE } = PeacemakerStatusConstants;
 
 type Props = {
   isVisible :boolean;
@@ -31,17 +33,20 @@ const DownloadPeacemakersModal = ({ isVisible, onClose } :Props) => {
   const [selectedRace, setRace] = useState('');
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
+  const [selectedStatus, setStatus] = useState('');
 
   const dispatch = useDispatch();
   const downloadReport = () => {
     dispatch(downloadPeacemakers({
       endDate,
       selectedRace,
+      selectedStatus,
       startDate,
     }));
   };
 
   const raceOptions = RACES.map((race :string) => ({ label: race, value: race }));
+  const statusOptions = [ACTIVE, INACTIVE].map((status :string) => ({ label: status, value: status }));
 
   const downloadRequestState = useSelector((store) => store.getIn([DOWNLOADS, DOWNLOAD_PEACEMAKERS, REQUEST_STATE]));
 
@@ -50,6 +55,7 @@ const DownloadPeacemakersModal = ({ isVisible, onClose } :Props) => {
       setRace('');
       setStartDate('');
       setEndDate('');
+      setStatus('');
       dispatch(resetRequestState([DOWNLOAD_PEACEMAKERS]));
       onClose();
     }
@@ -78,6 +84,11 @@ const DownloadPeacemakersModal = ({ isVisible, onClose } :Props) => {
         <DatePicker onChange={(date) => setStartDate(date)} />
         <DatePicker onChange={(date) => setEndDate(date)} />
       </DatePickerGrid>
+      <Label>Current Peacemaker Status:</Label>
+      <Select
+          onChange={(option) => setStatus(option.value)}
+          options={statusOptions}
+          placeholder="Select status..." />
     </ActionModal>
   );
 };
