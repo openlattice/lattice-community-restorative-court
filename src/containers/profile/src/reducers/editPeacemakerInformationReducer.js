@@ -10,7 +10,12 @@ import { EDIT_PEACEMAKER_INFORMATION, editPeacemakerInformation } from '../../..
 import { FormConstants } from '../constants';
 
 const { PERSON_NEIGHBOR_MAP } = ProfileReduxConstants;
-const { COMMUNICATION, FORM, PERSON_DETAILS } = AppTypes;
+const {
+  COMMUNICATION,
+  FORM,
+  PEACEMAKER_STATUS,
+  PERSON_DETAILS,
+} = AppTypes;
 const { NAME } = PropertyTypes;
 const { PEACEMAKER_INFORMATION_FORM } = FormConstants;
 const { getPropertyValue } = DataUtils;
@@ -22,7 +27,12 @@ export default function reducer(state :Map, action :SequenceAction) {
       .setIn([EDIT_PEACEMAKER_INFORMATION, REQUEST_STATE], RequestStates.PENDING)
       .setIn([EDIT_PEACEMAKER_INFORMATION, action.id], action),
     SUCCESS: () => {
-      const { newCommunication, newForm, newPersonDetails } = action.value;
+      const {
+        newCommunication,
+        newForm,
+        newPeacemakerStatus,
+        newPersonDetails,
+      } = action.value;
 
       let personNeighborMap :Map = state.get(PERSON_NEIGHBOR_MAP);
       const forms :List = personNeighborMap.get(FORM, List());
@@ -37,6 +47,10 @@ export default function reducer(state :Map, action :SequenceAction) {
         .updateIn([COMMUNICATION, 0], Map(), (originalCommunication) => originalCommunication.merge(newCommunication));
       personNeighborMap = personNeighborMap
         .updateIn([PERSON_DETAILS, 0], Map(), (originalPersonDetails) => originalPersonDetails.merge(newPersonDetails));
+      if (!newPeacemakerStatus.isEmpty()) {
+        personNeighborMap = personNeighborMap
+          .update(PEACEMAKER_STATUS, List(), (originalStatuses) => originalStatuses.push(newPeacemakerStatus));
+      }
 
       return state
         .set(PERSON_NEIGHBOR_MAP, personNeighborMap)
