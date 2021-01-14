@@ -32,6 +32,7 @@ import { AppTypes, PropertyTypes } from '../../../core/edm/constants';
 import { selectEntitySetId, selectPropertyTypeId } from '../../../core/redux/selectors';
 import { getAssociationDetails, getNeighborDetails, getNeighborESID } from '../../../utils/data';
 import { getPersonName } from '../../../utils/people';
+import { getSearchTerm, getUTCDateRangeSearchString } from '../../../utils/search';
 import {
   CaseStatusConstants,
   ContactActivityConstants,
@@ -48,7 +49,7 @@ const { isDefined } = LangUtils;
 const { CIRCLE } = CaseStatusConstants;
 const { PEACEMAKER_INFORMATION_FORM } = FormConstants;
 const { PEACEMAKER } = RoleConstants;
-const { ATTENDED } = ContactActivityConstants;
+const { ATTENDED, DID_NOT_ATTEND } = ContactActivityConstants;
 const {
   CONTACT_ACTIVITY,
   CRC_CASE,
@@ -86,26 +87,50 @@ function* downloadPeacemakersWorker(action :SequenceAction) :Saga<*> {
   try {
     yield put(downloadPeacemakers.request(id));
 
+    const {
+      endDate,
+      selectedRace,
+      startDate,
+    } = action.value;
+
     const formESID :UUID = yield select(selectEntitySetId(FORM));
     const namePTID :UUID = yield select(selectPropertyTypeId(NAME));
+    const generalDateTimePTID :UUID = yield select(selectPropertyTypeId(GENERAL_DATETIME));
+    const startDateAsDateTime :DateTime = DateTime.fromISO(startDate);
+    const endDateAsDateTime :DateTime = DateTime.fromISO(endDate);
 
     const searchOptions = {
       entitySetIds: [formESID],
       start: 0,
       maxHits: 10000,
       constraints: [{
+        min: 1,
         constraints: [{
-          type: 'advanced',
-          searchFields: [
-            { searchTerm: PEACEMAKER_INFORMATION_FORM, property: namePTID },
-          ],
+          searchTerm: getSearchTerm(namePTID, PEACEMAKER_INFORMATION_FORM),
+          fuzzy: false
         }]
       }]
     };
 
+    if (startDate && endDate) {
+      searchOptions.constraints.push({
+        min: 1,
+        constraints: [{
+          searchTerm: getUTCDateRangeSearchString(
+            generalDateTimePTID,
+            'day',
+            startDateAsDateTime,
+            endDateAsDateTime
+          ),
+          fuzzy: false
+        }]
+      });
+    }
+
     let response = yield call(searchEntitySetDataWorker, searchEntitySetData(searchOptions));
     if (response.error) throw response.error;
     const peacemakerInfoForms = fromJS(response.data.hits);
+
     const peacemakerInfoFormsByEKID = Map().withMutations((mutator) => {
       peacemakerInfoForms.forEach((form :Map) => {
         mutator.set(getEntityKeyId(form), form);
@@ -127,14 +152,25 @@ function* downloadPeacemakersWorker(action :SequenceAction) :Saga<*> {
     if (response.error) throw response.error;
     const formNeighbors :Map = fromJS(response.data);
     const personEKIDs :UUID[] = [];
-    const people :List = List().asMutable();
+    let people :List = List().asMutable();
 
-    formNeighbors.forEach((neighborsList :List) => {
-      const person :Map = getNeighborDetails(neighborsList.get(0, Map()));
-      people.push(person);
-      const personEKID :?UUID = getEntityKeyId(person);
-      if (personEKID) personEKIDs.push(personEKID);
+    const formEKIDByPersonEKID = Map().withMutations((mutator) => {
+      formNeighbors.forEach((neighborsList :List, formEKID :UUID) => {
+        const person :Map = getNeighborDetails(neighborsList.get(0, Map()));
+        people.push(person);
+        const personEKID :?UUID = getEntityKeyId(person);
+        if (personEKID) personEKIDs.push(personEKID);
+
+        mutator.set(personEKID, formEKID);
+      });
     });
+
+    if (selectedRace) {
+      people = people.filter((person :Map) => {
+        const race = getPropertyValue(person, [RACE, 0]);
+        return race === selectedRace;
+      });
+    }
 
     const crcCaseESID :UUID = yield select(selectEntitySetId(CRC_CASE));
     const contactActivityESID :UUID = yield select(selectEntitySetId(CONTACT_ACTIVITY));
@@ -199,8 +235,9 @@ function* downloadPeacemakersWorker(action :SequenceAction) :Saga<*> {
           const status = getNeighborDetails(neighbor);
           return getPropertyValue(status, [PropertyTypes.STATUS, 0]) === CIRCLE;
         });
+
         if (isDefined(circleStatus)) {
-          const circleDateTime = getPropertyValue(circleStatus, [EFFECTIVE_DATE, 0]);
+          const circleDateTime = getPropertyValue(getNeighborDetails(circleStatus), [EFFECTIVE_DATE, 0]);
           mutator.set(crcCaseEKID, circleDateTime);
         }
         else {
@@ -231,7 +268,8 @@ function* downloadPeacemakersWorker(action :SequenceAction) :Saga<*> {
         const race = getPropertyValue(person, [RACE, 0]);
 
         const personEKID :?UUID = getEntityKeyId(person);
-        const form = peacemakerInfoFormsByEKID.get(personEKID, Map());
+        const formEKID = formEKIDByPersonEKID.get(personEKID, '');
+        const form = peacemakerInfoFormsByEKID.get(formEKID, Map());
         const dateTimeTrained = getPropertyValue(form, [GENERAL_DATETIME, 0]);
         const dateTrained = formatAsDate(dateTimeTrained);
 
@@ -244,7 +282,8 @@ function* downloadPeacemakersWorker(action :SequenceAction) :Saga<*> {
         const contactDateTime = getPropertyValue(mostRecentContact, [CONTACT_DATETIME, 0]);
         const mostRecentlyContacted = formatAsDate(contactDateTime);
         const contactOutcome = getPropertyValue(mostRecentContact, [OUTCOME, 0]);
-        const participated = contactOutcome === ATTENDED ? 'Yes' : 'No';
+        let participated = contactOutcome === ATTENDED ? 'Yes' : '';
+        if (contactOutcome === DID_NOT_ATTEND) participated = 'No';
 
         const mostRecentCircleDateTime = mostRecentCircleDateTimeByPersonEKID.get(personEKID, '');
         const mostRecentCircle = formatAsDate(mostRecentCircleDateTime);
