@@ -54,6 +54,7 @@ const {
   CONTACT_ACTIVITY,
   CRC_CASE,
   FORM,
+  PEACEMAKER_STATUS,
   PEOPLE,
   STATUS,
 } = AppTypes;
@@ -90,6 +91,7 @@ function* downloadPeacemakersWorker(action :SequenceAction) :Saga<*> {
     const {
       endDate,
       selectedRace,
+      selectedStatus,
       startDate,
     } = action.value;
 
@@ -174,10 +176,11 @@ function* downloadPeacemakersWorker(action :SequenceAction) :Saga<*> {
 
     const crcCaseESID :UUID = yield select(selectEntitySetId(CRC_CASE));
     const contactActivityESID :UUID = yield select(selectEntitySetId(CONTACT_ACTIVITY));
+    const peacemakerStatusESID :UUID = yield select(selectEntitySetId(PEACEMAKER_STATUS));
 
     filter = {
       entityKeyIds: personEKIDs,
-      destinationEntitySetIds: [crcCaseESID],
+      destinationEntitySetIds: [crcCaseESID, peacemakerStatusESID],
       sourceEntitySetIds: [contactActivityESID],
     };
     response = yield call(
@@ -185,7 +188,37 @@ function* downloadPeacemakersWorker(action :SequenceAction) :Saga<*> {
       searchEntityNeighborsWithFilter({ entitySetId: peopleESID, filter })
     );
     if (response.error) throw response.error;
-    const personNeighbors :Map = fromJS(response.data);
+
+    let personNeighbors :Map = fromJS(response.data);
+    if (selectedStatus) {
+      const personEKIDsToInclude :UUID[] = [];
+      personNeighbors = personNeighbors.filter((neighborsList :List, personEKID :UUID) => {
+        const statusNeighbors = neighborsList
+          .filter((neighbor :Map) => getNeighborESID(neighbor) === peacemakerStatusESID);
+        if (isDefined(statusNeighbors)) {
+          const mostRecentStatus = statusNeighbors
+            .sortBy((status :Map) => DateTime.fromISO(
+              getPropertyValue(getNeighborDetails(status), [EFFECTIVE_DATE, 0])
+            ).valueOf())
+            .last();
+          const statusName = getPropertyValue(getNeighborDetails(mostRecentStatus), [PropertyTypes.STATUS, 0]);
+          const statusMatchesSelected = statusName === selectedStatus;
+          if (statusMatchesSelected) personEKIDsToInclude.push(personEKID);
+          return statusMatchesSelected;
+        }
+        return false;
+      });
+      people = people.filter((person :Map) => personEKIDsToInclude.includes(getEntityKeyId(person)));
+    }
+
+    const statusByPersonEKID :Map = Map().withMutations((mutator) => {
+      personNeighbors.forEach((neighborsList :List, personEKID :UUID) => {
+        const statusList :List = neighborsList
+          .filter((neighbor :Map) => getNeighborESID(neighbor) === peacemakerStatusESID)
+          .map((neighbor :Map) => getNeighborDetails(neighbor));
+        mutator.set(personEKID, statusList);
+      });
+    });
 
     const contactActivityByPersonEKID :Map = Map().withMutations((mutator) => {
       personNeighbors.forEach((neighborsList :List, personEKID :UUID) => {
@@ -288,13 +321,20 @@ function* downloadPeacemakersWorker(action :SequenceAction) :Saga<*> {
         const mostRecentCircleDateTime = mostRecentCircleDateTimeByPersonEKID.get(personEKID, '');
         const mostRecentCircle = formatAsDate(mostRecentCircleDateTime);
 
+        const peacemakerStatuses = statusByPersonEKID.get(personEKID, List());
+        const mostRecentStatus = peacemakerStatuses
+          .sortBy((status :Map) => DateTime.fromISO(getPropertyValue(status, [EFFECTIVE_DATE, 0])).valueOf())
+          .last();
+        const status = getPropertyValue(mostRecentStatus, [PropertyTypes.STATUS, 0]);
+
         const tableRow = OrderedMap()
           .set(HEADERS.personName, personName)
           .set(HEADERS.race, race)
           .set(HEADERS.dateTrained, dateTrained)
           .set(HEADERS.mostRecentCircle, mostRecentCircle)
           .set(HEADERS.mostRecentlyContacted, mostRecentlyContacted)
-          .set(HEADERS.participated, participated);
+          .set(HEADERS.participated, participated)
+          .set(HEADERS.status, status);
         mutator.push(tableRow);
       });
     })
