@@ -21,10 +21,10 @@ import { APP_PATHS, ProfileReduxConstants, ReferralReduxConstants } from '../../
 import { useDispatch, useSelector } from '../app/AppProvider';
 import { initializeApplication } from '../app/actions';
 import { getStaff } from '../profile/src/actions';
-import { getAgencies } from '../referral/actions';
+import { getAgencies, getCharges } from '../referral/actions';
 
 const { NEUTRAL } = Colors;
-const { AGENCIES, REFERRAL } = ReferralReduxConstants;
+const { AGENCIES, CHARGES, REFERRAL } = ReferralReduxConstants;
 const { PROFILE, STAFF_MEMBERS } = ProfileReduxConstants;
 
 const DownloadCard = styled(Card)`
@@ -63,6 +63,7 @@ const Downloads = ({ match, organizationId, root } :Props) => {
     if (appConfig) {
       dispatch(getAgencies());
       dispatch(getStaff());
+      dispatch(getCharges());
     }
   }, [appConfig, dispatch]);
 
@@ -70,6 +71,7 @@ const Downloads = ({ match, organizationId, root } :Props) => {
   const [casesModalIsOpen, openCasesModal] = useState(false);
 
   const agencies :List = useSelector((store) => store.getIn([REFERRAL, AGENCIES], List()));
+  const charges :List = useSelector((store) => store.getIn([REFERRAL, CHARGES], List()));
   const staff :List = useSelector((store) => store.getIn([PROFILE, STAFF_MEMBERS], List()));
 
   return (
@@ -88,6 +90,7 @@ const Downloads = ({ match, organizationId, root } :Props) => {
       </DownloadCard>
       <DownloadReferralsModal
           agencies={agencies}
+          charges={charges}
           isVisible={referralsModalIsOpen}
           onClose={() => openReferralsModal(false)} />
       <DownloadCasesModal
