@@ -96,6 +96,7 @@ const {
 } = AppTypes;
 const {
   DATETIME_COMPLETED,
+  DATETIME_RECEIVED,
   EFFECTIVE_DATE,
   GENERAL_DATETIME,
   GIVEN_NAME,
@@ -205,6 +206,11 @@ const ReferralForm = ({ personId } :Props) => {
     updatedFormData = setIn(
       updatedFormData,
       [getPageSectionKey(1, 7), getEntityAddressKey(0, STATUS, EFFECTIVE_DATE)],
+      referralDateTime
+    );
+    updatedFormData = setIn(
+      updatedFormData,
+      [getPageSectionKey(1, 7), getEntityAddressKey(0, CRC_CASE, DATETIME_RECEIVED)],
       referralDateTime
     );
 

@@ -36,6 +36,7 @@ const {
   CRC_CASE,
   FORM,
   LOCATION,
+  PEACEMAKER_STATUS,
   PERSON_DETAILS,
 } = AppTypes;
 const { DST, SRC } = NEIGHBOR_DIRECTIONS;
@@ -64,6 +65,7 @@ function* loadProfileWorker(action :SequenceAction) :Saga<*> {
     const contactInfoESID :UUID = yield select(selectEntitySetId(CONTACT_INFO));
     const formESID :UUID = yield select(selectEntitySetId(FORM));
     const locationESID = yield select(selectEntitySetId(LOCATION));
+    const peacemakerStatusESID = yield select(selectEntitySetId(PEACEMAKER_STATUS));
     const personDetailsESID = yield select(selectEntitySetId(PERSON_DETAILS));
 
     const neighborESIDs = [
@@ -74,6 +76,7 @@ function* loadProfileWorker(action :SequenceAction) :Saga<*> {
       { direction: DST, entitySetId: communicationESID },
       { direction: DST, entitySetId: contactInfoESID },
       { direction: DST, entitySetId: locationESID },
+      { direction: DST, entitySetId: peacemakerStatusESID },
     ];
 
     const workerResponses :Object[] = yield all([

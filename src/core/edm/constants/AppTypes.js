@@ -27,6 +27,7 @@ const APP_TYPE_FQNS = {
   OFFICERS: FQN.of('app.officers'),
   ORGANIZATIONS: FQN.of('app.organizations'),
   PAYMENT: FQN.of('app.payment'),
+  PEACEMAKER_STATUS: FQN.of('app.peacemakerstatus'),
   PEOPLE: FQN.of('app.people'),
   PERSON_DETAILS: FQN.of('app.persondetails'),
   RECORDED_BY: FQN.of('app.recordedby'),

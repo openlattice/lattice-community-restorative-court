@@ -5,6 +5,7 @@ import { List, Map } from 'immutable';
 import { DataProcessingUtils, Form } from 'lattice-fabricate';
 import { Button, CardSegment, Typography } from 'lattice-ui-kit';
 import { DataUtils, LangUtils, ReduxUtils } from 'lattice-utils';
+import { DateTime } from 'luxon';
 import type { UUID } from 'lattice';
 
 import { ADD_PEACEMAKER_INFORMATION, addPeacemakerInformation, editPeacemakerInformation } from './actions';
@@ -26,6 +27,7 @@ import {
 } from '../../core/redux/constants';
 import { selectPerson } from '../../core/redux/selectors';
 import { goToRoute } from '../../core/router/RoutingActions';
+import { updateFormWithDateAsDateTime } from '../../utils/form';
 import { getPersonName } from '../../utils/people';
 import { getRelativeRoot } from '../../utils/router';
 import { useDispatch, useSelector } from '../app/AppProvider';
@@ -35,14 +37,20 @@ const {
   COMMUNICATION,
   FORM,
   HAS,
+  PEACEMAKER_STATUS,
   PEOPLE,
   PERSON_DETAILS,
   SCREENED_WITH,
 } = AppTypes;
-const { NAME } = PropertyTypes;
+const { GENERAL_DATETIME, NAME, STATUS } = PropertyTypes;
 const { PERSON_NEIGHBOR_MAP, PROFILE } = ProfileReduxConstants;
 const { PEACEMAKER_INFORMATION_FORM } = FormConstants;
-const { processAssociationEntityData, processEntityData } = DataProcessingUtils;
+const {
+  getEntityAddressKey,
+  getPageSectionKey,
+  processAssociationEntityData,
+  processEntityData,
+} = DataProcessingUtils;
 const { isPending, isSuccess } = ReduxUtils;
 const { getEntityKeyId, getPropertyValue } = DataUtils;
 const { isDefined } = LangUtils;
@@ -57,9 +65,15 @@ const PeacemakerInformationForm = () => {
     .find((form :Map) => getPropertyValue(form, [NAME, 0]) === PEACEMAKER_INFORMATION_FORM);
   const formEKID :?UUID = isDefined(personInformationForm) ? getEntityKeyId(personInformationForm) : undefined;
 
+  const peacemakerStatuses :List = personNeighborMap.get(PEACEMAKER_STATUS, List());
+  const mostRecentStatus :Map = peacemakerStatuses
+    .sortBy((status :Map) => DateTime.fromISO(getPropertyValue(status, [STATUS, 0])).valueOf())
+    .last();
+  const peacemakerStatusEKID :?UUID = isDefined(mostRecentStatus) ? getEntityKeyId(mostRecentStatus) : undefined;
+
   const populatedFormData = useMemo(() => (
-    isDefined(personInformationForm) ? populateForm(personInformationForm, personNeighborMap) : {}
-  ), [personInformationForm, personNeighborMap]);
+    isDefined(personInformationForm) ? populateForm(personInformationForm, personNeighborMap, mostRecentStatus) : {}
+  ), [mostRecentStatus, personInformationForm, personNeighborMap]);
 
   const [formData, setFormData] = useState(populatedFormData);
 
@@ -77,18 +91,28 @@ const PeacemakerInformationForm = () => {
   const personEKID :?UUID = getEntityKeyId(person);
 
   const onSubmit = () => {
-    const entityData = processEntityData(formData, entitySetIds, propertyTypeIds);
+    const updatedFormData = updateFormWithDateAsDateTime(
+      formData,
+      [getPageSectionKey(1, 1), getEntityAddressKey(0, FORM, GENERAL_DATETIME)]
+    );
+    const entityData = processEntityData(updatedFormData, entitySetIds, propertyTypeIds);
     const associations = [
       [SCREENED_WITH, personEKID, PEOPLE, 0, FORM, {}],
       [HAS, personEKID, PEOPLE, 0, PERSON_DETAILS, {}],
       [HAS, personEKID, PEOPLE, 0, COMMUNICATION, {}],
+      [HAS, personEKID, PEOPLE, 0, PEACEMAKER_STATUS, {}],
     ];
     const associationEntityData = processAssociationEntityData(associations, entitySetIds, propertyTypeIds);
     dispatch(addPeacemakerInformation({ associationEntityData, entityData }));
   };
 
   const handleEdit = (params) => {
-    dispatch(editPeacemakerInformation(params));
+    dispatch(editPeacemakerInformation({
+      ...params,
+      formEKID,
+      peacemakerStatusEKID,
+      personEKID,
+    }));
   };
 
   const communication :List = useSelector((store) => store
@@ -100,6 +124,7 @@ const PeacemakerInformationForm = () => {
     mutator.set(COMMUNICATION, List([getEntityKeyId(communication.get(0))]));
     mutator.set(FORM, List([formEKID]));
     mutator.set(PERSON_DETAILS, List([getEntityKeyId(personDetails.get(0))]));
+    mutator.set(PEACEMAKER_STATUS, List([peacemakerStatusEKID]));
   });
 
   const formContext = {

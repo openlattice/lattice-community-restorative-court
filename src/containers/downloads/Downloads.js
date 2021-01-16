@@ -15,16 +15,17 @@ import type { UUID } from 'lattice';
 import type { Match } from 'react-router';
 
 import DownloadCasesModal from './DownloadCasesModal';
+import DownloadPeacemakersModal from './DownloadPeacemakersModal';
 import DownloadReferralsModal from './DownloadReferralsModal';
 
 import { APP_PATHS, ProfileReduxConstants, ReferralReduxConstants } from '../../core/redux/constants';
 import { useDispatch, useSelector } from '../app/AppProvider';
 import { initializeApplication } from '../app/actions';
 import { getStaff } from '../profile/src/actions';
-import { getAgencies } from '../referral/actions';
+import { getAgencies, getCharges } from '../referral/actions';
 
 const { NEUTRAL } = Colors;
-const { AGENCIES, REFERRAL } = ReferralReduxConstants;
+const { AGENCIES, CHARGES, REFERRAL } = ReferralReduxConstants;
 const { PROFILE, STAFF_MEMBERS } = ProfileReduxConstants;
 
 const DownloadCard = styled(Card)`
@@ -63,13 +64,16 @@ const Downloads = ({ match, organizationId, root } :Props) => {
     if (appConfig) {
       dispatch(getAgencies());
       dispatch(getStaff());
+      dispatch(getCharges());
     }
   }, [appConfig, dispatch]);
 
   const [referralsModalIsOpen, openReferralsModal] = useState(false);
   const [casesModalIsOpen, openCasesModal] = useState(false);
+  const [peacemakersModalIsOpen, openPeacemakersModal] = useState(false);
 
   const agencies :List = useSelector((store) => store.getIn([REFERRAL, AGENCIES], List()));
+  const charges :List = useSelector((store) => store.getIn([REFERRAL, CHARGES], List()));
   const staff :List = useSelector((store) => store.getIn([PROFILE, STAFF_MEMBERS], List()));
 
   return (
@@ -86,14 +90,24 @@ const Downloads = ({ match, organizationId, root } :Props) => {
           <FontAwesomeIcon color={NEUTRAL.N700} icon={faDownload} />
         </DownloadCardSegment>
       </DownloadCard>
+      <DownloadCard onClick={() => openPeacemakersModal(true)}>
+        <DownloadCardSegment padding="8px 16px" vertical={false}>
+          <div>Download Peacemakers</div>
+          <FontAwesomeIcon color={NEUTRAL.N700} icon={faDownload} />
+        </DownloadCardSegment>
+      </DownloadCard>
       <DownloadReferralsModal
           agencies={agencies}
+          charges={charges}
           isVisible={referralsModalIsOpen}
           onClose={() => openReferralsModal(false)} />
       <DownloadCasesModal
           isVisible={casesModalIsOpen}
           onClose={() => openCasesModal(false)}
           staff={staff} />
+      <DownloadPeacemakersModal
+          isVisible={peacemakersModalIsOpen}
+          onClose={() => openPeacemakersModal(false)} />
     </CardStack>
   );
 };
