@@ -41,14 +41,13 @@ const {
   STAFF,
   STATUS,
 } = AppTypes;
-const { NAME } = PropertyTypes;
+const { NAME, NOTES } = PropertyTypes;
 const { REPAIR_HARM_AGREEMENT } = FormConstants;
 const {
-  ACCEPTANCE,
   CIRCLE,
   CLOSED,
   INTAKE,
-  RESOLUTION,
+  REFERRAL,
 } = CaseStatusConstants;
 
 const LOG = new Logger('DashboardSagas');
@@ -132,7 +131,8 @@ function* getStaffCasesDataWorker(action :SequenceAction) :Saga<*> {
       let totalPendingCircle :number = 0;
       let totalRepairHarmAgreementsCompleted :number = 0;
       let totalOpenCases :number = 0;
-      let totalClosedCases :number = 0;
+      let totalSuccessfulCases :number = 0;
+      let totalUnsuccessfulCases :number = 0;
 
       staff.forEach((staffMember :Map) => {
         const staffEKID :?UUID = getEntityKeyId(staffMember);
@@ -143,29 +143,34 @@ function* getStaffCasesDataWorker(action :SequenceAction) :Saga<*> {
         let pendingCircle :number = 0;
         let repairHarmAgreementsCompleted :number = 0;
         let openCases :number = 0;
-        let closedCases :number = 0;
+        let successfulCases :number = 0;
+        let unsuccessfulCases :number = 0;
 
         crcCases.forEach((crcCase :Map) => {
           const crcCaseEKID :?UUID = getEntityKeyId(crcCase);
           const statuses :List = statusesByCRCEKID.get(crcCaseEKID, List());
+          const referral :Map = statuses
+            .find((status) => getPropertyValue(status, [PropertyTypes.STATUS, 0]) === REFERRAL);
           const intake :Map = statuses
             .find((status) => getPropertyValue(status, [PropertyTypes.STATUS, 0]) === INTAKE);
-          const acceptance :Map = statuses
-            .find((status) => getPropertyValue(status, [PropertyTypes.STATUS, 0]) === ACCEPTANCE);
           const circle :Map = statuses
             .find((status) => getPropertyValue(status, [PropertyTypes.STATUS, 0]) === CIRCLE);
           const closed :Map = statuses
             .find((status) => getPropertyValue(status, [PropertyTypes.STATUS, 0]) === CLOSED);
-          const resolution :Map = statuses
-            .find((status) => getPropertyValue(status, [PropertyTypes.STATUS, 0]) === RESOLUTION);
 
-          if (isDefined(intake) && !isDefined(acceptance)) pendingIntake += 1;
-          if (isDefined(acceptance) && !isDefined(circle)) pendingCircle += 1;
-          if (!isDefined(closed) && !isDefined(resolution)) openCases += 1;
-          if (isDefined(closed) || isDefined(resolution)) closedCases += 1;
+          if (isDefined(referral) && !isDefined(intake)) pendingIntake += 1;
+          if (isDefined(referral) && isDefined(intake) && !isDefined(circle)) {
+            pendingCircle += 1;
+          }
+          if (!isDefined(closed)) openCases += 1;
+          if (isDefined(closed)) {
+            const reasonForClosingCase = getPropertyValue(closed, [NOTES, 0]);
+            if (reasonForClosingCase.includes('Successful')) successfulCases += 1;
+            else unsuccessfulCases += 1;
+          }
 
           const repairHarmAgreement = repairHarmAgreementByCRCEKID.get(crcCaseEKID, Map());
-          if (isDefined(repairHarmAgreement) && !repairHarmAgreement.isEmpty()) {
+          if (isDefined(repairHarmAgreement) && !repairHarmAgreement.isEmpty() && !isDefined(closed)) {
             repairHarmAgreementsCompleted += 1;
           }
         });
@@ -176,7 +181,8 @@ function* getStaffCasesDataWorker(action :SequenceAction) :Saga<*> {
           [STAFF_CASES_TABLE_HEADERS.get('PENDING_CIRCLE')]: pendingCircle,
           [STAFF_CASES_TABLE_HEADERS.get('RH_AGREEMENT_COMPLETED')]: repairHarmAgreementsCompleted,
           [STAFF_CASES_TABLE_HEADERS.get('TOTAL_OPEN_CASES')]: openCases,
-          [STAFF_CASES_TABLE_HEADERS.get('TOTAL_CLOSED_CASES')]: closedCases,
+          [STAFF_CASES_TABLE_HEADERS.get('TOTAL_SUCCESSFUL_CASES')]: successfulCases,
+          [STAFF_CASES_TABLE_HEADERS.get('TOTAL_UNSUCCESSFUL_CASES')]: unsuccessfulCases,
         });
         mutator.push(tableRow);
 
@@ -184,7 +190,8 @@ function* getStaffCasesDataWorker(action :SequenceAction) :Saga<*> {
         totalPendingCircle += pendingCircle;
         totalRepairHarmAgreementsCompleted += repairHarmAgreementsCompleted;
         totalOpenCases += openCases;
-        totalClosedCases += closedCases;
+        totalSuccessfulCases += successfulCases;
+        totalUnsuccessfulCases += unsuccessfulCases;
       });
 
       mutator.push(Map({
@@ -193,7 +200,8 @@ function* getStaffCasesDataWorker(action :SequenceAction) :Saga<*> {
         [STAFF_CASES_TABLE_HEADERS.get('PENDING_CIRCLE')]: totalPendingCircle,
         [STAFF_CASES_TABLE_HEADERS.get('RH_AGREEMENT_COMPLETED')]: totalRepairHarmAgreementsCompleted,
         [STAFF_CASES_TABLE_HEADERS.get('TOTAL_OPEN_CASES')]: totalOpenCases,
-        [STAFF_CASES_TABLE_HEADERS.get('TOTAL_CLOSED_CASES')]: totalClosedCases,
+        [STAFF_CASES_TABLE_HEADERS.get('TOTAL_SUCCESSFUL_CASES')]: totalSuccessfulCases,
+        [STAFF_CASES_TABLE_HEADERS.get('TOTAL_UNSUCCESSFUL_CASES')]: totalUnsuccessfulCases,
       }));
     });
 
