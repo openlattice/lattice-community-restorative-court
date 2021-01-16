@@ -15,6 +15,7 @@ import type { UUID } from 'lattice';
 import type { Match } from 'react-router';
 
 import DownloadCasesModal from './DownloadCasesModal';
+import DownloadPeacemakersModal from './DownloadPeacemakersModal';
 import DownloadReferralsModal from './DownloadReferralsModal';
 
 import { APP_PATHS, ProfileReduxConstants, ReferralReduxConstants } from '../../core/redux/constants';
@@ -69,6 +70,7 @@ const Downloads = ({ match, organizationId, root } :Props) => {
 
   const [referralsModalIsOpen, openReferralsModal] = useState(false);
   const [casesModalIsOpen, openCasesModal] = useState(false);
+  const [peacemakersModalIsOpen, openPeacemakersModal] = useState(false);
 
   const agencies :List = useSelector((store) => store.getIn([REFERRAL, AGENCIES], List()));
   const charges :List = useSelector((store) => store.getIn([REFERRAL, CHARGES], List()));
@@ -88,6 +90,12 @@ const Downloads = ({ match, organizationId, root } :Props) => {
           <FontAwesomeIcon color={NEUTRAL.N700} icon={faDownload} />
         </DownloadCardSegment>
       </DownloadCard>
+      <DownloadCard onClick={() => openPeacemakersModal(true)}>
+        <DownloadCardSegment padding="8px 16px" vertical={false}>
+          <div>Download Peacemakers</div>
+          <FontAwesomeIcon color={NEUTRAL.N700} icon={faDownload} />
+        </DownloadCardSegment>
+      </DownloadCard>
       <DownloadReferralsModal
           agencies={agencies}
           charges={charges}
@@ -97,6 +105,9 @@ const Downloads = ({ match, organizationId, root } :Props) => {
           isVisible={casesModalIsOpen}
           onClose={() => openCasesModal(false)}
           staff={staff} />
+      <DownloadPeacemakersModal
+          isVisible={peacemakersModalIsOpen}
+          onClose={() => openPeacemakersModal(false)} />
     </CardStack>
   );
 };

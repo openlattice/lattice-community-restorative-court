@@ -1,7 +1,6 @@
 // @flow
 import React, { useEffect, useState } from 'react';
 
-import styled from 'styled-components';
 import { List, Map } from 'immutable';
 import {
   ActionModal,
@@ -14,6 +13,7 @@ import { DataUtils, ReduxUtils } from 'lattice-utils';
 import { RequestStates } from 'redux-reqseq';
 
 import { DOWNLOAD_REFERRALS, downloadReferrals } from './actions';
+import { DatePickerGrid } from './styled';
 
 import { PropertyTypes } from '../../core/edm/constants';
 import { resetRequestState } from '../../core/redux/actions';
@@ -25,13 +25,6 @@ const { getPropertyValue } = DataUtils;
 const { isSuccess } = ReduxUtils;
 const { DOWNLOADS } = DownloadsReduxConstants;
 const { NAME } = PropertyTypes;
-
-const DatePickerGrid = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-gap: 0 10px;
-  width: 100%;
-`;
 
 type Props = {
   agencies :List;

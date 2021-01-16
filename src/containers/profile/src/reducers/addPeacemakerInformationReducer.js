@@ -8,7 +8,12 @@ import { ProfileReduxConstants, REQUEST_STATE } from '../../../../core/redux/con
 import { ADD_PEACEMAKER_INFORMATION, addPeacemakerInformation } from '../../../peacemaker/actions';
 
 const { PERSON_NEIGHBOR_MAP } = ProfileReduxConstants;
-const { COMMUNICATION, FORM, PERSON_DETAILS } = AppTypes;
+const {
+  COMMUNICATION,
+  FORM,
+  PEACEMAKER_STATUS,
+  PERSON_DETAILS,
+} = AppTypes;
 
 export default function reducer(state :Map, action :SequenceAction) {
 
@@ -17,11 +22,17 @@ export default function reducer(state :Map, action :SequenceAction) {
       .setIn([ADD_PEACEMAKER_INFORMATION, REQUEST_STATE], RequestStates.PENDING)
       .setIn([ADD_PEACEMAKER_INFORMATION, action.id], action),
     SUCCESS: () => {
-      const { newCommunication, newForm, newPersonDetails } = action.value;
+      const {
+        newCommunication,
+        newForm,
+        newPeacemakerStatus,
+        newPersonDetails,
+      } = action.value;
       const personNeighborMap :Map = state.get(PERSON_NEIGHBOR_MAP)
         .update(FORM, List(), (forms :List) => forms.push(newForm))
         .update(COMMUNICATION, List(), (communication :List) => communication.push(newCommunication))
-        .update(PERSON_DETAILS, List(), (personDetails :List) => personDetails.push(newPersonDetails));
+        .update(PERSON_DETAILS, List(), (personDetails :List) => personDetails.push(newPersonDetails))
+        .update(PEACEMAKER_STATUS, List(), (statuses :List) => statuses.push(newPeacemakerStatus));
       return state
         .set(PERSON_NEIGHBOR_MAP, personNeighborMap)
         .setIn([ADD_PEACEMAKER_INFORMATION, REQUEST_STATE], RequestStates.SUCCESS);
