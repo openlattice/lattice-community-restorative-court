@@ -33,6 +33,7 @@ export default function* sagas() :Saga<*> {
     fork(AppSagas.initializeApplicationWatcher),
 
     // DashboardSagas
+    fork(DashboardSagas.addStaffWatcher),
     fork(DashboardSagas.getCasesStatsWatcher),
     fork(DashboardSagas.getStaffCasesDataWatcher),
 

@@ -6,6 +6,7 @@ import addCaseStatusReducer from './addCaseStatusReducer';
 import addContactActivityReducer from './addContactActivityReducer';
 import addPeacemakerInformationReducer from './addPeacemakerInformationReducer';
 import addPersonOrOrgToCaseReducer from './addPersonOrOrgToCaseReducer';
+import addStaffReducer from './addStaffReducer';
 import clearSearchedOrganizationsReducer from './clearSearchedOrganizationsReducer';
 import clearSearchedPeopleReducer from './clearSearchedPeopleReducer';
 import editAddressReducer from './editAddressReducer';
@@ -27,6 +28,7 @@ import submitContactReducer from './submitContactReducer';
 import { RESET_REQUEST_STATE } from '../../../../core/redux/actions';
 import { ProfileReduxConstants, RS_INITIAL_STATE } from '../../../../core/redux/constants';
 import { resetRequestStateReducer } from '../../../../core/redux/reducers';
+import { ADD_STAFF, addStaff } from '../../../dashboard/actions';
 import {
   ADD_PEACEMAKER_INFORMATION,
   EDIT_PEACEMAKER_INFORMATION,
@@ -89,6 +91,7 @@ const INITIAL_STATE :Map = fromJS({
   [ADD_CONTACT_ACTIVITY]: RS_INITIAL_STATE,
   [ADD_PEACEMAKER_INFORMATION]: RS_INITIAL_STATE,
   [ADD_PERSON_OR_ORG_TO_CASE]: RS_INITIAL_STATE,
+  [ADD_STAFF]: RS_INITIAL_STATE,
   [EDIT_PEACEMAKER_INFORMATION]: RS_INITIAL_STATE,
   [EDIT_ADDRESS]: RS_INITIAL_STATE,
   [EDIT_CONTACT]: RS_INITIAL_STATE,
@@ -146,6 +149,9 @@ export default function profileReducer(state :Map = INITIAL_STATE, action :Objec
 
     case addPersonOrOrgToCase.case(action.type):
       return addPersonOrOrgToCaseReducer(state, action);
+
+    case addStaff.case(action.type):
+      return addStaffReducer(state, action);
 
     case editPeacemakerInformation.case(action.type):
       return editPeacemakerInformationReducer(state, action);
