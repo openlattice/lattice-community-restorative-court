@@ -1,9 +1,10 @@
 // @flow
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import styled from 'styled-components';
 import { List, Map } from 'immutable';
 import {
+  Button,
   Card,
   CardHeader,
   CardSegment,
@@ -14,16 +15,24 @@ import { ReduxUtils } from 'lattice-utils';
 import type { UUID } from 'lattice';
 import type { Match } from 'react-router';
 
+import AddStaffModal from './AddStaffModal';
 import { GET_STAFF_CASES_DATA, getCasesStats, getStaffCasesData } from './actions';
 import { CASES_STATS_CONSTANTS, STAFF_CASES_TABLE_HEADERS } from './constants';
 
-import { APP_PATHS, DashboardReduxConstants, REQUEST_STATE } from '../../core/redux/constants';
+import {
+  APP_PATHS,
+  DashboardReduxConstants,
+  ProfileReduxConstants,
+  REQUEST_STATE,
+} from '../../core/redux/constants';
 import { generateTableHeaders } from '../../utils/table';
 import { useDispatch, useSelector } from '../app/AppProvider';
 import { initializeApplication } from '../app/actions';
+import { getStaff } from '../profile/src/actions';
 
 const { isPending } = ReduxUtils;
 const { CASES_STATS, DASHBOARD, STAFF_CASES_DATA } = DashboardReduxConstants;
+const { PROFILE, STAFF_MEMBERS } = ProfileReduxConstants;
 const {
   NO_CONTACT,
   OPEN_CASES,
@@ -49,6 +58,10 @@ const TableHeader = styled(CardHeader)`
   font-weight: 600;
 `;
 
+const ButtonWrapper = styled.div`
+  display: flex;
+`;
+
 type Props = {
   match :Match;
   organizationId :UUID;
@@ -57,6 +70,7 @@ type Props = {
 
 const Dashboard = ({ match, organizationId, root } :Props) => {
 
+  const [isStaffModalOpen, openStaffModal] = useState(false);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -69,12 +83,14 @@ const Dashboard = ({ match, organizationId, root } :Props) => {
     if (appConfig) {
       dispatch(getStaffCasesData());
       dispatch(getCasesStats());
+      dispatch(getStaff());
     }
   }, [appConfig, dispatch]);
 
   const casesStats :Map = useSelector((store :Map) => store.getIn([DASHBOARD, CASES_STATS]));
   const staffCasesData :List = useSelector((store :Map) => store.getIn([DASHBOARD, STAFF_CASES_DATA]));
   const fetchRequestState = useSelector((store :Map) => store.getIn([DASHBOARD, GET_STAFF_CASES_DATA, REQUEST_STATE]));
+  const staffMembers :List = useSelector((store :Map) => store.getIn([PROFILE, STAFF_MEMBERS]));
 
   return (
     <>
@@ -127,6 +143,13 @@ const Dashboard = ({ match, organizationId, root } :Props) => {
               isLoading={isPending(fetchRequestState)} />
         </CardSegment>
       </Card>
+      <ButtonWrapper>
+        <Button onClick={() => openStaffModal(true)} variant="text" mode="primary">+Add Staff Member</Button>
+      </ButtonWrapper>
+      <AddStaffModal
+          isVisible={isStaffModalOpen}
+          onClose={() => openStaffModal(false)}
+          staffMembers={staffMembers} />
     </>
   );
 };
