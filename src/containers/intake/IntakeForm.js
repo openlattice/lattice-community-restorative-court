@@ -66,6 +66,7 @@ const {
   AGENCY,
   CHARGES,
   CRC_CASE,
+  DA_CASE,
   FORM,
   HAS,
   PEOPLE,
@@ -78,6 +79,7 @@ const {
 } = AppTypes;
 const {
   DATETIME_ADMINISTERED,
+  DA_CASE_NUMBER,
   EFFECTIVE_DATE,
   GIVEN_NAME,
   NAME,
@@ -117,14 +119,19 @@ const IntakeForm = () => {
   const referralRequest = personCaseNeighborMap.getIn([REFERRAL_REQUEST, selectedCase, 0], Map());
   const referralRequestNeighborMap :Map = useSelector((store) => store
     .getIn([REFERRAL, REFERRAL_REQUEST_NEIGHBOR_MAP]));
+  const daCasesByReferralRequestEKID :Map = referralRequestNeighborMap.get(DA_CASE, Map());
 
   const crcCases :List = personNeighborMap.get(CRC_CASE, List());
   const crcOptions = crcCases.map((crcCase :Map) => {
     const crcCaseEKID :?UUID = getEntityKeyId(crcCase);
-    const crcCaseNumber = getPropertyValue(crcCase, [NOTES, 0]);
+    const crcCaseNumber :string = getPropertyValue(crcCase, [NOTES, 0]);
     const respondent :Map = personCaseNeighborMap.getIn([ROLE, crcCaseEKID, RESPONDENT, 0], Map());
-    const respondentName = getPersonName(respondent);
-    const caseIdentifier = `${crcCaseNumber} - ${respondentName}`;
+    const respondentName :string = getPersonName(respondent);
+    const caseReferralRequest :Map = personCaseNeighborMap.getIn([REFERRAL_REQUEST, crcCaseEKID, 0], Map());
+    const caseReferralRequestEKID :?UUID = getEntityKeyId(caseReferralRequest);
+    const daCase :Map = daCasesByReferralRequestEKID.getIn([caseReferralRequestEKID, 0], Map());
+    const daCaseNumber :string = getPropertyValue(daCase, [DA_CASE_NUMBER, 0]);
+    const caseIdentifier = `${daCaseNumber || crcCaseNumber} - ${respondentName}`;
     return {
       label: caseIdentifier,
       value: crcCaseEKID,
