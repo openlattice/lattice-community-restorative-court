@@ -16,14 +16,19 @@ import {
   SearchResults,
   Typography,
 } from 'lattice-ui-kit';
-import { DataUtils, ReduxUtils } from 'lattice-utils';
+import { DataUtils, LangUtils, ReduxUtils } from 'lattice-utils';
 import type { UUID } from 'lattice';
 
 import AddPersonToCaseModal from './AddPersonToCaseModal';
 
 import { CrumbItem, CrumbLink, Crumbs } from '../../../../components/crumbs';
-import { PropertyTypes } from '../../../../core/edm/constants';
-import { APP_PATHS, ProfileReduxConstants, REQUEST_STATE } from '../../../../core/redux/constants';
+import { AppTypes, PropertyTypes } from '../../../../core/edm/constants';
+import {
+  APP_PATHS,
+  ProfileReduxConstants,
+  REQUEST_STATE,
+  ReferralReduxConstants,
+} from '../../../../core/redux/constants';
 import { selectPerson } from '../../../../core/redux/selectors';
 import { getPersonName } from '../../../../utils/people';
 import { getRelativeRoot } from '../../../../utils/router';
@@ -38,6 +43,7 @@ import {
 } from '../actions';
 import { RoleConstants, SearchContextConstants } from '../constants';
 
+const { isDefined } = LangUtils;
 const { getEntityKeyId, getPropertyValue } = DataUtils;
 const {
   isFailure,
@@ -45,7 +51,9 @@ const {
   isSuccess,
   reduceRequestStates,
 } = ReduxUtils;
+const { DA_CASE, REFERRAL_REQUEST } = AppTypes;
 const {
+  DA_CASE_NUMBER,
   DOB,
   NOTES,
   ORGANIZATION_NAME,
@@ -59,6 +67,7 @@ const {
   SELECTED_CASE,
   TOTAL_HITS,
 } = ProfileReduxConstants;
+const { REFERRAL, REFERRAL_REQUEST_NEIGHBOR_MAP } = ReferralReduxConstants;
 const {
   CASE_MANAGER,
   PEACEMAKER,
@@ -109,7 +118,19 @@ const AddPeopleToCaseForm = () => {
 
   const personCase :Map = useSelector((store) => store.getIn([PROFILE, SELECTED_CASE]));
   const caseEKID :?UUID = getEntityKeyId(personCase);
-  const caseNumber = getPropertyValue(personCase, [NOTES, 0]);
+  let caseNumber = getPropertyValue(personCase, [NOTES, 0]);
+
+  const referralRequestList :List = useSelector((store) => store
+    .getIn([PROFILE, PERSON_CASE_NEIGHBOR_MAP, REFERRAL_REQUEST, caseEKID], List()));
+  const referralRequest :Map = referralRequestList.get(0, Map());
+  const referralRequestEKID :?UUID = getEntityKeyId(referralRequest);
+  const daCase :Map = useSelector((store) => store
+    .getIn([REFERRAL, REFERRAL_REQUEST_NEIGHBOR_MAP, DA_CASE, referralRequestEKID, 0], Map()));
+  if (isDefined(daCase) && !daCase.isEmpty()) {
+    const daCaseNumber = getPropertyValue(daCase, [DA_CASE_NUMBER, 0]);
+    if (daCaseNumber) caseNumber = daCaseNumber;
+  }
+
   const caseIdentifier = `Case #: ${caseNumber}`;
 
   const caseRoleMap :Map = useSelector((store) => store
