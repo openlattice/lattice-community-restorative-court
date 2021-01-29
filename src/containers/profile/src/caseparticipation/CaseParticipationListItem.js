@@ -2,27 +2,29 @@
 import React, { useState } from 'react';
 
 import styled from 'styled-components';
-import { Map } from 'immutable';
+import { List, Map } from 'immutable';
 import {
   Card,
   CardSegment,
   Colors,
   Typography,
 } from 'lattice-ui-kit';
-import { DataUtils, DateTimeUtils } from 'lattice-utils';
+import { DataUtils, DateTimeUtils, LangUtils } from 'lattice-utils';
 import type { UUID } from 'lattice';
 
 import CaseDetailsModal from './CaseDetailsModal';
 
 import { CRCTag } from '../../../../components';
-import { PropertyTypes } from '../../../../core/edm/constants';
-import { ProfileReduxConstants } from '../../../../core/redux/constants';
+import { AppTypes, PropertyTypes } from '../../../../core/edm/constants';
+import { ProfileReduxConstants, ReferralReduxConstants } from '../../../../core/redux/constants';
 import { getPersonName } from '../../../../utils/people';
 import { useSelector } from '../../../app/AppProvider';
 import { RoleConstants } from '../constants';
 
+const { DA_CASE, REFERRAL_REQUEST } = AppTypes;
 const {
   DATETIME_RECEIVED,
+  DA_CASE_NUMBER,
   GENERAL_DATETIME,
   NOTES,
   ROLE,
@@ -30,8 +32,10 @@ const {
 const { NEUTRAL } = Colors;
 const { RESPONDENT } = RoleConstants;
 const { PERSON_CASE_NEIGHBOR_MAP, PERSON_NEIGHBOR_MAP, PROFILE } = ProfileReduxConstants;
+const { REFERRAL, REFERRAL_REQUEST_NEIGHBOR_MAP } = ReferralReduxConstants;
 const { formatAsDate } = DateTimeUtils;
 const { getEntityKeyId, getPropertyValue } = DataUtils;
+const { isDefined } = LangUtils;
 
 const ListItemCardSegment = styled(CardSegment)`
   align-items: center;
@@ -64,8 +68,19 @@ const CaseParticipationListItem = ({ personCase } :Props) => {
   const respondentPersonName = getPersonName(respondentPerson);
 
   const dateTimeReceived = getPropertyValue(personCase, [DATETIME_RECEIVED, 0]);
-  const caseNumber = getPropertyValue(personCase, [NOTES, 0]);
+  let caseNumber = getPropertyValue(personCase, [NOTES, 0]);
   const caseDate :string = formatAsDate(dateTimeReceived);
+
+  const referralRequestList :List = useSelector((store) => store
+    .getIn([PROFILE, PERSON_CASE_NEIGHBOR_MAP, REFERRAL_REQUEST, caseEKID], List()));
+  const referralRequest :Map = referralRequestList.get(0, Map());
+  const referralRequestEKID :?UUID = getEntityKeyId(referralRequest);
+  const daCase :Map = useSelector((store) => store
+    .getIn([REFERRAL, REFERRAL_REQUEST_NEIGHBOR_MAP, DA_CASE, referralRequestEKID, 0], Map()));
+  if (isDefined(daCase) && !daCase.isEmpty()) {
+    const daCaseNumber = getPropertyValue(daCase, [DA_CASE_NUMBER, 0]);
+    if (daCaseNumber) caseNumber = daCaseNumber;
+  }
 
   const personRoleInCase = useSelector((store) => store.getIn([PROFILE, PERSON_NEIGHBOR_MAP, ROLE, caseEKID], ''));
   const dateAssignedToCaseMap :Map = useSelector((store) => store
