@@ -33,15 +33,16 @@ import {
   PROPERTY_TYPE_IDS,
   ProfileReduxConstants,
   REQUEST_STATE,
+  ReferralReduxConstants,
   RepairHarmReduxConstants,
 } from '../../core/redux/constants';
 import { selectPerson } from '../../core/redux/selectors';
 import { goToRoute } from '../../core/router/RoutingActions';
-import { hydrateSchema, updateFormWithDateAsDateTime } from '../../utils/form';
+import { formatCasesForDropdown, hydrateSchema, updateFormWithDateAsDateTime } from '../../utils/form';
 import { getPersonName } from '../../utils/people';
 import { getRelativeRoot } from '../../utils/router';
 import { useDispatch, useSelector } from '../app/AppProvider';
-import { EMPTY_VALUE, RoleConstants } from '../profile/src/constants';
+import { EMPTY_VALUE } from '../profile/src/constants';
 
 const { getEntityKeyId, getPropertyValue } = DataUtils;
 const { isPending, isSuccess } = ReduxUtils;
@@ -52,7 +53,6 @@ const {
   processEntityData,
 } = DataProcessingUtils;
 const { OPENLATTICE_ID_FQN } = Constants;
-const { RESPONDENT } = RoleConstants;
 const {
   PERSON_CASE_NEIGHBOR_MAP,
   PERSON_NEIGHBOR_MAP,
@@ -64,6 +64,7 @@ const {
   FORM,
   PEOPLE,
   RECORDED_BY,
+  REFERRAL_REQUEST,
   RELATED_TO,
   SCREENED_WITH,
   STAFF,
@@ -77,19 +78,23 @@ const {
   SURNAME,
 } = PropertyTypes;
 const { REPAIR_HARM } = RepairHarmReduxConstants;
+const { REFERRAL, REFERRAL_REQUEST_NEIGHBOR_MAP } = ReferralReduxConstants;
 
 const RepairHarmAgreement = () => {
 
+  const referralRequestsByCRCCaseEKID :Map = useSelector((store) => store
+    .getIn([PROFILE, PERSON_CASE_NEIGHBOR_MAP, REFERRAL_REQUEST], Map()));
+  const referralRequestNeighborMap :Map = useSelector((store) => store
+    .getIn([REFERRAL, REFERRAL_REQUEST_NEIGHBOR_MAP], Map()));
+
   const personCases :List = useSelector((store) => store.getIn([PROFILE, PERSON_NEIGHBOR_MAP, CRC_CASE], List()));
   const caseRoleMap :Map = useSelector((store) => store.getIn([PROFILE, PERSON_CASE_NEIGHBOR_MAP, ROLE], Map()));
-  const personCasesWithRespondentName = personCases.map((personCase :Map) => {
-    const roles = caseRoleMap.get(getEntityKeyId(personCase));
-    const respondentPerson = roles.getIn([RESPONDENT, 0], Map());
-    const respondentPersonName = getPersonName(respondentPerson);
-    // doesn't matter what property type to save respondent name under; just need one for hydrateSchema
-    const mappedPersonCase = personCase.set(SURNAME, List([`- ${respondentPersonName}`]));
-    return mappedPersonCase;
-  });
+  const personCasesWithRespondentName = formatCasesForDropdown(
+    personCases,
+    caseRoleMap,
+    referralRequestsByCRCCaseEKID,
+    referralRequestNeighborMap,
+  );
 
   let hydratedSchema = hydrateSchema(
     schema,

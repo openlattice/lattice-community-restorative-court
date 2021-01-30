@@ -99,31 +99,36 @@ function* getStaffCasesDataWorker(action :SequenceAction) :Saga<*> {
     const formESID :UUID = yield select(selectEntitySetId(FORM));
     const statusESID :UUID = yield select(selectEntitySetId(STATUS));
 
-    filter = {
-      entityKeyIds: crcCaseEKIDs,
-      destinationEntitySetIds: [statusESID],
-      sourceEntitySetIds: [formESID],
-    };
-    response = yield call(
-      searchEntityNeighborsWithFilterWorker,
-      searchEntityNeighborsWithFilter({ entitySetId: crcCaseESID, filter })
-    );
-    if (response.error) throw response.error;
+    let statusesByCRCEKID :Map = Map();
+    let repairHarmAgreementByCRCEKID :Map = Map();
 
-    const crcCaseNeighbors :Map = fromJS(response.data);
+    if (crcCaseEKIDs.length) {
+      filter = {
+        entityKeyIds: crcCaseEKIDs,
+        destinationEntitySetIds: [statusESID],
+        sourceEntitySetIds: [formESID],
+      };
+      response = yield call(
+        searchEntityNeighborsWithFilterWorker,
+        searchEntityNeighborsWithFilter({ entitySetId: crcCaseESID, filter })
+      );
+      if (response.error) throw response.error;
 
-    const statusesByCRCEKID :Map = crcCaseNeighbors.map((neighborsList :List) => neighborsList
-      .filter((neighbor :Map) => getNeighborESID(neighbor) === statusESID)
-      .map((neighbor :Map) => getNeighborDetails(neighbor)));
-    const repairHarmAgreementByCRCEKID :Map = crcCaseNeighbors.map((neighborsList :List) => neighborsList
-      .filter((neighbor :Map) => getNeighborESID(neighbor) === formESID)
-      .map((neighbor :Map) => {
-        const form :Map = getNeighborDetails(neighbor);
-        if (getPropertyValue(form, [NAME, 0]) === REPAIR_HARM_AGREEMENT) {
-          return form;
-        }
-        return Map();
-      }));
+      const crcCaseNeighbors :Map = fromJS(response.data);
+
+      statusesByCRCEKID = crcCaseNeighbors.map((neighborsList :List) => neighborsList
+        .filter((neighbor :Map) => getNeighborESID(neighbor) === statusESID)
+        .map((neighbor :Map) => getNeighborDetails(neighbor)));
+      repairHarmAgreementByCRCEKID = crcCaseNeighbors.map((neighborsList :List) => neighborsList
+        .filter((neighbor :Map) => getNeighborESID(neighbor) === formESID)
+        .map((neighbor :Map) => {
+          const form :Map = getNeighborDetails(neighbor);
+          if (getPropertyValue(form, [NAME, 0]) === REPAIR_HARM_AGREEMENT) {
+            return form;
+          }
+          return Map();
+        }));
+    }
 
     const staffCasesTableData = List().withMutations((mutator) => {
 
