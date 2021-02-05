@@ -198,7 +198,7 @@ const RepairHarmAgreement = () => {
         </Crumbs>
         <Typography variant="h1">Repair Harm Agreement</Typography>
         <Typography>
-          Fill out the repair harm agreement below to complete this case.
+          Fill out the repair harm agreement below for this case.
         </Typography>
       </CardSegment>
       <Form
