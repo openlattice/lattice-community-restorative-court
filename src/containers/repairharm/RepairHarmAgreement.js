@@ -70,6 +70,7 @@ const {
   STAFF,
 } = AppTypes;
 const {
+  DATETIME_ADMINISTERED,
   DUE_DATE,
   GIVEN_NAME,
   MIDDLE_NAME,
@@ -152,6 +153,11 @@ const RepairHarmAgreement = () => {
     formDataForSubmit = updateFormWithDateAsDateTime(formDataForSubmit, [
       page1Section2,
       getEntityAddressKey(0, FORM, DUE_DATE)
+    ]);
+
+    formDataForSubmit = updateFormWithDateAsDateTime(formDataForSubmit, [
+      page1Section2,
+      getEntityAddressKey(0, FORM, DATETIME_ADMINISTERED)
     ]);
 
     const entityData = processEntityData(formDataForSubmit, entitySetIds, propertyTypeIds);
