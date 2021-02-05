@@ -1,7 +1,6 @@
 // @flow
 import { Constants } from 'lattice';
 import { DataProcessingUtils } from 'lattice-fabricate';
-import { DateTime } from 'luxon';
 
 import { AppTypes, PropertyTypes } from '../../../core/edm/constants';
 import { FormConstants } from '../../profile/src/constants';
@@ -25,8 +24,6 @@ const {
   SURNAME,
   TEXT,
 } = PropertyTypes;
-
-const currentDateTime = DateTime.local().toISO();
 
 const dataSchema = {
   type: 'object',
@@ -82,8 +79,8 @@ const dataSchema = {
         },
         [getEntityAddressKey(0, FORM, DATETIME_ADMINISTERED)]: {
           type: 'string',
-          title: 'Date of Form Completion',
-          default: currentDateTime
+          title: 'Repair Harm Agreement Date',
+          format: 'date',
         },
         [getEntityAddressKey(0, FORM, NAME)]: {
           type: 'string',
@@ -131,7 +128,7 @@ const uiSchema = {
       classNames: 'column-span-4'
     },
     [getEntityAddressKey(0, FORM, DATETIME_ADMINISTERED)]: {
-      'ui:widget': 'hidden',
+      classNames: 'column-span-4'
     },
     [getEntityAddressKey(0, FORM, NAME)]: {
       'ui:widget': 'hidden',

@@ -70,6 +70,7 @@ const {
   STAFF,
 } = AppTypes;
 const {
+  DATETIME_ADMINISTERED,
   DUE_DATE,
   GIVEN_NAME,
   MIDDLE_NAME,
@@ -154,6 +155,11 @@ const RepairHarmAgreement = () => {
       getEntityAddressKey(0, FORM, DUE_DATE)
     ]);
 
+    formDataForSubmit = updateFormWithDateAsDateTime(formDataForSubmit, [
+      page1Section2,
+      getEntityAddressKey(0, FORM, DATETIME_ADMINISTERED)
+    ]);
+
     const entityData = processEntityData(formDataForSubmit, entitySetIds, propertyTypeIds);
     const associations = [
       [SCREENED_WITH, personEKID, PEOPLE, 0, FORM, {}],
@@ -198,7 +204,7 @@ const RepairHarmAgreement = () => {
         </Crumbs>
         <Typography variant="h1">Repair Harm Agreement</Typography>
         <Typography>
-          Fill out the repair harm agreement below to complete this case.
+          Fill out the repair harm agreement below for this case.
         </Typography>
       </CardSegment>
       <Form
