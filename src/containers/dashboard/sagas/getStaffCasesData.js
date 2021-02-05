@@ -174,7 +174,7 @@ function* getStaffCasesDataWorker(action :SequenceAction) :Saga<*> {
             else unsuccessfulCases += 1;
           }
 
-          const repairHarmAgreement = repairHarmAgreementByCRCEKID.get(crcCaseEKID, Map());
+          const repairHarmAgreement = repairHarmAgreementByCRCEKID.getIn([crcCaseEKID, 0], Map());
           if (isDefined(repairHarmAgreement) && !repairHarmAgreement.isEmpty() && !isDefined(closed)) {
             repairHarmAgreementsCompleted += 1;
           }
