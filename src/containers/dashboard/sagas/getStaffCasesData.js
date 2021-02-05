@@ -120,7 +120,8 @@ function* getStaffCasesDataWorker(action :SequenceAction) :Saga<*> {
         .filter((neighbor :Map) => getNeighborESID(neighbor) === statusESID)
         .map((neighbor :Map) => getNeighborDetails(neighbor)));
       repairHarmAgreementByCRCEKID = crcCaseNeighbors.map((neighborsList :List) => neighborsList
-        .filter((neighbor :Map) => getNeighborESID(neighbor) === formESID)
+        .filter((neighbor :Map) => getNeighborESID(neighbor) === formESID
+            && getPropertyValue(getNeighborDetails(neighbor), [NAME, 0]) === REPAIR_HARM_AGREEMENT)
         .map((neighbor :Map) => {
           const form :Map = getNeighborDetails(neighbor);
           if (getPropertyValue(form, [NAME, 0]) === REPAIR_HARM_AGREEMENT) {
