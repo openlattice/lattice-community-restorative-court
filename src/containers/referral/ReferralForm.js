@@ -226,6 +226,7 @@ const ReferralForm = ({ personId } :Props) => {
     let associations = [
       // $FlowFixMe
       [APPEARS_IN, personEKID, PEOPLE, 0, CRC_CASE, { [ROLE]: [RESPONDENT] }],
+      [RELATED_TO, 0, DA_CASE, 0, CRC_CASE, {}],
       [APPEARS_IN, 0, DA_CASE, 0, REFERRAL_REQUEST, {}],
       [RESULTS_IN, 0, REFERRAL_REQUEST, 0, CRC_CASE, {}],
       [SUBJECT_OF, personEKID, PEOPLE, 0, REFERRAL_REQUEST, {}],
