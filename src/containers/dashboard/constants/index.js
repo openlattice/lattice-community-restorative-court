@@ -1,6 +1,10 @@
 // @flow
 import { OrderedMap } from 'immutable';
 
+import { RoleConstants } from '../../profile/src/constants';
+
+const { CASE_MANAGER, RESPONDENT } = RoleConstants;
+
 const STAFF_CASES_TABLE_HEADERS = OrderedMap({
   STAFF: 'STAFF',
   PENDING_INTAKE: 'PENDING INTAKE',
@@ -20,7 +24,17 @@ const CASES_STATS_CONSTANTS = {
   TOTAL_CASES: 'Total Cases',
 };
 
+const CASE_RESULT_NUMBER :'Case Number' = 'Case Number';
+
+const CASES_RESULT_LABELS = OrderedMap({
+  [CASE_RESULT_NUMBER]: CASE_RESULT_NUMBER,
+  [RESPONDENT]: RESPONDENT,
+  [CASE_MANAGER]: CASE_MANAGER,
+});
+
 export {
+  CASES_RESULT_LABELS,
   CASES_STATS_CONSTANTS,
+  CASE_RESULT_NUMBER,
   STAFF_CASES_TABLE_HEADERS,
 };
