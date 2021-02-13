@@ -5,7 +5,6 @@ import styled from 'styled-components';
 import { List, Map } from 'immutable';
 import {
   Button,
-  CardSegment,
   CheckboxSelect,
   Input,
   Label,
@@ -114,6 +113,7 @@ const SearchCases = () => {
         <span>
           <Button
               arialabelledby="searchPeople"
+              color="primary"
               isLoading={false}
               onClick={searchDACases}>
             Search
@@ -121,12 +121,12 @@ const SearchCases = () => {
         </span>
       </SearchGrid>
       { hasSearched && (
-        <CardSegment padding="20px 0 0">
+        <>
           <Label>Filter by Staff Member</Label>
           <CheckboxSelect
               onChange={selectStaffMembers}
               options={staffOptions} />
-        </CardSegment>
+        </>
       )}
       {
         (hasSearched && !casesData.isEmpty()) && (
