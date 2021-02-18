@@ -1,6 +1,7 @@
 // @flow
 
 const REPAIR_HARM_CONDITIONS :string[] = [
+  'Restitution',
   'Retail Theft Group',
   'Community Service',
   'Therapy',
