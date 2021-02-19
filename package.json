@@ -1,6 +1,6 @@
 {
   "name": "@openlattice/lattice-community-restorative-court",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "homepage": "https://github.com/openlattice/lattice-community-restorative-court",
   "description": "",
   "author": {
@@ -75,7 +75,7 @@
     "@babel/preset-flow": "~7.12.1",
     "@babel/preset-react": "~7.12.7",
     "@babel/register": "~7.12.1",
-    "@storybook/addon-actions": "~5.3.19",
+    "@storybook/addon-actions": "~6.1.18",
     "@storybook/addon-docs": "~5.3.19",
     "@storybook/addon-links": "~5.3.19",
     "@storybook/addons": "~5.3.19",
