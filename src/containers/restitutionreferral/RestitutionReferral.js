@@ -13,6 +13,7 @@ import {
   getIn,
   remove,
   removeIn,
+  updateIn,
 } from 'immutable';
 import { Constants } from 'lattice';
 import { DataProcessingUtils, Form } from 'lattice-fabricate';
@@ -79,6 +80,7 @@ const {
   GIVEN_NAME,
   MIDDLE_NAME,
   NOTES,
+  ORGANIZATION_NAME,
   ROLE,
   SURNAME,
 } = PropertyTypes;
@@ -116,12 +118,32 @@ const RestitutionReferral = () => {
     ['properties', getPageSectionKey(1, 2), 'properties', getEntityAddressKey(0, STAFF, OPENLATTICE_ID_FQN)]
   );
 
+  // victims could be either a person or an organization:
   const victims = caseRoleMap.valueSeq().toList().map((roleMap :Map) => roleMap.get(VICTIM, List())).flatten(1);
-  hydratedSchema = hydrateSchema(
+  const victimPeople :List = victims.filter((victim :Map) => !victim.has(ORGANIZATION_NAME));
+  const victimOrgs :List = victims.filter((victim :Map) => victim.has(ORGANIZATION_NAME));
+  const victimSchemaPath = [
+    'properties',
+    getPageSectionKey(1, 3),
+    'properties',
+    getEntityAddressKey(1, PEOPLE, OPENLATTICE_ID_FQN)
+  ];
+  hydratedSchema = hydrateSchema(hydratedSchema, victimPeople, [GIVEN_NAME, SURNAME], victimSchemaPath);
+  const victimOrgEnum = [];
+  const victimOrgEnumNames = [];
+  victimOrgs.forEach((victimOrg :Map) => {
+    victimOrgEnumNames.push(getPropertyValue(victimOrg, [ORGANIZATION_NAME, 0]));
+    victimOrgEnum.push(getEntityKeyId(victimOrg));
+  });
+  hydratedSchema = updateIn(
     hydratedSchema,
-    victims,
-    [GIVEN_NAME, SURNAME],
-    ['properties', getPageSectionKey(1, 3), 'properties', getEntityAddressKey(1, PEOPLE, OPENLATTICE_ID_FQN)]
+    victimSchemaPath.concat(['enum']),
+    (victimOptions) => victimOptions.concat(victimOrgEnum),
+  );
+  hydratedSchema = updateIn(
+    hydratedSchema,
+    victimSchemaPath.concat(['enumNames']),
+    (victimOptions) => victimOptions.concat(victimOrgEnumNames)
   );
 
   const person :Map = useSelector(selectPerson());
