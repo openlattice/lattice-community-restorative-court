@@ -5,10 +5,10 @@ import styled from 'styled-components';
 import { List, Map } from 'immutable';
 import {
   Button,
+  ButtonGroup,
   Card,
   CardHeader,
   CardSegment,
-  Colors,
   Table,
   Typography,
 } from 'lattice-ui-kit';
@@ -33,7 +33,6 @@ import { initializeApplication } from '../app/actions';
 import { getStaff } from '../profile/src/actions';
 
 const { isPending } = ReduxUtils;
-const { NEUTRAL, PURPLE } = Colors;
 const { CASES_STATS, DASHBOARD, STAFF_CASES_DATA } = DashboardReduxConstants;
 const { PROFILE, STAFF_MEMBERS } = ProfileReduxConstants;
 const {
@@ -67,31 +66,8 @@ const ButtonWrapper = styled.div`
   display: flex;
 `;
 
-const NavButtonGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(2, 200px);
-  grid-gap: 0;
+const ButtonGroupWrapper = styled.div`
   margin-bottom: 20px;
-`;
-
-const NavButton = styled(Button)`
-  background-color: ${(props) => (props.selected ? PURPLE.P300 : NEUTRAL.N50)};
-  border-color: ${(props) => (props.selected ? PURPLE.P300 : NEUTRAL.N50)};
-  border-radius: 0;
-  color: ${(props) => (props.selected ? 'white' : NEUTRAL.N700)};
-
-  &:hover {
-    background-color: ${(props) => (props.selected ? PURPLE.P500 : NEUTRAL.N200)};
-    border-color: ${(props) => (props.selected ? PURPLE.P500 : NEUTRAL.N200)};
-  }
-
-  &:first-child {
-    border-radius: 3px 0 0 3px;
-  }
-
-  &:last-child {
-    border-radius: 0 3px 3px 0;
-  }
 `;
 
 type Props = {
@@ -128,18 +104,21 @@ const Dashboard = ({ match, organizationId, root } :Props) => {
 
   return (
     <>
-      <NavButtonGrid>
-        <NavButton
-            onClick={() => setVisibleScreen(STATS)}
-            selected={visibleScreen === STATS}>
-          {STATS}
-        </NavButton>
-        <NavButton
-            onClick={() => setVisibleScreen(SEARCH_CASES)}
-            selected={visibleScreen === SEARCH_CASES}>
-          {SEARCH_CASES}
-        </NavButton>
-      </NavButtonGrid>
+      <ButtonGroupWrapper>
+        <ButtonGroup size="medium">
+          <Button
+              color={visibleScreen === STATS ? 'primary' : 'default'}
+              onClick={() => setVisibleScreen(STATS)}
+              selected={visibleScreen === STATS}>
+            {STATS}
+          </Button>
+          <Button
+              color={visibleScreen === SEARCH_CASES ? 'primary' : 'default'}
+              onClick={() => setVisibleScreen(SEARCH_CASES)}>
+            {SEARCH_CASES}
+          </Button>
+        </ButtonGroup>
+      </ButtonGroupWrapper>
       {
         visibleScreen === STATS && (
           <>
