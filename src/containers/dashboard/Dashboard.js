@@ -5,6 +5,7 @@ import styled from 'styled-components';
 import { List, Map } from 'immutable';
 import {
   Button,
+  ButtonGroup,
   Card,
   CardHeader,
   CardSegment,
@@ -16,6 +17,7 @@ import type { UUID } from 'lattice';
 import type { Match } from 'react-router';
 
 import AddStaffModal from './AddStaffModal';
+import SearchCases from './SearchCases';
 import { GET_STAFF_CASES_DATA, getCasesStats, getStaffCasesData } from './actions';
 import { CASES_STATS_CONSTANTS, STAFF_CASES_TABLE_HEADERS } from './constants';
 
@@ -43,6 +45,8 @@ const {
 } = CASES_STATS_CONSTANTS;
 
 const staffCasesTableHeaders = generateTableHeaders(STAFF_CASES_TABLE_HEADERS.valueSeq().toList());
+const STATS :'Stats' = 'Stats';
+const SEARCH_CASES :'Search Cases' = 'Search Cases';
 
 const StatsGridRow = styled.div`
   display: grid;
@@ -62,6 +66,10 @@ const ButtonWrapper = styled.div`
   display: flex;
 `;
 
+const ButtonGroupWrapper = styled.div`
+  margin-bottom: 20px;
+`;
+
 type Props = {
   match :Match;
   organizationId :UUID;
@@ -71,6 +79,8 @@ type Props = {
 const Dashboard = ({ match, organizationId, root } :Props) => {
 
   const [isStaffModalOpen, openStaffModal] = useState(false);
+  const [visibleScreen, setVisibleScreen] = useState(STATS);
+
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -94,58 +104,84 @@ const Dashboard = ({ match, organizationId, root } :Props) => {
 
   return (
     <>
-      <StatsGridRow>
-        <Card>
-          <CardSegment>
-            <Typography variant="h3">{TOTAL_CASES}</Typography>
-            <Typography variant="h1">{casesStats.get(TOTAL_CASES, 0)}</Typography>
-          </CardSegment>
-        </Card>
-        <Card>
-          <CardSegment>
-            <Typography variant="h3">{OPEN_CASES}</Typography>
-            <Typography variant="h1">{casesStats.get(OPEN_CASES, 0)}</Typography>
-          </CardSegment>
-        </Card>
-        <Card>
-          <CardSegment>
-            <Typography variant="h3">{SUCCESSFUL}</Typography>
-            <Typography variant="h1">{casesStats.get(SUCCESSFUL, 0)}</Typography>
-          </CardSegment>
-        </Card>
-      </StatsGridRow>
-      <StatsGridRow>
-        <Card>
-          <CardSegment>
-            <Typography variant="h3">{TERMINATED}</Typography>
-            <Typography variant="h1">{casesStats.get(TERMINATED, 0)}</Typography>
-          </CardSegment>
-        </Card>
-        <Card>
-          <CardSegment>
-            <Typography variant="h3">{RESPONDENT_DECLINED}</Typography>
-            <Typography variant="h1">{casesStats.get(RESPONDENT_DECLINED, 0)}</Typography>
-          </CardSegment>
-        </Card>
-        <Card>
-          <CardSegment>
-            <Typography variant="h3">{NO_CONTACT}</Typography>
-            <Typography variant="h1">{casesStats.get(NO_CONTACT, 0)}</Typography>
-          </CardSegment>
-        </Card>
-      </StatsGridRow>
-      <Card>
-        <TableHeader>Staff Cases</TableHeader>
-        <CardSegment padding="0">
-          <Table
-              data={staffCasesData.toJS()}
-              headers={staffCasesTableHeaders}
-              isLoading={isPending(fetchRequestState)} />
-        </CardSegment>
-      </Card>
-      <ButtonWrapper>
-        <Button onClick={() => openStaffModal(true)} variant="text" mode="primary">+Add Staff Member</Button>
-      </ButtonWrapper>
+      <ButtonGroupWrapper>
+        <ButtonGroup size="medium">
+          <Button
+              color={visibleScreen === STATS ? 'primary' : 'default'}
+              onClick={() => setVisibleScreen(STATS)}
+              selected={visibleScreen === STATS}>
+            {STATS}
+          </Button>
+          <Button
+              color={visibleScreen === SEARCH_CASES ? 'primary' : 'default'}
+              onClick={() => setVisibleScreen(SEARCH_CASES)}>
+            {SEARCH_CASES}
+          </Button>
+        </ButtonGroup>
+      </ButtonGroupWrapper>
+      {
+        visibleScreen === STATS && (
+          <>
+            <StatsGridRow>
+              <Card>
+                <CardSegment>
+                  <Typography variant="h3">{TOTAL_CASES}</Typography>
+                  <Typography variant="h1">{casesStats.get(TOTAL_CASES, 0)}</Typography>
+                </CardSegment>
+              </Card>
+              <Card>
+                <CardSegment>
+                  <Typography variant="h3">{OPEN_CASES}</Typography>
+                  <Typography variant="h1">{casesStats.get(OPEN_CASES, 0)}</Typography>
+                </CardSegment>
+              </Card>
+              <Card>
+                <CardSegment>
+                  <Typography variant="h3">{SUCCESSFUL}</Typography>
+                  <Typography variant="h1">{casesStats.get(SUCCESSFUL, 0)}</Typography>
+                </CardSegment>
+              </Card>
+            </StatsGridRow>
+            <StatsGridRow>
+              <Card>
+                <CardSegment>
+                  <Typography variant="h3">{TERMINATED}</Typography>
+                  <Typography variant="h1">{casesStats.get(TERMINATED, 0)}</Typography>
+                </CardSegment>
+              </Card>
+              <Card>
+                <CardSegment>
+                  <Typography variant="h3">{RESPONDENT_DECLINED}</Typography>
+                  <Typography variant="h1">{casesStats.get(RESPONDENT_DECLINED, 0)}</Typography>
+                </CardSegment>
+              </Card>
+              <Card>
+                <CardSegment>
+                  <Typography variant="h3">{NO_CONTACT}</Typography>
+                  <Typography variant="h1">{casesStats.get(NO_CONTACT, 0)}</Typography>
+                </CardSegment>
+              </Card>
+            </StatsGridRow>
+            <Card>
+              <TableHeader>Staff Cases</TableHeader>
+              <CardSegment padding="0">
+                <Table
+                    data={staffCasesData.toJS()}
+                    headers={staffCasesTableHeaders}
+                    isLoading={isPending(fetchRequestState)} />
+              </CardSegment>
+            </Card>
+            <ButtonWrapper>
+              <Button onClick={() => openStaffModal(true)} variant="text" mode="primary">+Add Staff Member</Button>
+            </ButtonWrapper>
+          </>
+        )
+      }
+      {
+        visibleScreen === SEARCH_CASES && (
+          <SearchCases />
+        )
+      }
       <AddStaffModal
           isVisible={isStaffModalOpen}
           onClose={() => openStaffModal(false)}
