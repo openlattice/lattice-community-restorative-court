@@ -147,7 +147,7 @@ function* getStaffCasesDataWorker(action :SequenceAction) :Saga<*> {
 
         let pendingIntake :number = 0;
         let pendingCircle :number = 0;
-        let repairHarmAgreementsCompleted :number = 0;
+        let repairHarmAgreementsEstablished :number = 0;
         let openCases :number = 0;
         let successfulCases :number = 0;
         let unsuccessfulCases :number = 0;
@@ -177,7 +177,7 @@ function* getStaffCasesDataWorker(action :SequenceAction) :Saga<*> {
 
           const repairHarmAgreement = repairHarmAgreementByCRCEKID.getIn([crcCaseEKID, 0], Map());
           if (isDefined(repairHarmAgreement) && !repairHarmAgreement.isEmpty() && !isDefined(closed)) {
-            repairHarmAgreementsCompleted += 1;
+            repairHarmAgreementsEstablished += 1;
           }
         });
 
@@ -185,7 +185,7 @@ function* getStaffCasesDataWorker(action :SequenceAction) :Saga<*> {
           [STAFF_CASES_TABLE_HEADERS.get('STAFF')]: personName,
           [STAFF_CASES_TABLE_HEADERS.get('PENDING_INTAKE')]: pendingIntake,
           [STAFF_CASES_TABLE_HEADERS.get('PENDING_CIRCLE')]: pendingCircle,
-          [STAFF_CASES_TABLE_HEADERS.get('RH_AGREEMENT_COMPLETED')]: repairHarmAgreementsCompleted,
+          [STAFF_CASES_TABLE_HEADERS.get('RH_AGREEMENT_ESTABLISHED')]: repairHarmAgreementsEstablished,
           [STAFF_CASES_TABLE_HEADERS.get('TOTAL_OPEN_CASES')]: openCases,
           [STAFF_CASES_TABLE_HEADERS.get('TOTAL_SUCCESSFUL_CASES')]: successfulCases,
           [STAFF_CASES_TABLE_HEADERS.get('TOTAL_UNSUCCESSFUL_CASES')]: unsuccessfulCases,
@@ -194,7 +194,7 @@ function* getStaffCasesDataWorker(action :SequenceAction) :Saga<*> {
 
         totalPendingIntake += pendingIntake;
         totalPendingCircle += pendingCircle;
-        totalRepairHarmAgreementsCompleted += repairHarmAgreementsCompleted;
+        totalRepairHarmAgreementsCompleted += repairHarmAgreementsEstablished;
         totalOpenCases += openCases;
         totalSuccessfulCases += successfulCases;
         totalUnsuccessfulCases += unsuccessfulCases;
@@ -204,7 +204,7 @@ function* getStaffCasesDataWorker(action :SequenceAction) :Saga<*> {
         [STAFF_CASES_TABLE_HEADERS.get('STAFF')]: 'All Staff',
         [STAFF_CASES_TABLE_HEADERS.get('PENDING_INTAKE')]: totalPendingIntake,
         [STAFF_CASES_TABLE_HEADERS.get('PENDING_CIRCLE')]: totalPendingCircle,
-        [STAFF_CASES_TABLE_HEADERS.get('RH_AGREEMENT_COMPLETED')]: totalRepairHarmAgreementsCompleted,
+        [STAFF_CASES_TABLE_HEADERS.get('RH_AGREEMENT_ESTABLISHED')]: totalRepairHarmAgreementsCompleted,
         [STAFF_CASES_TABLE_HEADERS.get('TOTAL_OPEN_CASES')]: totalOpenCases,
         [STAFF_CASES_TABLE_HEADERS.get('TOTAL_SUCCESSFUL_CASES')]: totalSuccessfulCases,
         [STAFF_CASES_TABLE_HEADERS.get('TOTAL_UNSUCCESSFUL_CASES')]: totalUnsuccessfulCases,
