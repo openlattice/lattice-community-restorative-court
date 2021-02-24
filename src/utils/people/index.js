@@ -7,9 +7,10 @@ import { PropertyTypes } from '../../core/edm/constants';
 const { getPropertyValue } = DataUtils;
 const { GIVEN_NAME, SURNAME } = PropertyTypes;
 
-const getPersonName = (person :Map) => {
+const getPersonName = (person :Map, defaultValue ?:string) => {
   const firstName = getPropertyValue(person, [GIVEN_NAME, 0]);
   const lastName = getPropertyValue(person, [SURNAME, 0]);
+  if (!firstName && !lastName) return defaultValue || '';
   return `${firstName} ${lastName}`;
 };
 
