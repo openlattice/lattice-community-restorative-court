@@ -36,6 +36,7 @@ export default function* sagas() :Saga<*> {
     fork(DashboardSagas.addStaffWatcher),
     fork(DashboardSagas.getCasesStatsWatcher),
     fork(DashboardSagas.getStaffCasesDataWatcher),
+    fork(DashboardSagas.searchCasesWatcher),
 
     // DataSagas
     fork(DataSagas.submitDataGraphWatcher),
