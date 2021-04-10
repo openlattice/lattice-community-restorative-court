@@ -32,10 +32,10 @@ import type { SequenceAction } from 'redux-reqseq';
 
 import { AppTypes, PropertyTypes } from '../../../core/edm/constants';
 import { selectEntitySetId, selectPropertyTypeId } from '../../../core/redux/selectors';
-import { getNeighborDetails, getNeighborESID } from '../../../utils/data';
+import { getAssociationDetails, getNeighborDetails, getNeighborESID } from '../../../utils/data';
 import { getPersonName } from '../../../utils/people';
 import { getUTCDateRangeSearchString } from '../../../utils/search';
-import { CaseStatusConstants } from '../../profile/src/constants';
+import { CaseStatusConstants, RoleConstants } from '../../profile/src/constants';
 import { DOWNLOAD_REFERRALS, downloadReferrals } from '../actions';
 import { DownloadReferralsUtils } from '../utils';
 
@@ -54,6 +54,7 @@ const {
   getPersonEKIDsWithMultipleReferrals,
 } = DownloadReferralsUtils;
 const { CLOSED, INTAKE } = CaseStatusConstants;
+const { RESPONDENT } = RoleConstants;
 const {
   AGENCY,
   CHARGES,
@@ -72,12 +73,13 @@ const {
   NAME,
   NOTES,
   RACE,
+  ROLE,
 } = PropertyTypes;
 
 const LOG = new Logger('DashboardSagas');
 
 const HEADERS = {
-  personName: 'Name',
+  respondentName: 'Respondent Name',
   referralAgency: 'Referral Agency',
   dateReferred: 'Date Referred',
   charge: 'Charge',
@@ -242,7 +244,12 @@ function* downloadReferralsWorker(action :SequenceAction) :Saga<*> {
 
       const personEKIDs :UUID[] = [];
       crcCaseNeighborMap.forEach((neighborsList :List) => {
-        const personNeighbor = neighborsList.find((neighbor) => getNeighborESID(neighbor) === peopleESID);
+        const personNeighbor = neighborsList.find((neighbor) => {
+          const neighborESID :UUID = getNeighborESID(neighbor);
+          const associationDetails :Map = getAssociationDetails(neighbor);
+          const roleInCase = getPropertyValue(associationDetails, [ROLE, 0]);
+          return neighborESID === peopleESID && roleInCase === RESPONDENT;
+        });
         if (isDefined(personNeighbor)) {
           const personEKID :?UUID = getEntityKeyId(getNeighborDetails(personNeighbor));
           if (personEKID) personEKIDs.push(personEKID);
@@ -366,7 +373,7 @@ function* downloadReferralsWorker(action :SequenceAction) :Saga<*> {
         else referralAgency = agencyNameByReferralRequestEKID.get(referralRequestEKID, '');
 
         const tableRow = OrderedMap()
-          .set(HEADERS.personName, personName)
+          .set(HEADERS.respondentName, personName)
           .set(HEADERS.referralAgency, referralAgency)
           .set(HEADERS.dateReferred, dateReferred)
           .set(HEADERS.charge, chargeName)
@@ -379,7 +386,7 @@ function* downloadReferralsWorker(action :SequenceAction) :Saga<*> {
         mutator.push(tableRow);
       });
     })
-      .sortBy((row) => row.get(HEADERS.personName, '').split(' ')[1]);
+      .sortBy((row) => row.get(HEADERS.respondentName, '').split(' ')[1]);
 
     const csv = Papa.unparse(dataTable.toJS());
     const blob = new Blob([csv], {
