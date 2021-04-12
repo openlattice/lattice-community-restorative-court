@@ -81,7 +81,7 @@ const DownloadReferralsByAgencyModal = ({
       setEndDate('');
       setGender('');
       setRace('');
-      setRepeatReferrals(true);
+      setRepeatReferrals(false);
       setStartDate('');
       dispatch(resetRequestState([DOWNLOAD_REFERRALS]));
       onClose();
