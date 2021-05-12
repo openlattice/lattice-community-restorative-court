@@ -13,8 +13,8 @@ import type { UUID } from 'lattice';
 import type { WorkerResponse } from 'lattice-sagas';
 import type { SequenceAction } from 'redux-reqseq';
 
-import { createOrReplaceAssociation } from '../../../../core/data/actions';
-import { createOrReplaceAssociationWorker } from '../../../../core/data/sagas';
+import { deleteEntities } from '../../../../core/data/actions';
+import { deleteEntitiesWorker } from '../../../../core/data/sagas';
 import { AppTypes, PropertyTypes } from '../../../../core/edm/constants';
 import { selectEntitySetId } from '../../../../core/redux/selectors';
 import { getAssociationDetails, getNeighborDetails } from '../../../../utils/data';
@@ -65,12 +65,9 @@ function* removePersonFromCaseWorker(action :SequenceAction) :Saga<WorkerRespons
       const appearsInAssociation :Map = getAssociationDetails(selectedPersonNeighbor);
       personRole = getPropertyValue(appearsInAssociation, [ROLE, 0]);
       const appearsInEKID :?UUID = getEntityKeyId(getAssociationDetails(selectedPersonNeighbor));
-      const associationsToDelete = [{ entitySetId: appearsInESID, entityKeyIds: [appearsInEKID] }];
+      const associationToDelete = [{ entitySetId: appearsInESID, entityKeyIds: [appearsInEKID] }];
 
-      response = yield call(
-        createOrReplaceAssociationWorker,
-        createOrReplaceAssociation({ associations: {}, associationsToDelete })
-      );
+      response = yield call(deleteEntitiesWorker, deleteEntities(associationToDelete));
       if (response.error) throw response.error;
       workerResponse = { data: response.data };
     }
