@@ -70,6 +70,7 @@ export default function* sagas() :Saga<*> {
     fork(ProfileSagas.getPersonWatcher),
     fork(ProfileSagas.getStaffWatcher),
     fork(ProfileSagas.loadProfileWatcher),
+    fork(ProfileSagas.removePersonFromCaseWatcher),
     fork(ProfileSagas.searchOrganizationsWatcher),
     fork(ProfileSagas.searchPeopleWatcher),
     fork(ProfileSagas.submitAddressWatcher),

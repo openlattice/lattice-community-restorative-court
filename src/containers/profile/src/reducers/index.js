@@ -19,6 +19,7 @@ import getPersonNeighborsReducer from './getPersonNeighborsReducer';
 import getPersonReducer from './getPersonReducer';
 import getStaffReducer from './getStaffReducer';
 import loadProfileReducer from './loadProfileReducer';
+import removePersonFromCaseReducer from './removePersonFromCaseReducer';
 import searchOrganizationsReducer from './searchOrganizationsReducer';
 import searchPeopleReducer from './searchPeopleReducer';
 import selectCaseReducer from './selectCaseReducer';
@@ -50,6 +51,7 @@ import {
   GET_PERSON_NEIGHBORS,
   GET_STAFF,
   LOAD_PROFILE,
+  REMOVE_PERSON_FROM_CASE,
   SEARCH_ORGANIZATIONS,
   SEARCH_PEOPLE,
   SELECT_CASE,
@@ -67,6 +69,7 @@ import {
   getPersonNeighbors,
   getStaff,
   loadProfile,
+  removePersonFromCase,
   searchOrganizations,
   searchPeople,
   submitAddress,
@@ -102,6 +105,7 @@ const INITIAL_STATE :Map = fromJS({
   [GET_PERSON_NEIGHBORS]: RS_INITIAL_STATE,
   [GET_STAFF]: RS_INITIAL_STATE,
   [LOAD_PROFILE]: RS_INITIAL_STATE,
+  [REMOVE_PERSON_FROM_CASE]: RS_INITIAL_STATE,
   [SEARCH_ORGANIZATIONS]: RS_INITIAL_STATE,
   [SEARCH_PEOPLE]: RS_INITIAL_STATE,
   [SUBMIT_ADDRESS]: RS_INITIAL_STATE,
@@ -182,6 +186,9 @@ export default function profileReducer(state :Map = INITIAL_STATE, action :Objec
 
     case loadProfile.case(action.type):
       return loadProfileReducer(state, action);
+
+    case removePersonFromCase.case(action.type):
+      return removePersonFromCaseReducer(state, action);
 
     case searchOrganizations.case(action.type):
       return searchOrganizationsReducer(state, action);
