@@ -88,6 +88,11 @@ const orgLabels = Map({
   name: 'Organization Name',
 });
 
+const OuterWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
 const SearchGrid = styled.div`
   display: grid;
   grid-gap: 20px;
@@ -243,7 +248,7 @@ const AddPeopleToCaseForm = () => {
   }, []);
 
   return (
-    <>
+    <OuterWrapper>
       <CardSegment>
         <Crumbs>
           <CrumbLink to={relativeRoot}>
@@ -378,7 +383,7 @@ const AddPeopleToCaseForm = () => {
           searchContext={searchContext}
           selectedOrganization={selectedOrganization}
           selectedPerson={selectedPerson} />
-    </>
+    </OuterWrapper>
   );
 };
 
