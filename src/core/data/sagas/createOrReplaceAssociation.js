@@ -26,23 +26,18 @@ function* createOrReplaceAssociationWorker(action :SequenceAction) :Saga<WorkerR
   try {
     yield put(createOrReplaceAssociation.request(action.id));
     const { value } = action;
-    workerResponse = { data: {} };
 
     const { associations, associationsToDelete } = value;
 
     if (associationsToDelete && associationsToDelete.length) {
       const deleteResponse = yield call(deleteEntitiesWorker, deleteEntities(associationsToDelete));
       if (deleteResponse.error) throw deleteResponse.error;
-      workerResponse = { data: deleteResponse.data };
     }
 
-    if (associations && Object.entries(associations).length) {
-      const createAssociationResponse = yield call(createAssociationsWorker, createAssociations(associations));
-      if (createAssociationResponse.error) throw createAssociationResponse.error;
-      workerResponse = { data: createAssociationResponse.data };
-    }
-
-    yield put(createOrReplaceAssociation.success(action.id, workerResponse));
+    const createAssociationResponse = yield call(createAssociationsWorker, createAssociations(associations));
+    if (createAssociationResponse.error) throw createAssociationResponse.error;
+    workerResponse = { data: createAssociationResponse.data };
+    yield put(createOrReplaceAssociation.success(action.id, createAssociationResponse));
   }
   catch (error) {
     workerResponse = { error };
