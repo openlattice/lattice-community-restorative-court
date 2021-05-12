@@ -235,6 +235,7 @@ const CaseDetailsModal = ({
             { respondentList.map((respondent :Map) => renderTile(respondent, RESPONDENT)) }
             { victimList.map((victim :Map) => renderTile(victim, VICTIM)) }
             { peacemakerList.map((peacemaker :Map) => renderTile(peacemaker, PEACEMAKER)) }
+            { caseManagerList.map((staffMember :Map) => renderTile(staffMember, CASE_MANAGER)) }
           </ParticipantsTileGrid>
         </ModalSection>
         <ModalSection>
