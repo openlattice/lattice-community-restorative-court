@@ -20,6 +20,7 @@ import { DataUtils, LangUtils, ReduxUtils } from 'lattice-utils';
 import type { UUID } from 'lattice';
 
 import AddPersonToCaseModal from './AddPersonToCaseModal';
+import RemovePersonFromCaseModal from './RemovePersonFromCaseModal';
 
 import { CrumbItem, CrumbLink, Crumbs } from '../../../../components/crumbs';
 import { AppTypes, PropertyTypes } from '../../../../core/edm/constants';
@@ -153,15 +154,16 @@ const AddPeopleToCaseForm = () => {
     return getPersonName(victim);
   }).toJS();
   const caseManagers = caseRoleMap.get(CASE_MANAGER, List());
-  const caseManagerName = getPersonName(caseManagers.get(0, Map()));
 
   const [searchContext, setSearchContext] = useState(PEOPLE_CONTEXT);
   const [formInputs, setFormInputs] = useState({ firstName: '', lastName: '', organizationName: '' });
   const [dob, setDOB] = useState('');
   const [page, setPage] = useState(1);
-  const [modalIsVisible, setModalVisibility] = useState(false);
+  const [addPersonModalIsVisible, setAddPersonModalVisibility] = useState(false);
   const [selectedPerson, selectPersonForModal] = useState(Map());
   const [selectedOrganization, selectOrganizationForModal] = useState(Map());
+  const [removePersonModalIsVisible, setRemovePersonModalVisibility] = useState(false);
+  const [selectedPersonForDelete, selectPersonForDelete] = useState(Map());
 
   const isPersonContext = searchContext === PEOPLE_CONTEXT || searchContext === STAFF_CONTEXT;
   const isOrgContext = searchContext === ORGS_CONTEXT;
@@ -276,7 +278,15 @@ const AddPeopleToCaseForm = () => {
         </CaseRoleTextWrapper>
         <CaseRoleTextWrapper>
           <Typography color="inherit" variant="body2" gutterBottom>Case Manager:</Typography>
-          <Chip color="violet" label={caseManagerName} />
+          {caseManagers.map((caseManager :Map) => (
+            <Chip
+                color="violet"
+                label={getPersonName(caseManager)}
+                onDelete={() => {
+                  selectPersonForDelete(caseManager);
+                  setRemovePersonModalVisibility(true);
+                }} />
+          ))}
         </CaseRoleTextWrapper>
       </CardSegment>
       <Card>
@@ -375,17 +385,22 @@ const AddPeopleToCaseForm = () => {
             if (isOrgContext) {
               selectOrganizationForModal(clickedEntity.get('organization'));
             }
-            setModalVisibility(true);
+            setAddPersonModalVisibility(true);
           }}
           resultLabels={isOrgContext ? orgLabels : personLabels}
           results={data} />
       <AddPersonToCaseModal
-          isVisible={modalIsVisible}
-          onClose={() => setModalVisibility(false)}
+          isVisible={addPersonModalIsVisible}
+          onClose={() => setAddPersonModalVisibility(false)}
           personCase={personCase}
           searchContext={searchContext}
           selectedOrganization={selectedOrganization}
           selectedPerson={selectedPerson} />
+      <RemovePersonFromCaseModal
+          caseEKID={caseEKID || ''}
+          isVisible={removePersonModalIsVisible}
+          onClose={() => setRemovePersonModalVisibility(false)}
+          selectedPerson={selectedPersonForDelete} />
     </OuterWrapper>
   );
 };
