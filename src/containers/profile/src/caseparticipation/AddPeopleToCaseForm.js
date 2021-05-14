@@ -7,7 +7,7 @@ import {
   Button,
   Card,
   CardSegment,
-  Colors,
+  Chip,
   DatePicker,
   Input,
   Label,
@@ -20,6 +20,7 @@ import { DataUtils, LangUtils, ReduxUtils } from 'lattice-utils';
 import type { UUID } from 'lattice';
 
 import AddPersonToCaseModal from './AddPersonToCaseModal';
+import RemovePersonFromCaseModal from './RemovePersonFromCaseModal';
 
 import { CrumbItem, CrumbLink, Crumbs } from '../../../../components/crumbs';
 import { AppTypes, PropertyTypes } from '../../../../core/edm/constants';
@@ -75,7 +76,6 @@ const {
   VICTIM,
 } = RoleConstants;
 const { ORGS_CONTEXT, PEOPLE_CONTEXT, STAFF_CONTEXT } = SearchContextConstants;
-const { NEUTRAL } = Colors;
 
 const MAX_HITS = 10;
 
@@ -87,6 +87,11 @@ const personLabels = Map({
 const orgLabels = Map({
   name: 'Organization Name',
 });
+
+const OuterWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
 
 const SearchGrid = styled.div`
   display: grid;
@@ -104,7 +109,11 @@ const SearchGrid = styled.div`
 `;
 
 const CaseRoleTextWrapper = styled.div`
-  color: ${NEUTRAL.N500};
+  display: flex;
+  grid-gap: 10px;
+  grid-template-columns: auto;
+  margin-bottom: 10px;
+  width: 100%;
 `;
 
 const ButtonGrid = styled.div`
@@ -137,27 +146,24 @@ const AddPeopleToCaseForm = () => {
     .getIn([PROFILE, PERSON_CASE_NEIGHBOR_MAP, ROLE, caseEKID], Map()));
   const respondentPerson = caseRoleMap.getIn([RESPONDENT, 0], Map());
   const respondentPersonName = getPersonName(respondentPerson);
-  const respondentText = `Respondent: ${respondentPersonName}`;
   const peacemakerPerson = caseRoleMap.getIn([PEACEMAKER, 0], Map());
   const peacemakerPersonName = getPersonName(peacemakerPerson);
-  const peacemakerText = `Peacemaker: ${peacemakerPersonName}`;
   const victims = caseRoleMap.get(VICTIM, List());
   const victimNames = victims.map((victim) => {
     if (victim.has(ORGANIZATION_NAME)) return getPropertyValue(victim, [ORGANIZATION_NAME, 0]);
     return getPersonName(victim);
   }).toJS();
-  const victimText = `Victims: ${victimNames.join(', ')}`;
   const caseManagers = caseRoleMap.get(CASE_MANAGER, List());
-  const caseManagerName = getPersonName(caseManagers.get(0, Map()));
-  const caseManagerText = `Case Manager: ${caseManagerName}`;
 
   const [searchContext, setSearchContext] = useState(PEOPLE_CONTEXT);
   const [formInputs, setFormInputs] = useState({ firstName: '', lastName: '', organizationName: '' });
   const [dob, setDOB] = useState('');
   const [page, setPage] = useState(1);
-  const [modalIsVisible, setModalVisibility] = useState(false);
+  const [addPersonModalIsVisible, setAddPersonModalVisibility] = useState(false);
   const [selectedPerson, selectPersonForModal] = useState(Map());
   const [selectedOrganization, selectOrganizationForModal] = useState(Map());
+  const [removePersonModalIsVisible, setRemovePersonModalVisibility] = useState(false);
+  const [selectedPersonForDelete, selectPersonForDelete] = useState(Map());
 
   const isPersonContext = searchContext === PEOPLE_CONTEXT || searchContext === STAFF_CONTEXT;
   const isOrgContext = searchContext === ORGS_CONTEXT;
@@ -243,7 +249,7 @@ const AddPeopleToCaseForm = () => {
   }, []);
 
   return (
-    <>
+    <OuterWrapper>
       <CardSegment>
         <Crumbs>
           <CrumbLink to={relativeRoot}>
@@ -259,16 +265,28 @@ const AddPeopleToCaseForm = () => {
         </Typography>
         <Typography variant="body2" gutterBottom>{ caseIdentifier }</Typography>
         <CaseRoleTextWrapper>
-          <Typography color="inherit" variant="body2" gutterBottom>{ respondentText }</Typography>
+          <Typography color="inherit" variant="body2" gutterBottom>Respondent:</Typography>
+          <Chip color="red" label={respondentPersonName} />
         </CaseRoleTextWrapper>
         <CaseRoleTextWrapper>
-          <Typography color="inherit" variant="body2" gutterBottom>{ peacemakerText }</Typography>
+          <Typography color="inherit" variant="body2" gutterBottom>Peacemaker:</Typography>
+          <Chip color="blue" label={peacemakerPersonName} />
         </CaseRoleTextWrapper>
         <CaseRoleTextWrapper>
-          <Typography color="inherit" variant="body2" gutterBottom>{ victimText }</Typography>
+          <Typography color="inherit" variant="body2" gutterBottom>Victims:</Typography>
+          {victimNames.map((victimName :string) => <Chip color="green" label={victimName} />)}
         </CaseRoleTextWrapper>
         <CaseRoleTextWrapper>
-          <Typography color="inherit" variant="body2" gutterBottom>{ caseManagerText }</Typography>
+          <Typography color="inherit" variant="body2" gutterBottom>Case Manager:</Typography>
+          {caseManagers.map((caseManager :Map) => (
+            <Chip
+                color="violet"
+                label={getPersonName(caseManager)}
+                onDelete={() => {
+                  selectPersonForDelete(caseManager);
+                  setRemovePersonModalVisibility(true);
+                }} />
+          ))}
         </CaseRoleTextWrapper>
       </CardSegment>
       <Card>
@@ -367,18 +385,23 @@ const AddPeopleToCaseForm = () => {
             if (isOrgContext) {
               selectOrganizationForModal(clickedEntity.get('organization'));
             }
-            setModalVisibility(true);
+            setAddPersonModalVisibility(true);
           }}
           resultLabels={isOrgContext ? orgLabels : personLabels}
           results={data} />
       <AddPersonToCaseModal
-          isVisible={modalIsVisible}
-          onClose={() => setModalVisibility(false)}
+          isVisible={addPersonModalIsVisible}
+          onClose={() => setAddPersonModalVisibility(false)}
           personCase={personCase}
           searchContext={searchContext}
           selectedOrganization={selectedOrganization}
           selectedPerson={selectedPerson} />
-    </>
+      <RemovePersonFromCaseModal
+          caseEKID={caseEKID || ''}
+          isVisible={removePersonModalIsVisible}
+          onClose={() => setRemovePersonModalVisibility(false)}
+          selectedPerson={selectedPersonForDelete} />
+    </OuterWrapper>
   );
 };
 

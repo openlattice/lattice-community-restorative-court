@@ -5,12 +5,23 @@ import { Colors, StyleUtils, Tag } from 'lattice-ui-kit';
 import { ContactActivityConstants, RoleConstants } from '../../containers/profile/src/constants';
 
 const { getStyleVariation } = StyleUtils;
-const { BLUE, GREEN, RED } = Colors;
-const { PEACEMAKER, RESPONDENT, VICTIM } = RoleConstants;
+const {
+  BLUE,
+  GREEN,
+  PURPLE,
+  RED,
+} = Colors;
+const {
+  CASE_MANAGER,
+  PEACEMAKER,
+  RESPONDENT,
+  VICTIM,
+} = RoleConstants;
 const { DID_NOT_ATTEND, ATTENDED } = ContactActivityConstants;
 
 export const getBackgroundColor = getStyleVariation('background', {
   [ATTENDED]: GREEN.G00,
+  [CASE_MANAGER]: PURPLE.P00,
   [DID_NOT_ATTEND]: RED.R00,
   [PEACEMAKER]: BLUE.B00,
   [RESPONDENT]: RED.R00,
@@ -19,6 +30,7 @@ export const getBackgroundColor = getStyleVariation('background', {
 
 export const getFontColor = getStyleVariation('color', {
   [ATTENDED]: GREEN.G400,
+  [CASE_MANAGER]: PURPLE.P400,
   [DID_NOT_ATTEND]: RED.R400,
   [PEACEMAKER]: BLUE.B400,
   [RESPONDENT]: RED.R400,
