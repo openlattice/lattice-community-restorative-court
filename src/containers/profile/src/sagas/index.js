@@ -12,6 +12,7 @@ export * from './getPersonCaseNeighbors';
 export * from './getPersonNeighbors';
 export * from './getStaff';
 export * from './loadProfile';
+export * from './removePersonFromCase';
 export * from './searchOrganizations';
 export * from './searchPeople';
 export * from './submitAddress';

@@ -49,6 +49,9 @@ const getStaff :RequestSequence = newRequestSequence(GET_STAFF);
 const LOAD_PROFILE :'LOAD_PROFILE' = 'LOAD_PROFILE';
 const loadProfile :RequestSequence = newRequestSequence(LOAD_PROFILE);
 
+const REMOVE_PERSON_FROM_CASE :'REMOVE_PERSON_FROM_CASE' = 'REMOVE_PERSON_FROM_CASE';
+const removePersonFromCase :RequestSequence = newRequestSequence(REMOVE_PERSON_FROM_CASE);
+
 const SEARCH_ORGANIZATIONS :'SEARCH_ORGANIZATIONS' = 'SEARCH_ORGANIZATIONS';
 const searchOrganizations :RequestSequence = newRequestSequence(SEARCH_ORGANIZATIONS);
 
@@ -82,6 +85,7 @@ export {
   GET_PERSON_NEIGHBORS,
   GET_STAFF,
   LOAD_PROFILE,
+  REMOVE_PERSON_FROM_CASE,
   SEARCH_ORGANIZATIONS,
   SEARCH_PEOPLE,
   SELECT_CASE,
@@ -101,6 +105,7 @@ export {
   getPersonNeighbors,
   getStaff,
   loadProfile,
+  removePersonFromCase,
   searchOrganizations,
   searchPeople,
   selectCase,
