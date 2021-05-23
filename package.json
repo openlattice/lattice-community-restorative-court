@@ -46,7 +46,7 @@
     "iso-639-1": "~2.1.4",
     "lattice": "~0.85.1",
     "lattice-auth": "~0.22.0",
-    "lattice-fabricate": "~0.14.5",
+    "lattice-fabricate": "~0.17.0",
     "lattice-sagas": "~0.59.0",
     "lattice-ui-kit": "~0.43.1",
     "lattice-utils": "~0.8.2",
