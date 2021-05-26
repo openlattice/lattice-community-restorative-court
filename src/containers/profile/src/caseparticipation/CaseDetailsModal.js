@@ -33,7 +33,6 @@ import { goToRoute } from '../../../../core/router/RoutingActions';
 import { getPersonName } from '../../../../utils/people';
 import { getRelativeRoot } from '../../../../utils/router';
 import { useDispatch, useSelector } from '../../../app/AppProvider';
-import { selectCase } from '../actions';
 import { CaseStatusConstants, RoleConstants } from '../constants';
 
 const {
@@ -161,7 +160,6 @@ const CaseDetailsModal = ({
 
   const goToAddPeopleForm = () => {
     if (caseEKID) {
-      dispatch(selectCase(personCase));
       dispatch(goToRoute(`${root}/${ADD_PEOPLE_TO_CASE}`.replace(CASE_ID, caseEKID)));
     }
   };
