@@ -5,6 +5,7 @@ export * from './addContactActivity';
 export * from './addPersonOrOrgToCase';
 export * from './editAddress';
 export * from './editContact';
+export * from './editCRCCase';
 export * from './editPerson';
 export * from './editPersonDetails';
 export * from './getPerson';

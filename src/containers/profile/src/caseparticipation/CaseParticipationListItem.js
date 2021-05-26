@@ -18,7 +18,8 @@ import { CRCTag } from '../../../../components';
 import { AppTypes, PropertyTypes } from '../../../../core/edm/constants';
 import { ProfileReduxConstants, ReferralReduxConstants } from '../../../../core/redux/constants';
 import { getPersonName } from '../../../../utils/people';
-import { useSelector } from '../../../app/AppProvider';
+import { useDispatch, useSelector } from '../../../app/AppProvider';
+import { selectCase } from '../actions';
 import { RoleConstants } from '../constants';
 
 const { DA_CASE, REFERRAL_REQUEST } = AppTypes;
@@ -59,6 +60,7 @@ type Props = {
 const CaseParticipationListItem = ({ personCase } :Props) => {
 
   const [modalIsVisible, setModalVisibility] = useState(false);
+  const dispatch = useDispatch();
 
   const caseEKID :?UUID = getEntityKeyId(personCase);
 
@@ -88,9 +90,14 @@ const CaseParticipationListItem = ({ personCase } :Props) => {
 
   const caseIdentifier = `Case #: ${caseNumber} - ${respondentPersonName}`;
 
+  const onCaseClick = () => {
+    setModalVisibility(true);
+    dispatch(selectCase(personCase));
+  };
+
   return (
     <>
-      <Card onClick={() => setModalVisibility(true)}>
+      <Card onClick={onCaseClick}>
         <ListItemCardSegment padding="20px 30px">
           <div>
             <Date variant="subtitle2">{caseDate}</Date>
