@@ -18,6 +18,7 @@ import type { UUID } from 'lattice';
 
 import AddStatusModal from './AddStatusModal';
 import CaseDetailsModalHeader from './CaseDetailsModalHeader';
+import CaseNotes from './CaseNotes';
 
 import {
   CRCTag,
@@ -244,6 +245,10 @@ const CaseDetailsModal = ({
               caseIdentifier={caseIdentifier}
               forms={relevantForms}
               personCaseNeighborMap={personCaseNeighborMap} />
+        </ModalSection>
+        <ModalSection>
+          <header><Typography color={NEUTRAL.N700} variant="h3">Notes</Typography></header>
+          <CaseNotes crcCase={personCase} />
         </ModalSection>
       </ModalInnerWrapper>
       <AddStatusModal
