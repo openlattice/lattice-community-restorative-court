@@ -28,6 +28,9 @@ const editAddress :RequestSequence = newRequestSequence(EDIT_ADDRESS);
 const EDIT_CONTACT :'EDIT_CONTACT' = 'EDIT_CONTACT';
 const editContact :RequestSequence = newRequestSequence(EDIT_CONTACT);
 
+const EDIT_CRC_CASE :'EDIT_CRC_CASE' = 'EDIT_CRC_CASE';
+const editCRCCase :RequestSequence = newRequestSequence(EDIT_CRC_CASE);
+
 const EDIT_PERSON :'EDIT_PERSON' = 'EDIT_PERSON';
 const editPerson :RequestSequence = newRequestSequence(EDIT_PERSON);
 
@@ -78,6 +81,7 @@ export {
   CLEAR_SEARCHED_PEOPLE,
   EDIT_ADDRESS,
   EDIT_CONTACT,
+  EDIT_CRC_CASE,
   EDIT_PERSON,
   EDIT_PERSON_DETAILS,
   GET_PERSON,
@@ -97,6 +101,7 @@ export {
   clearSearchedOrganizations,
   clearSearchedPeople,
   editAddress,
+  editCRCCase,
   editContact,
   editPerson,
   editPersonDetails,
