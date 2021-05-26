@@ -10,6 +10,7 @@ import addStaffReducer from './addStaffReducer';
 import clearSearchedOrganizationsReducer from './clearSearchedOrganizationsReducer';
 import clearSearchedPeopleReducer from './clearSearchedPeopleReducer';
 import editAddressReducer from './editAddressReducer';
+import editCRCCaseReducer from './editCRCCaseReducer';
 import editContactReducer from './editContactReducer';
 import editPeacemakerInformationReducer from './editPeacemakerInformationReducer';
 import editPersonDetailsReducer from './editPersonDetailsReducer';
@@ -44,6 +45,7 @@ import {
   CLEAR_SEARCHED_PEOPLE,
   EDIT_ADDRESS,
   EDIT_CONTACT,
+  EDIT_CRC_CASE,
   EDIT_PERSON,
   EDIT_PERSON_DETAILS,
   GET_PERSON,
@@ -61,6 +63,7 @@ import {
   addContactActivity,
   addPersonOrOrgToCase,
   editAddress,
+  editCRCCase,
   editContact,
   editPerson,
   editPersonDetails,
@@ -98,6 +101,7 @@ const INITIAL_STATE :Map = fromJS({
   [EDIT_PEACEMAKER_INFORMATION]: RS_INITIAL_STATE,
   [EDIT_ADDRESS]: RS_INITIAL_STATE,
   [EDIT_CONTACT]: RS_INITIAL_STATE,
+  [EDIT_CRC_CASE]: RS_INITIAL_STATE,
   [EDIT_PERSON]: RS_INITIAL_STATE,
   [EDIT_PERSON_DETAILS]: RS_INITIAL_STATE,
   [GET_PERSON]: RS_INITIAL_STATE,
@@ -165,6 +169,9 @@ export default function profileReducer(state :Map = INITIAL_STATE, action :Objec
 
     case editContact.case(action.type):
       return editContactReducer(state, action);
+
+    case editCRCCase.case(action.type):
+      return editCRCCaseReducer(state, action);
 
     case editPerson.case(action.type):
       return editPersonReducer(state, action);
