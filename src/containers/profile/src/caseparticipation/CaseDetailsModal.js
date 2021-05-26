@@ -245,7 +245,7 @@ const CaseDetailsModal = ({
               personCaseNeighborMap={personCaseNeighborMap} />
         </ModalSection>
         <ModalSection>
-          <header><Typography color={NEUTRAL.N700} variant="h3">Notes</Typography></header>
+          <Typography color={NEUTRAL.N700} variant="h3">Notes</Typography>
           <CaseNotes crcCase={personCase} />
         </ModalSection>
       </ModalInnerWrapper>
