@@ -18,6 +18,7 @@ import type { UUID } from 'lattice';
 
 import AddStatusModal from './AddStatusModal';
 import CaseDetailsModalHeader from './CaseDetailsModalHeader';
+import CaseNotes from './CaseNotes';
 
 import {
   CRCTag,
@@ -32,7 +33,6 @@ import { goToRoute } from '../../../../core/router/RoutingActions';
 import { getPersonName } from '../../../../utils/people';
 import { getRelativeRoot } from '../../../../utils/router';
 import { useDispatch, useSelector } from '../../../app/AppProvider';
-import { selectCase } from '../actions';
 import { CaseStatusConstants, RoleConstants } from '../constants';
 
 const {
@@ -160,7 +160,6 @@ const CaseDetailsModal = ({
 
   const goToAddPeopleForm = () => {
     if (caseEKID) {
-      dispatch(selectCase(personCase));
       dispatch(goToRoute(`${root}/${ADD_PEOPLE_TO_CASE}`.replace(CASE_ID, caseEKID)));
     }
   };
@@ -244,6 +243,10 @@ const CaseDetailsModal = ({
               caseIdentifier={caseIdentifier}
               forms={relevantForms}
               personCaseNeighborMap={personCaseNeighborMap} />
+        </ModalSection>
+        <ModalSection>
+          <Typography color={NEUTRAL.N700} variant="h3">Notes</Typography>
+          <CaseNotes crcCase={personCase} />
         </ModalSection>
       </ModalInnerWrapper>
       <AddStatusModal
