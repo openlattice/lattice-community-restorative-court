@@ -50,14 +50,6 @@ module.exports = (env = {}) => {
     use: ['style-loader', 'css-loader'],
   };
 
-  const URL_LOADER = {
-    test: /\.(jpg|png|svg)$/,
-    loader: 'url-loader',
-    options: {
-      limit: Infinity // everything
-    }
-  };
-
   /*
    * plugins
    */
@@ -96,8 +88,11 @@ module.exports = (env = {}) => {
     module: {
       rules: [
         BABEL_LOADER,
-        URL_LOADER,
         CSS_LOADER,
+        {
+          test: /\.(jpg|png|svg)$/,
+          type: 'asset/inline',
+        },
       ],
     },
     optimization: {
