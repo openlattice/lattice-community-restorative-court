@@ -90,7 +90,7 @@ const CaseDetailsModal = ({
     const staffMemberPath = [getPageSectionKey(1, 1), getEntityAddressKey(0, STAFF, OPENLATTICE_ID_FQN)];
     const effectiveDatePath = [getPageSectionKey(1, 1), getEntityAddressKey(0, STATUS, EFFECTIVE_DATE)];
     const selectedStaffEKID = getIn(formData, staffMemberPath);
-    const associations = [
+    const associations :any[][] = [
       [RECORDED_BY, 0, STATUS, selectedStaffEKID, STAFF, {}],
       [HAS, personEKID, PEOPLE, 0, STATUS, {}],
       [HAS, caseEKID, CRC_CASE, 0, STATUS, {}],

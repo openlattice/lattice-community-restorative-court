@@ -223,7 +223,7 @@ const ReferralForm = ({ personId } :Props) => {
 
     const entityData = processEntityData(formDataWithoutStaff, entitySetIds, propertyTypeIds);
 
-    let associations = [
+    let associations :any[][] = [
       // $FlowFixMe
       [APPEARS_IN, personEKID, PEOPLE, 0, CRC_CASE, { [ROLE]: [RESPONDENT] }],
       [RELATED_TO, 0, DA_CASE, 0, CRC_CASE, {}],

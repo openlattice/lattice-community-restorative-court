@@ -209,7 +209,7 @@ const IntakeForm = () => {
     );
 
     const entityData = processEntityData(formDataForSubmit, entitySetIds, propertyTypeIds);
-    const associations = [
+    const associations :any[][] = [
       [SCREENED_WITH, personEKID, PEOPLE, 0, FORM, {}],
       [RELATED_TO, 0, FORM, selectedCase, CRC_CASE, {}],
       [RECORDED_BY, 0, FORM, staffEKID, STAFF, {}],

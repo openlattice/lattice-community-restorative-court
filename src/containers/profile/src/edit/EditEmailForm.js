@@ -64,7 +64,7 @@ const EditEmailForm = () => {
 
   const onSubmit = () => {
     const entityData = processEntityData(formData, entitySetIds, propertyTypeIds);
-    const associations = [
+    const associations :any[][] = [
       [CONTACTED_VIA, personEKID, PEOPLE, 0, CONTACT_INFO, {}]
     ];
     const associationEntityData = processAssociationEntityData(associations, entitySetIds, propertyTypeIds);
