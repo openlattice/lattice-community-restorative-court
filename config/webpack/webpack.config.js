@@ -1,11 +1,18 @@
-/* eslint-disable import/extensions */
+/* eslint-disable import/extensions, import/no-extraneous-dependencies */
 
 const path = require('path');
 const Webpack = require('webpack');
-
-const APP_CONFIG = require('../app/app.config.js');
-const APP_PATHS = require('../app/paths.config.js');
+const externals = require('webpack-node-externals');
+const TerserPlugin = require('terser-webpack-plugin');
 const PACKAGE = require('../../package.json');
+
+const BANNER = `
+${PACKAGE.name} - v${PACKAGE.version}
+${PACKAGE.description}
+${PACKAGE.homepage}
+
+Copyright (c) 2017-${(new Date()).getFullYear()}, OpenLattice, Inc. All rights reserved.
+`;
 
 module.exports = (env = {}) => {
 
@@ -16,8 +23,11 @@ module.exports = (env = {}) => {
   const BABEL_CONFIG = path.resolve(__dirname, '../babel/babel.config.js');
   const ENV_DEV = 'development';
   const ENV_PROD = 'production';
-  const LIB_FILE_NAME = 'index.js';
-  const LIB_NAMESPACE = 'communityrestorativecourt';
+
+  const ROOT = path.resolve(__dirname, '../..');
+  const BUILD = path.resolve(ROOT, 'build');
+  const NODE = path.resolve(ROOT, 'node_modules');
+  const SOURCE = path.resolve(ROOT, 'src');
 
   /*
    * loaders
@@ -26,9 +36,7 @@ module.exports = (env = {}) => {
   const BABEL_LOADER = {
     test: /\.js$/,
     exclude: /node_modules/,
-    include: [
-      APP_PATHS.ABS.SOURCE,
-    ],
+    include: [SOURCE],
     use: {
       loader: 'babel-loader',
       options: {
@@ -55,7 +63,7 @@ module.exports = (env = {}) => {
    */
 
   const BANNER_PLUGIN = new Webpack.BannerPlugin({
-    banner: APP_CONFIG.BANNER,
+    banner: BANNER,
     entryOnly: true,
   });
 
@@ -73,45 +81,17 @@ module.exports = (env = {}) => {
   return {
     bail: true,
     entry: [
-      APP_PATHS.ABS.APP,
+      path.resolve(ROOT, 'src/index.js'),
     ],
-    externals: {
-      react: {
-        root: 'React',
-        commonjs2: 'react',
-        commonjs: 'react',
-        amd: 'react'
-      },
-      'react-dom': {
-        root: 'ReactDOM',
-        commonjs2: 'react-dom',
-        commonjs: 'react-dom',
-        amd: 'react-dom'
-      },
-      'styled-components': {
-        amd: 'styled-components',
-        commonjs: 'styled-components',
-        commonjs2: 'styled-components',
-      },
-      lattice: {
-        root: 'lattice',
-        commonjs2: 'lattice',
-        commonjs: 'lattice',
-        amd: 'lattice'
-      },
-      'lattice-sagas': {
-        root: 'lattice-sagas',
-        commonjs2: 'lattice-sagas',
-        commonjs: 'lattice-sagas',
-        amd: 'lattice-sagas'
-      },
-      'lattice-ui-kit': {
-        root: 'lattice-ui-kit',
-        commonjs2: 'lattice-ui-kit',
-        commonjs: 'lattice-ui-kit',
-        amd: 'lattice-ui-kit'
-      },
-    },
+    externals: [
+      externals({
+        allowlist: [
+          'file-saver',
+          'iso-639-1',
+          'papaparse',
+        ]
+      })
+    ],
     mode: env.production ? ENV_PROD : ENV_DEV,
     module: {
       rules: [
@@ -121,15 +101,21 @@ module.exports = (env = {}) => {
       ],
     },
     optimization: {
-      // minimize: !!env.production,
-      minimize: false,
+      minimize: !!env.production,
+      minimizer: [
+        new TerserPlugin({
+          extractComments: false,
+        }),
+      ],
     },
     output: {
-      library: LIB_NAMESPACE,
-      libraryTarget: 'umd',
-      path: APP_PATHS.ABS.BUILD,
+      filename: 'index.js',
+      library: {
+        name: 'communityrestorativecourt',
+        type: 'umd',
+      },
+      path: BUILD,
       publicPath: '/',
-      filename: LIB_FILE_NAME,
     },
     performance: {
       hints: false, // disable performance hints for now
@@ -141,8 +127,8 @@ module.exports = (env = {}) => {
     resolve: {
       extensions: ['.js'],
       modules: [
-        APP_PATHS.ABS.SOURCE,
-        'node_modules',
+        SOURCE,
+        NODE,
       ],
     },
     target: 'web',
