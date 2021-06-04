@@ -96,7 +96,7 @@ const PeacemakerInformationForm = () => {
       [getPageSectionKey(1, 1), getEntityAddressKey(0, FORM, GENERAL_DATETIME)]
     );
     const entityData = processEntityData(updatedFormData, entitySetIds, propertyTypeIds);
-    const associations = [
+    const associations :any[][] = [
       [SCREENED_WITH, personEKID, PEOPLE, 0, FORM, {}],
       [HAS, personEKID, PEOPLE, 0, PERSON_DETAILS, {}],
       [HAS, personEKID, PEOPLE, 0, COMMUNICATION, {}],
