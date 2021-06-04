@@ -63,7 +63,7 @@ const AddContactActivityModal = ({ isVisible, onClose } :Props) => {
     );
 
     const entityData = processEntityData(updatedFormData, entitySetIds, propertyTypeIds);
-    const associations = [
+    const associations :any[][] = [
       [SENT_TO, 0, CONTACT_ACTIVITY, personEKID, PEOPLE, {}]
     ];
     const associationEntityData = processAssociationEntityData(associations, entitySetIds, propertyTypeIds);

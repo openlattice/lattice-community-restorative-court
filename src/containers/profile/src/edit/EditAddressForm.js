@@ -73,7 +73,7 @@ const EditAddressForm = () => {
 
   const onSubmit = () => {
     const entityData = processEntityData(formData, entitySetIds, propertyTypeIds);
-    const associations = [
+    const associations :any[][] = [
       [LOCATED_AT, personEKID, PEOPLE, 0, LOCATION, {}]
     ];
     const associationEntityData = processAssociationEntityData(associations, entitySetIds, propertyTypeIds);
