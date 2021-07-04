@@ -84,7 +84,7 @@
     "import-sort-style-openlattice": "~0.1.0",
     "jest": "~27.0.4",
     "jest-styled-components": "~7.0.3",
-    "lattice": "~0.92.0",
+    "lattice": "~0.93.5",
     "lattice-auth": "~0.23.0",
     "lattice-fabricate": "~0.17.0",
     "lattice-sagas": "~0.66.0",
