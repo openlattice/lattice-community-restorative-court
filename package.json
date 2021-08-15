@@ -30,7 +30,7 @@
   },
   "main": "build/index.js",
   "dependencies": {
-    "@babel/runtime-corejs3": "~7.14.0",
+    "@babel/runtime-corejs3": "~7.15.3",
     "file-saver": "~2.0.5",
     "iso-639-1": "~2.1.4",
     "papaparse": "~5.3.0"
