@@ -104,7 +104,7 @@
     "redux-immutable": "4.0.0",
     "redux-reqseq": "~0.6.0",
     "rimraf": "~3.0.0",
-    "style-loader": "~2.0.0",
+    "style-loader": "~3.3.0",
     "styled-components": "~5.3.0",
     "stylelint": "~13.13.1",
     "stylelint-config-standard": "~22.0.0",
