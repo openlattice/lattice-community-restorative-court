@@ -85,7 +85,7 @@
     "jest": "~27.0.4",
     "jest-styled-components": "~7.0.3",
     "lattice": "~0.92.0",
-    "lattice-auth": "~0.23.0",
+    "lattice-auth": "~0.28.0",
     "lattice-fabricate": "~0.17.0",
     "lattice-sagas": "~0.66.0",
     "lattice-ui-kit": "~0.43.1",
