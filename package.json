@@ -89,7 +89,7 @@
     "lattice-fabricate": "~0.17.0",
     "lattice-sagas": "~0.66.0",
     "lattice-ui-kit": "~0.43.1",
-    "lattice-utils": "~0.11.0",
+    "lattice-utils": "~0.12.0",
     "lodash": "~4.17.20",
     "loglevel": "~1.7.1",
     "luxon": "~1.27.0",
