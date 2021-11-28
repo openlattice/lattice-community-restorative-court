@@ -55,7 +55,7 @@
     "@storybook/addon-docs": "~6.3.0-alpha.41",
     "@storybook/addon-links": "~6.3.0-alpha.41",
     "@storybook/addons": "~6.3.0-alpha.41",
-    "@storybook/builder-webpack5": "~6.3.0-alpha.41",
+    "@storybook/builder-webpack5": "~6.4.0",
     "@storybook/manager-webpack5": "~6.3.0-alpha.41",
     "@storybook/react": "~6.3.0-alpha.41",
     "@storybook/storybook-deployer": "~2.8.8",
